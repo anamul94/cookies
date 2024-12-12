@@ -5,7 +5,6 @@ const User = sequelize.define('Users', {
     username: {
         type: DataTypes.STRING(100),
         allowNull: false,
-        unique: false,
     },
     email: {
         type: DataTypes.STRING(100),
@@ -22,6 +21,23 @@ const User = sequelize.define('Users', {
     },
 }, {
     timestamps: true,
+    indexes: [
+        {
+            unique: true,
+            fields: ['email']
+        },
+        // Optional: if you frequently search by username
+        {
+            unique: false,
+            fields: ['username']
+        }
+    ],
+    // Prevent Sequelize from creating too many automatic indexes
+    hooks: {
+        beforeDefine: (attributes, options) => {
+            options.indexes = options.indexes || [];
+        }
+    }
 });
 
 module.exports = User;

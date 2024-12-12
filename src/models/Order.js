@@ -2,39 +2,44 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db'); // Sequelize instance
 const Plan = require('./Plan'); // Plan model
 const OrderStatus = require('../enums/OrderStatus');
+const  Product  = require('./Product');
 
 const Order = sequelize.define('Order', {
     customerEmail: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-            isEmail: true, // Ensures it's a valid email
+            isEmail: true
         },
+        indexes: [{ unique: false }]
     },
     planId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: {
-            model: Plan,
-            key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
+    },
+    productId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        
     },
     startDate: {
         type: DataTypes.DATE,
-        allowNull: false,
+        allowNull: false
     },
     endDate: {
         type: DataTypes.DATE,
-        allowNull: false,
+        allowNull: false
     },
     status: {
         type: DataTypes.ENUM(...Object.values(OrderStatus)),
-        defaultValue: OrderStatus.ACTIVE, // Default to 'active'
-    },
+        defaultValue: OrderStatus.ACTIVE
+    }
 }, {
-    timestamps: true, // Adds createdAt and updatedAt fields
+    timestamps: true,
+    underscored: true,
+    indexes: [
+        { fields: [ 'status'] }
+    ]
 });
 
 module.exports = Order;

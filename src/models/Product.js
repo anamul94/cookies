@@ -2,6 +2,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../config/db'); // Assuming your database connection is in `config/db.js`
 const User = require('./User');
 const Status = require("../enums/Status");
+const Order = require('./Order');
 
 // Enum for status
 
@@ -35,4 +36,7 @@ const Product = sequelize.define('Product', {
     timestamps: true, // Automatically adds createdAt and updatedAt fields
 });
 
-module.exports = { Product, Status };
+// Product.hasMany(Order, { foreignKey: 'productId', as: 'orders' });
+
+
+module.exports =  Product

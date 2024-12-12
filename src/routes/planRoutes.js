@@ -58,7 +58,7 @@ const router = express.Router();
  *       500:
  *         description: Server error
  */
-router.post('/plans', authenticate, createPlan);
+router.post('/plans', createPlan);
 
 // Route to get plan by ID
 /**

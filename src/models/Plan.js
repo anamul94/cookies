@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db'); // Your Sequelize instance
 const DurationTypes = require('../enums/DurationTypes'); // Import the DurationTypes enum
 const Status = require("../enums/Status");
-const { Product } = require('./Product');
+const  Product  = require('./Product');
 
 
 const Plan = sequelize.define('Plan', {
@@ -17,12 +17,7 @@ const Plan = sequelize.define('Plan', {
     productID: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: {
-            model: Product,
-            key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
+       
     },
     durationType: {
         type: DataTypes.ENUM(...Object.values(DurationTypes)), // Spread values from the enum
@@ -42,5 +37,7 @@ const Plan = sequelize.define('Plan', {
 }, {
     timestamps: true, // Adds createdAt and updatedAt fields
 });
+
+
 
 module.exports = Plan;

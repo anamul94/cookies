@@ -1,8 +1,6 @@
 const express = require('express');
-const { createOrder } = require('../controllers/orderController');
-const { authenticate } = require('../middlewares/authMiddleware');
-
 const router = express.Router();
+const { createOrder, getActiveOrdersByEmail, getActiveProductsByCustomerEmail } = require('../controllers/orderController'); 
 
 
 /**
@@ -47,3 +45,110 @@ const router = express.Router();
  */
 
 router.post('/create', createOrder);
+
+
+/**
+ * @swagger
+ * /order/active:
+ *   get:
+ *     summary: Get all active orders by customer's email
+ *     tags: [Order]
+ *     parameters:
+ *       - in: query
+ *         name: customerEmail
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Customer's email address
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved active orders
+ *       400:
+ *         description: Missing customer email
+ *       404:
+ *         description: No active orders found
+ *       500:
+ *         description: Server error
+ */
+router.get('/active', getActiveOrdersByEmail);
+
+
+
+/**
+ * @swagger
+ * /order/products:
+ *   get:
+ *     summary: Get active products by customer email
+ *     tags: [Order]
+ *     parameters:
+ *       - in: query
+ *         name: customerEmail
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: email
+ *         description: The customer's email address
+ *     responses:
+ *       200:
+ *         description: List of active products with remaining days
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   productTitle:
+ *                     type: string
+ *                     description: The title of the product
+ *                   productUrl:
+ *                     type: string
+ *                     description: The URL of the product
+ *                   cookie:
+ *                     type: string
+ *                     description: The product cookie value
+ *                   remainingDays:
+ *                     type: integer
+ *                     description: The number of days remaining before the order expires
+ *             example:
+ *               - productTitle: "Premium Cookie Subscription"
+ *                 productUrl: "https://example.com/product/1"
+ *                 cookie: "abcd1234"
+ *                 remainingDays: 15
+ *               - productTitle: "Exclusive Membership"
+ *                 productUrl: "https://example.com/product/2"
+ *                 cookie: "xyz9876"
+ *                 remainingDays: 5
+ *       400:
+ *         description: Invalid email provided
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Invalid email provided"
+ *       404:
+ *         description: No active orders found for the customer
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "No active orders found for this email"
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "An unexpected error occurred"
+ */
+router.get('/products', getActiveProductsByCustomerEmail);
+module.exports = router;
