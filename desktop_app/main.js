@@ -1,4 +1,5 @@
 const { app, BrowserWindow, ipcMain, session } = require("electron");
+const axios = require("axios");
 const path = require("path");
 
 let mainWindow;
@@ -6,15 +7,11 @@ let mainWindow;
 // Function to set dynamic cookies
 const setDynamicCookies = async (cookies, url) => {
     const cookiePromises = cookies.map((cookie) => {
-        // Start with the URL (mandatory for Electron)
         const cookieDetails = { url };
-
-        // Dynamically add all fields from the provided cookie object
         Object.keys(cookie).forEach((key) => {
             cookieDetails[key] = cookie[key];
         });
 
-        // Handle missing required fields or defaults
         if (!cookieDetails.domain) {
             cookieDetails.domain = new URL(url).hostname;
         }
@@ -42,21 +39,34 @@ app.whenReady().then(() => {
     });
 
     mainWindow.loadFile("index.html");
-});
 
-// Listen for URL and cookies from the renderer process
-ipcMain.handle("open-url-with-cookies", async (event, { url, cookies }) => {
-    const newWindow = new BrowserWindow({
-        width: 1024,
-        height: 768,
-        webPreferences: {
-            contextIsolation: true,
-            nodeIntegration: false,
-        },
+    ipcMain.handle("get-active-products", async (event, customerEmail) => {
+        try {
+            const response = await axios.get(
+                `http://localhost:3000/order/products?customerEmail=${encodeURIComponent(
+                    customerEmail
+                )}`
+            );
+            return response.data.activeProducts;
+        } catch (error) {
+            console.error("Error fetching data from API:", error);
+            return [];
+        }
     });
 
-    await setDynamicCookies(cookies, url);
-    newWindow.loadURL(url);
+    ipcMain.handle("open-url-with-cookies", async (event, { url, cookies }) => {
+        const newWindow = new BrowserWindow({
+            width: 1024,
+            height: 768,
+            webPreferences: {
+                contextIsolation: true,
+                nodeIntegration: false,
+            },
+        });
+
+        await setDynamicCookies(cookies, url);
+        newWindow.loadURL(url);
+    });
 });
 
 app.on("window-all-closed", () => {

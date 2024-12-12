@@ -1,0 +1,124 @@
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+/* Container for the entire application */
+#appContainer {
+    width: 90%;
+    max-width: 600px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Title */
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+/* Label styling */
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-size: 1em;
+}
+
+/* Input field styling */
+input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
+input[type="email"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Button styling */
+button {
+    padding: 10px 20px;
+    font-size: 1em;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Product container styling */
+#productsContainer {
+    margin-top: 20px;
+    text-align: left;
+}
+
+/* Individual product card */
+.productCard {
+    background-color: #fdfdfd;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.productCard h3 {
+    margin: 0 0 10px;
+    font-size: 1.2em;
+    color: #333;
+}
+
+.productCard p {
+    margin: 5px 0;
+    font-size: 0.9em;
+    color: #666;
+}
+
+/* Button inside product card */
+.productCard button {
+    padding: 8px 15px;
+    font-size: 0.9em;
+    color: #fff;
+    background-color: #28a745;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.productCard button:hover {
+    background-color: #218838;
+}
+
+/* Loading or error message styling */
+#productsContainer p {
+    font-size: 1em;
+    color: #999;
+    text-align: center;
+    margin-top: 20px;
+}

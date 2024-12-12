@@ -4,46 +4,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Set Dynamic Cookies and Open URL</title>
+    <link rel="stylesheet" href="styles.css">
+    <title>Dynamic Products</title>
 </head>
 
 <body>
-    <h1>Set Cookies and Open URL</h1>
-    <label for="url">Enter URL:</label>
-    <input type="text" id="url" placeholder="https://example.com" style="width: 400px;"><br><br>
+    <h1>Available Products</h1>
 
-    <label for="cookies">Enter Cookies (JSON format):</label><br>
-    <textarea id="cookies" rows="10" cols="50"></textarea><br><br>
+    <label for="customerEmail">Enter Customer Email:</label>
+    <input type="email" id="customerEmail" placeholder="example@gmail.com" style="width: 300px;">
+    <button id="fetchProducts">Fetch Products</button>
 
-    <button id="generateLink">Generate Link</button>
-    <div id="linkContainer"></div>
+    <div id="productsContainer" style="margin-top: 20px;"></div>
 
     <script>
-        document.getElementById("generateLink").addEventListener("click", () => {
-            const url = document.getElementById("url").value;
-            const cookiesJson = document.getElementById("cookies").value;
+        document.getElementById("fetchProducts").addEventListener("click", async () => {
+            const email = document.getElementById("customerEmail").value;
 
-            if (!url || !cookiesJson) {
-                alert("Please provide both a URL and cookies in JSON format.");
+            if (!email) {
+                alert("Please enter a valid email address.");
                 return;
             }
 
+            const container = document.getElementById("productsContainer");
+            container.innerHTML = "<p>Loading...</p>";
+
+            // Fetch products from the backend using the email
             try {
-                const cookies = JSON.parse(cookiesJson);
+                const activeProducts = await window.electronAPI.getActiveProducts(email);
 
-                const linkContainer = document.getElementById("linkContainer");
-                linkContainer.innerHTML = ""; // Clear previous links
+                // Clear the container
+                container.innerHTML = "";
 
-                const link = document.createElement("a");
-                link.href = "#";
-                link.textContent = "Click here to open the URL with cookies";
-                link.addEventListener("click", () => {
-                    window.electronAPI.openUrlWithCookies(url, cookies);
+                if (activeProducts.length === 0) {
+                    container.innerHTML = "<p>No active products found for this email.</p>";
+                    return;
+                }
+
+                activeProducts.forEach((product) => {
+                    const productDiv = document.createElement("div");
+                    productDiv.style.marginBottom = "20px";
+
+                    productDiv.innerHTML = `
+                        <h3>${product.productTitle}</h3>
+                        <p><strong>URL:</strong> ${product.productUrl}</p>
+                        <p><strong>Remaining Days:</strong> ${product.remainingDays}</p>
+                        <button>Open Site</button>
+                    `;
+
+                    // Add event listener to the button
+                    const button = productDiv.querySelector("button");
+                    button.addEventListener("click", () => {
+                        window.electronAPI.openUrlWithCookies(
+                            product.productUrl,
+                            product.productCookie
+                        );
+                    });
+
+                    container.appendChild(productDiv);
                 });
-
-                linkContainer.appendChild(link);
-            } catch (e) {
-                alert("Invalid JSON format for cookies.");
+            } catch (error) {
+                console.error("Error fetching products:", error);
+                container.innerHTML = "<p>Error fetching products. Please try again later.</p>";
             }
         });
     </script>
