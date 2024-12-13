@@ -6,15 +6,30 @@ body {
     padding: 0;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
     min-height: 100vh;
+}
+
+/* Header styling */
+header {
+    width: 100%;
+    padding: 15px;
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Container for the entire application */
 #appContainer {
+    flex: 1;
     width: 90%;
-    max-width: 600px;
+    max-width: 800px;
+    margin: 20px auto;
     background-color: #ffffff;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -73,6 +88,9 @@ button:hover {
 
 /* Product container styling */
 #productsContainer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
     margin-top: 20px;
     text-align: left;
 }
@@ -83,8 +101,13 @@ button:hover {
     border: 1px solid #ddd;
     border-radius: 6px;
     padding: 15px;
-    margin-bottom: 15px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.productCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
 }
 
 .productCard h3 {
@@ -115,10 +138,15 @@ button:hover {
     background-color: #218838;
 }
 
-/* Loading or error message styling */
-#productsContainer p {
-    font-size: 1em;
-    color: #999;
+/* Footer styling */
+footer {
+    margin-top: auto;
+    width: 100%;
+    padding: 10px;
+    background-color: #f0f0f0;
     text-align: center;
-    margin-top: 20px;
+    border-top: 1px solid #ddd;
+    color: #666;
+    position: sticky;
+    bottom: 0;
 }

@@ -5,17 +5,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <title>Dynamic Products</title>
+    <title>Cookies Merging App</title>
 </head>
 
 <body>
-    <h1>Available Products</h1>
+    <header>
+        Cookies Merging App
+    </header>
 
-    <label for="customerEmail">Enter Customer Email:</label>
-    <input type="email" id="customerEmail" placeholder="example@gmail.com" style="width: 300px;">
-    <button id="fetchProducts">Fetch Products</button>
+    <div id="appContainer">
+        <h1>Available Products</h1>
 
-    <div id="productsContainer" style="margin-top: 20px;"></div>
+        <label for="customerEmail">Enter Customer Email:</label>
+        <input type="email" id="customerEmail" placeholder="example@gmail.com">
+        <button id="fetchProducts">Fetch Products</button>
+
+        <div id="productsContainer"></div>
+    </div>
+
+    <footer>
+        &copy; 2024 Cookies Merging App. All Rights Reserved.
+    </footer>
 
     <script>
         document.getElementById("fetchProducts").addEventListener("click", async () => {
@@ -29,11 +39,8 @@
             const container = document.getElementById("productsContainer");
             container.innerHTML = "<p>Loading...</p>";
 
-            // Fetch products from the backend using the email
             try {
                 const activeProducts = await window.electronAPI.getActiveProducts(email);
-
-                // Clear the container
                 container.innerHTML = "";
 
                 if (activeProducts.length === 0) {
@@ -43,7 +50,7 @@
 
                 activeProducts.forEach((product) => {
                     const productDiv = document.createElement("div");
-                    productDiv.style.marginBottom = "20px";
+                    productDiv.classList.add("productCard");
 
                     productDiv.innerHTML = `
                         <h3>${product.productTitle}</h3>
@@ -52,7 +59,6 @@
                         <button>Open Site</button>
                     `;
 
-                    // Add event listener to the button
                     const button = productDiv.querySelector("button");
                     button.addEventListener("click", () => {
                         window.electronAPI.openUrlWithCookies(

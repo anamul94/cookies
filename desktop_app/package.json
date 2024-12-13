@@ -4,7 +4,7 @@
   "description": "My Electron App for managing cookies",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "npx electron .",
     "build": "electron-builder"
   },
   "build": {
@@ -14,10 +14,9 @@
       "output": "dist"
     },
     "files": [
-      "**/*",
-      "ffmpeg.dll", // Add ffmpeg.dll to your build files
-      "avcodec.dll", // Add any other DLLs required for FFmpeg functionality
-      "avformat.dll"
+      "**/*"
+     
+     
     ],
     "win": {
       "target": "nsis",
