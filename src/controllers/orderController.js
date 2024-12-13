@@ -12,7 +12,7 @@ const { broadcastToClient } = require("../websocket/websocket");
 // POST: Create Order
 exports.createOrder =  async (req, res) => {
    console.log("Order ctrl");
-    const { customerEmail, planId, startDate, durationType, durationValue } = req.body;
+    const { customerEmail, planId, startDate, durationType, phoneNumber, transactionNumber  } = req.body;
 
     try {
         const plan = await Plan.findOne({ where: { id: planId, status: Status.ACTIVE } });
@@ -39,7 +39,7 @@ exports.createOrder =  async (req, res) => {
         }
 
         // Calculate the end date based on the duration type and value
-        const calculatedEndDate = calculateEndDate(durationType, durationValue, new Date(startDate));
+        const calculatedEndDate = calculateEndDate(plan.durationType, plan.durationValue, new Date(startDate));
 
         console.log(await plan);
         // Create the order
@@ -50,6 +50,8 @@ exports.createOrder =  async (req, res) => {
             startDate: startDate,
             endDate: calculatedEndDate,
             status: OrderStatus.PROCESSING,
+            phoneNumber: phoneNumber,
+            transactionNumber: transactionNumber,
             // Default to active
         });
 

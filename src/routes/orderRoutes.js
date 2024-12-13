@@ -30,9 +30,12 @@ const { createOrder, getActiveOrdersByEmail, getActiveProductsByCustomerEmail } 
  *                 type: string
  *                 enum: [days, month, year]
  *                 description: The duration type of the plan (e.g., "days", "month", "year")
- *               durationValue:
- *                 type: integer
- *                 description: The duration value (number of days, months, or years)
+ *               phoneNumber:
+ *                 type: string
+ *                 description: Customer mobile banking phoneNumber
+ *               transactionNumber:
+ *                  type: string
+ *                  description: Transaction Number
  *     responses:
  *       201:
  *         description: Order created successfully

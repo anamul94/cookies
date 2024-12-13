@@ -33,6 +33,12 @@ const Order = sequelize.define('Order', {
     status: {
         type: DataTypes.ENUM(...Object.values(OrderStatus)),
         defaultValue: OrderStatus.ACTIVE
+    },
+    phoneNumber: {
+        type: DataTypes.STRING(20),
+    },
+    transactionNumber: {
+        type: DataTypes.STRING(30),
     }
 }, {
     timestamps: true,

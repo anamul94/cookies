@@ -1,8 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { setupWebSocket, broadcastToClient } = require("./src/websocket/websocket");
-
 const cors = require('cors');
+require("./src/utils/orderStatusChangeCronJob")
 const setupSwagger = require('./src/config/swagger');
 const authRoutes = require('./src/routes/userRoute');
 const productRoutes = require('./src/routes/productRoute');
