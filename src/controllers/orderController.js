@@ -5,6 +5,8 @@ const Status = require("../enums/Status"); // Status Enum
 const OrderStatus = require('../enums/OrderStatus');
 const { Op } = require('sequelize'); // Import Sequelize operators
 const Product = require('../models/Product');
+const { broadcastToClient } = require("../websocket/websocket");
+
 
 
 // POST: Create Order
@@ -92,7 +94,8 @@ exports.getActiveOrdersByEmail = async (req, res) => {
 
 exports.getActiveProductsByCustomerEmail = async (req, res) => {
     try {
-        const { customerEmail } = req.query;
+        const { customerEmail, mac } = req.query;
+        console.log(req.query)
 
         // Validate customer email
         if (!customerEmail) {
@@ -116,7 +119,7 @@ exports.getActiveProductsByCustomerEmail = async (req, res) => {
             //     },
             // ],
         });
-        console.log(activeOrders);
+        // console.log(activeOrders);
         // Check if no active orders were found
         if (!activeOrders.length) {
             return res.status(404).json({ message: 'No active orders found for the customer' });
@@ -160,7 +163,12 @@ exports.getActiveProductsByCustomerEmail = async (req, res) => {
         });
 
         // Return the active products
+        const websocketResponse = { customerEmail, mac };
+        console.log(mac)
         res.status(200).json({ activeProducts: response });
+        broadcastToClient(customerEmail, websocketResponse);
+
+       
     } catch (error) {
         console.error('Error fetching active products:', error);
         res.status(500).json({ message: 'Server error', error });

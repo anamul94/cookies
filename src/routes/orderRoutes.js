@@ -88,6 +88,13 @@ router.get('/active', getActiveOrdersByEmail);
  *           type: string
  *           format: email
  *         description: The customer's email address
+ *       - in: query
+ *         name: mac
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: string
+ *         description: The customer's MAC address
  *     responses:
  *       200:
  *         description: List of active products with remaining days

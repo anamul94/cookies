@@ -1,5 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const { setupWebSocket, broadcastToClient } = require("./src/websocket/websocket");
+
 const cors = require('cors');
 const setupSwagger = require('./src/config/swagger');
 const authRoutes = require('./src/routes/userRoute');
@@ -23,4 +25,6 @@ app.use('/order', orderRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+const server = app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+
+setupWebSocket(server);
