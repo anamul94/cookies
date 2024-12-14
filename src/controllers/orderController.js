@@ -8,17 +8,18 @@ const { broadcastToClient } = require("../websocket/websocket");
 const Package = require('../models/Package');
 const TrialOrder = require('../models/TrialOrder');
 const { sendMail } = require('../utils/mailsender');
-const { createCustomer , checkUseExists} = require("../servicees/customerService")
+const { createCustomer, checkUseExists } = require("../servicees/customerService")
 const imagekit = require("../utils/imageKit")
 const fs = require('fs');
 const path = require("path");
 const TrialOrderStatus = require('../enums/TrialOrderStatus');
+const OrderItems = require('../models/OrderItems'); // Import OrderItems model
 
 
 // POST: Create Order
 exports.createOrder = async (req, res) => {
-    console.log("Order ctrl",req.body);
-    const { customerEmail, planIds, startDate, durationType, phoneNumber, transactionNumber } = req.body;
+    console.log("Order ctrl", req.body);
+    const { customerEmail, customerName, planIds, phoneNumber, transactionNumber, paymentMethod } = req.body;
 
     try {
         const plans = await Package.findAll({ where: { id: planIds, status: Status.ACTIVE } });
@@ -26,49 +27,60 @@ exports.createOrder = async (req, res) => {
             return res.status(404).json({ message: 'Plan not found or is inactive' });
         }
 
-        console.log(plans);
-
-        const orders = [];
-
-        for (const plan of plans) {
-            const activeOrder = await Order.findOne({
-                where: {
-                    customerEmail,
-                    planId: plan.id,
-                    status: {
-                        [Op.or]: [OrderStatus.ACTIVE, OrderStatus.PROCESSING], // Check for either 'active' or 'processing'
-                    },
+        // Check for existing active orders for any of the plans
+        const existingOrders = await Order.findOne({
+            where: {
+                customerEmail,
+                status: {
+                    [Op.or]: [OrderStatus.ACTIVE, OrderStatus.PROCESSING],
                 },
-            });
-            if (activeOrder) {
-                return res.status(400).json({
-                    message: `An ${activeOrder.status} order for this plan already exists for the specified customer.`,
-                });
             }
+        });
 
-
-            // Calculate the end date based on the duration type and value
-            const calculatedEndDate = calculateEndDate(plan.durationType, plan.durationValue, new Date(startDate));
-
-            // Create the order
-            const order = await Order.create({
-                customerEmail: customerEmail,
-                planId: plan.id,
-                productId: plan.productId,
-                startDate: startDate,
-                endDate: calculatedEndDate,
-                status: OrderStatus.PROCESSING,
-                phoneNumber: phoneNumber,
-                transactionNumber: transactionNumber,
-                // Default to active
+        if (existingOrders) {
+            return res.status(400).json({
+                message: `An active or processing order already exists for this customer.`,
             });
-
-            orders.push(order);
-
         }
 
-        
-        res.status(201).json({ message: 'Order created successfully', orders });
+        const isCustomerExists = await checkUseExists(customerEmail);
+        if (!isCustomerExists) {
+            const customer = await createCustomer(customerEmail, customerName, phoneNumber);
+            sendMail(customerEmail, "Your password", customer.password);
+        }
+
+        const orderItemIds = [];
+        const startDate = new Date();
+
+        // Create OrderItems for each plan
+        for (const plan of plans) {
+            console.log("Plan", plan.productID);
+            
+            const orderItems = await OrderItems.create({
+                productId: plan.productID,
+                startDate: startDate,
+                endDate: calculateEndDate(plan.durationType, plan.durationValue, startDate),
+                packageId: plan.id
+            });
+          
+            orderItemIds.push(orderItems.id);
+        }
+
+        // Create main order with all OrderItems
+        const order = await Order.create({
+            customerEmail: customerEmail,
+            status: OrderStatus.PROCESSING,
+            phoneNumber: phoneNumber,
+            transactionNumber: transactionNumber,
+            paymentMethod: paymentMethod,
+            OrderItems: orderItemIds,
+        });
+
+        res.status(201).json({ 
+            message: 'Order created successfully', 
+            orderId: order.id,
+            orderItems: orderItemIds 
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error creating order', error });
@@ -192,13 +204,13 @@ exports.getActiveProductsByCustomerEmail = async (req, res) => {
 
 exports.createTrialOrder = async (req, res) => {
     try {
-        const { name, customerEmail,  phoneNumber, facebookId  } = req.body;
+        const { name, customerEmail, phoneNumber, facebookId, paymentMethod } = req.body;
         console.log(req.body);
-       const isTrialOrder = await TrialOrder.findOne({ where: { customerEmail } });
+        const isTrialOrder = await TrialOrder.findOne({ where: { customerEmail } });
         if (isTrialOrder) {
             return res.status(400).json({ message: 'Trial order already exists for this customer' });
         }
-        if(!req.file){
+        if (!req.file) {
             return res.status(400).json({ message: 'Please upload a file' });
         }
         const filePath = req.file.path;
@@ -226,17 +238,18 @@ exports.createTrialOrder = async (req, res) => {
 
         const isCustomer = await checkUseExists(customerEmail);
         if (!isCustomer) {
-           const customer = await createCustomer(customerEmail,name, phoneNumber, facebookId);
-           sendMail(customerEmail, "Your password", customer.password);
+            const customer = await createCustomer(customerEmail, name, phoneNumber, facebookId);
+            sendMail(customerEmail, "Your password", customer.password);
         }
-        
+
         const trialOrder = await TrialOrder.create({
             name,
             customerEmail,
             screenShotImageId: uploadedFile.fileId,
             screenShotUrl: uploadedFile.url,
             facebookId: facebookId,
-            status: TrialOrderStatus.PENDING, // Explicitly assign status
+            status: TrialOrderStatus.PENDING,
+            paymentMethod
         });
         res.status(201).json({ message: 'Trial order created successfully', trialOrder });
 
@@ -247,4 +260,3 @@ exports.createTrialOrder = async (req, res) => {
         res.status(500).json({ message: 'Error creating trial order', error });
     }
 }
-

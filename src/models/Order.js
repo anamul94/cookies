@@ -3,6 +3,8 @@ const sequelize = require('../config/db'); // Sequelize instance
 const Plan = require('./Package'); // Plan model
 const OrderStatus = require('../enums/OrderStatus');
 const Product = require('./Product');
+const PaymentMethods = require('../enums/PaymentMethos.enum');
+const OrderItems = require('./OrderItems');
 
 const Order = sequelize.define('Order', {
     customerEmail: {
@@ -13,23 +15,6 @@ const Order = sequelize.define('Order', {
         },
         indexes: [{ unique: false }]
     },
-    planId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
-    productId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-
-    },
-    startDate: {
-        type: DataTypes.DATE,
-        allowNull: false
-    },
-    endDate: {
-        type: DataTypes.DATE,
-        allowNull: false
-    },
     status: {
         type: DataTypes.ENUM(...Object.values(OrderStatus)),
         defaultValue: OrderStatus.ACTIVE
@@ -39,7 +24,16 @@ const Order = sequelize.define('Order', {
     },
     transactionNumber: {
         type: DataTypes.STRING(30),
-    }
+    },
+    paymentMethod: {
+        type: DataTypes.ENUM(...Object.values(PaymentMethods)),
+    },
+
+    OrderItems: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: []
+    },
 }, {
     timestamps: true,
     underscored: true,

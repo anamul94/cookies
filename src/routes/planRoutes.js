@@ -1,5 +1,5 @@
 const express = require('express');
-const { createPackage: createPlan, getPlanById, getPlansByProductId, updatePlan } = require('../controllers/packageController');
+const { createPackage: createPlan, getPlanById, getPlansByProductId, updatePlan, getAllPackages } = require('../controllers/packageController');
 const { authenticate } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
@@ -62,6 +62,63 @@ const router = express.Router();
  *         description: Server error
  */
 router.post('/plans', createPlan);
+
+/**
+ * @swagger
+ * /plans:
+ *   get:
+ *     summary: Get all available plans
+ *     tags: [Plans]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved a list of plans
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   title:
+ *                     type: string
+ *                     description: Title of the plan
+ *                     example: Package Three
+ *                   price:
+ *                     type: number
+ *                     description: Price of the plan
+ *                     example: 330
+ *                   productID:
+ *                     type: array
+ *                     items:
+ *                       type: integer
+ *                     description: IDs of the products associated with the plan
+ *                     example: [2]
+ *                   durationType:
+ *                     type: string
+ *                     description: Type of duration (days, month, year)
+ *                     example: days
+ *                     enum:
+ *                       - days
+ *                       - month
+ *                       - year
+ *                   durationValue:
+ *                     type: integer
+ *                     description: Value of the duration
+ *                     example: 30
+ *                   status:
+ *                     type: string
+ *                     description: Status of the plan (active, inactive)
+ *                     example: active
+ *                     enum:
+ *                       - active
+ *                       - inactive
+ *       500:
+ *         description: Server error
+ */
+
+router.get('/plans',getAllPackages)
 
 // Route to get plan by ID
 /**

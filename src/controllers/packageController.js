@@ -1,6 +1,9 @@
-const Plan = require('../models/Package');
 const DurationTypes = require('../enums/DurationTypes');
 const Status = require('../enums/Status');
+const Package = require('../models/Package');
+const Product = require('../models/Product');
+const { Op } = require('sequelize'); // Import Sequelize operators
+
 
 exports.createPackage = async (req, res) => {
     try {
@@ -17,7 +20,7 @@ exports.createPackage = async (req, res) => {
         }
 
         // Create the new plan
-        const newPlan = await Plan.create({
+        const newPlan = await Package.create({
             title,
             price,
             productID,
@@ -33,25 +36,62 @@ exports.createPackage = async (req, res) => {
     }
 };
 
+exports.getAllPackages = async(req, res) => {
+   console.log("get all packages")
+    const packages = await Package.findAll();
+    return res.status(200).json(packages);
+}
+
 // Get Plan by ID
 exports.getPlanById = async (req, res) => {
     const { id } = req.params; // Extract Plan ID from the request parameters
     try {
-        const plan = await Plan.findByPk(id); // Find the plan by its primary key
+        // Fetch the plan by its primary key
+        const plan = await Package.findByPk(id);
         if (!plan) {
             return res.status(404).json({ message: 'Plan not found' });
         }
-        res.status(200).json(plan);
+
+        // Fetch the products associated with the plan
+        const products = await Product.findAll({
+            where: {
+                id: {
+                    [Op.in]: plan.productID // Use Sequelize's $in operator for matching
+                }
+            },
+            attributes: ['id', 'title', 'status'] // Select only id, title, and status fields
+        });
+
+        console.log(products);
+        const productsResp = [];
+       
+        // Construct the response object
+        const response = {
+            id: plan.id,
+            title: plan.title,
+            price: plan.price,
+            durationType: plan.durationType,
+            durationValue: plan.durationValue,
+            status: plan.status,
+            createdAt: plan.createdAt,
+            updatedAt: plan.updatedAt,
+            products // Include the products array instead of productID
+        };
+
+        // Send the response
+        res.status(200).json(response);
     } catch (error) {
+        console.error("Error fetching plan:", error.message);
         res.status(500).json({ message: 'Error fetching plan', error });
     }
 };
+
 
 // Get Plans by Product ID
 exports.getPlansByProductId = async (req, res) => {
     const { productId } = req.params; // Extract Product ID from the request parameters
     try {
-        const plans = await Plan.findAll({ where: { productID: productId } }); // Find all plans associated with the Product ID
+        const plans = await Package.findAll({ where: { productID: productId } }); // Find all plans associated with the Product ID
         if (!plans || plans.length === 0) {
             return res.status(404).json({ message: 'No plans found for the specified product' });
         }
@@ -68,7 +108,7 @@ exports.updatePlan = async (req, res) => {
 
     try {
         // Find the plan by its primary key
-        const plan = await Plan.findByPk(id);
+        const plan = await Package.findByPk(id);
 
         if (!plan) {
             return res.status(404).json({ message: 'Plan not found' });

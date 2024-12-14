@@ -18,27 +18,39 @@ const upload = multer({ dest: "uploads/" });
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - customerEmail
+ *               - customerName
+ *               - planIds
+ *               - phoneNumber
+ *               - transactionNumber
+ *               - paymentMethod
  *             properties:
  *               customerEmail:
  *                 type: string
  *                 description: The customer's email address
- *               planId:
- *                 type: integer
+ *               customerName:
+ *                 type: string
+ *                 description: The customer's name
+ *               planIds:
+ *                 type: array
+ *                 items:
+ *                   type: integer
  *                 description: The ID of the selected plan
- *               startDate:
- *                 type: string
- *                 format: date
- *                 description: The start date of the order
- *               durationType:
- *                 type: string
- *                 enum: [days, month, year]
- *                 description: The duration type of the plan (e.g., "days", "month", "year")
  *               phoneNumber:
  *                 type: string
- *                 description: Customer mobile banking phoneNumber
+ *                 description: Customer mobile banking phone number
  *               transactionNumber:
- *                  type: string
- *                  description: Transaction Number
+ *                 type: string
+ *                 description: Transaction Number
+ *               paymentMethod:
+ *                 type: string
+ *                 enum:
+ *                   - bkash
+ *                   - nagad
+ *                   - card
+ *                   - others
+ *                 description: Payment Method
  *     responses:
  *       201:
  *         description: Order created successfully
@@ -49,6 +61,7 @@ const upload = multer({ dest: "uploads/" });
  *       500:
  *         description: Error creating order
  */
+
 
 router.post('/create', createOrder);
 

@@ -17,11 +17,11 @@ const Customer = sequelize.define('Customer', {
     },
     phoneNumber: {
         type: DataTypes.STRING(20),
-        allowNull: false,
+        allowNull: true,
     },
     facebookId: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
    
 }, {
