@@ -1,6 +1,5 @@
 export const PaymentMethods = {
     CARD: 'card',
-    UPI: 'upi',
     BKASH: 'bkash',
     NAGAD: 'nagad',
     ROCKET: 'rocket',
