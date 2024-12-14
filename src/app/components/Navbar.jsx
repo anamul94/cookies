@@ -1,30 +1,34 @@
 "use client"
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="w-full bg-white shadow-md fixed top-0 left-0 right-0 z-50">
+    <nav className="bg-white shadow-lg fixed w-full z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          <div className="flex-shrink-0 flex items-center">
-            <Link href="/" className="text-2xl font-bold text-blue-600">
-              Cookie
+          <div className="flex items-center">
+            <Link href="/" className="flex-shrink-0">
+              <Image
+                src="/logo.png"
+                alt="Logo"
+                width={40}
+                height={40}
+                className="w-auto h-8"
+              />
             </Link>
           </div>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
             <Link href="/" className="text-gray-600 hover:text-blue-600 transition-colors">
-              Home
+              Shop
             </Link>
-            <Link href="/packages" className="text-gray-600 hover:text-blue-600 transition-colors">
-              Packages
-            </Link>
-            <Link href="/products" className="text-gray-600 hover:text-blue-600 transition-colors">
-              Products
+            <Link href="/trial" className="text-gray-600 hover:text-blue-600 transition-colors">
+              Trial
             </Link>
             <Link href="/about" className="text-gray-600 hover:text-blue-600 transition-colors">
               About
@@ -57,13 +61,10 @@ const Navbar = () => {
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white">
             <Link href="/" className="block px-3 py-2 rounded-md text-gray-600 hover:text-blue-600 hover:bg-gray-100">
-              Home
+              Shop
             </Link>
-            <Link href="/packages" className="block px-3 py-2 rounded-md text-gray-600 hover:text-blue-600 hover:bg-gray-100">
-              Packages
-            </Link>
-            <Link href="/products" className="block px-3 py-2 rounded-md text-gray-600 hover:text-blue-600 hover:bg-gray-100">
-              Products
+            <Link href="/trial" className="block px-3 py-2 rounded-md text-gray-600 hover:text-blue-600 hover:bg-gray-100">
+              Trial
             </Link>
             <Link href="/about" className="block px-3 py-2 rounded-md text-gray-600 hover:text-blue-600 hover:bg-gray-100">
               About
