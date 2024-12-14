@@ -9,10 +9,11 @@ const productRoutes = require('./src/routes/productRoute');
 const planRoutes = require('./src/routes/planRoutes'); // Import the routes
 const orderRoutes = require("./src/routes/orderRoutes")
 const customerRoutes = require("./src/routes/customerRoutes")   
-
+const loggerMiddleware = require('./src/middleware/loggingMiddleware');
 
 const app = express();
 
+app.use(loggerMiddleware);
 app.use(cors());
 app.use(bodyParser.json());
 

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createOrder, getActiveOrdersByEmail, getActiveProductsByCustomerEmail, createTrialOrder } = require('../controllers/orderController'); 
+const { createOrder, getActiveOrdersByEmail, getActiveProductsByCustomerEmail, createTrialOrder, searchOrdersWithPagination, getOrderById } = require('../controllers/orderController'); 
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 
@@ -64,6 +64,32 @@ const upload = multer({ dest: "uploads/" });
 
 
 router.post('/create', createOrder);
+
+
+
+/**
+ * @swagger
+ * /order/{id}:
+ *   get:
+ *     summary: Get an order by ID
+ *     tags: [Order]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: ID of the order to retrieve
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: The requested order
+ *       404:
+ *         description: Order not found
+ *       500:
+ *         description: Error fetching order
+ */
+
+router.get(('/:id'), getOrderById);
 
 
 /**
@@ -282,4 +308,84 @@ router.get('/products', getActiveProductsByCustomerEmail);
  *                   type: string
  */
 router.post('/createTrialOrder', upload.single('image'), createTrialOrder);
+
+
+/**
+ * @swagger
+ * /order/search:
+ *   post:
+ *     summary: Search for orders with pagination
+ *     tags: [Order]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               page:
+ *                 type: integer
+ *                 description: Page number for pagination
+ *                 example: 1
+ *               limit:
+ *                 type: integer
+ *                 description: Number of records per page
+ *                 example: 10
+ *               customerEmail:
+ *                 type: string
+ *                 description: Customer's email address
+ *                 example: johndoe@example.com
+ *               status:
+ *                 type: string
+ *                 description: Order status
+ *                 example: active
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved orders with pagination
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 total:
+ *                   type: integer
+ *                   example: 10
+ *                 page:
+ *                   type: integer
+ *                   example: 1
+ *                 limit:
+ *                   type: integer
+ *                   example: 10
+ *                 orders:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       customerEmail:
+ *                         type: string
+ *                         example: johndoe@example.com
+ *                       status:
+ *                         type: string
+ *                         example: active
+ *                       createdAt:
+ *                         type: string
+ *                         example: 2023-06-01T10:00:00.000Z
+ *       500:
+ *         description: Error searching orders
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Error searching orders
+ *                 error:
+ *                   type: string
+ *                   example: Internal server error
+ */
+router.post('/search', searchOrdersWithPagination);
 module.exports = router;

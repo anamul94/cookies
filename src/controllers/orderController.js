@@ -2,7 +2,7 @@ const Order = require('../models/Order');
 const { calculateEndDate } = require("../utils/endDateCalculation")
 const Status = require("../enums/Status"); // Status Enum
 const OrderStatus = require('../enums/OrderStatus');
-const { Op } = require('sequelize'); // Import Sequelize operators
+const { Op, or } = require('sequelize'); // Import Sequelize operators
 const Product = require('../models/Product');
 const { broadcastToClient } = require("../websocket/websocket");
 const Package = require('../models/Package');
@@ -204,7 +204,7 @@ exports.getActiveProductsByCustomerEmail = async (req, res) => {
 
 exports.createTrialOrder = async (req, res) => {
     try {
-        const { name, customerEmail, phoneNumber, facebookId, paymentMethod } = req.body;
+        const { name, customerEmail, phoneNumber, facebookId } = req.body;
         console.log(req.body);
         const isTrialOrder = await TrialOrder.findOne({ where: { customerEmail } });
         if (isTrialOrder) {
@@ -249,7 +249,6 @@ exports.createTrialOrder = async (req, res) => {
             screenShotUrl: uploadedFile.url,
             facebookId: facebookId,
             status: TrialOrderStatus.PENDING,
-            paymentMethod
         });
         res.status(201).json({ message: 'Trial order created successfully', trialOrder });
 
@@ -260,3 +259,68 @@ exports.createTrialOrder = async (req, res) => {
         res.status(500).json({ message: 'Error creating trial order', error });
     }
 }
+
+exports.searchOrdersWithPagination = async (req, res) => {
+    try {
+        const { page = 1, limit = 10, customerEmail, status } = req.body;
+        const offset = (page - 1) * limit;
+
+        // Create a dynamic filter object
+        let filter = {};
+
+        // Only add customerEmail filter if it's provided
+        if (customerEmail) {
+            filter.customerEmail = customerEmail;
+        }
+
+        // Only add status filter if it's provided, case-insensitive comparison
+        if (status) {
+            filter.status =status;
+        }
+
+        console.log(status, customerEmail);
+
+        // Query the database with dynamic filter
+        const { count, rows: orders } = await Order.findAndCountAll({
+            where: filter,
+            limit: parseInt(limit),
+            offset: parseInt(offset),
+        });
+
+        res.status(200).json({
+            total: count,
+            page: parseInt(page),
+            limit: parseInt(limit),
+            orders,
+        });
+    } catch (error) {
+        console.error('Error searching orders:', error);
+        res.status(500).json({ message: 'Error searching orders', error });
+    }
+};
+
+
+exports.getOrderById = async (req, res) => {
+    try {
+        console.log("Request params:", req.params);
+        const { id } = req.params;  // Changed from orderId to id to match route parameter
+        
+        const order = await Order.findOne({ 
+            where: { id: parseInt(id) }  // Parse id to integer
+        });
+        
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+        
+        const products = await OrderItems.findAll({ 
+            where: { id: order.OrderItems }      
+        }); 
+        order.OrderItems = products;
+        
+        res.status(200).json({ order });
+    } catch (error) {
+        console.error('Error fetching order by ID:', error);
+        res.status(500).json({ message: 'Error fetching order', error });
+    }
+};
