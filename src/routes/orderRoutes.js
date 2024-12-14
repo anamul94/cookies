@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { createOrder, getActiveOrdersByEmail, getActiveProductsByCustomerEmail } = require('../controllers/orderController'); 
+const { createOrder, getActiveOrdersByEmail, getActiveProductsByCustomerEmail, createTrialOrder } = require('../controllers/orderController'); 
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
+
 
 
 /**
@@ -161,4 +164,109 @@ router.get('/active', getActiveOrdersByEmail);
  *                   example: "An unexpected error occurred"
  */
 router.get('/products', getActiveProductsByCustomerEmail);
+
+
+/**
+ * @swagger
+ * /order/createTrialOrder:
+ *   post:
+ *     summary: Create a new order for a customer
+ *     tags: 
+ *       - Order
+ *     consumes:
+ *       - multipart/form-data
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The customer's name
+ *                 example: John Doe
+ *               customerEmail:
+ *                 type: string
+ *                 description: The customer's email address
+ *                 format: email
+ *                 example: johndoe@example.com
+ *               phoneNumber:
+ *                 type: string
+ *                 description: Customer mobile banking phone number
+ *                 example: +1234567890
+ *               facebookId:
+ *                 type: string
+ *                 description: Facebook ID
+ *                 example: 123456789
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Customer's image file
+ *     responses:
+ *       201:
+ *         description: Order created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Order created successfully
+ *                 order:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     name:
+ *                       type: string
+ *                       example: John Doe
+ *                     customerEmail:
+ *                       type: string
+ *                       example: johndoe@example.com
+ *                     phoneNumber:
+ *                       type: string
+ *                       example: +1234567890
+ *                     facebookId:
+ *                       type: string
+ *                       example: 123456789
+ *                     ssId:
+ *                       type: string
+ *                       example: 987654321
+ *       400:
+ *         description: Invalid request data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Invalid request data
+ *       404:
+ *         description: Plan not found or is inactive
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Plan not found or is inactive
+ *       500:
+ *         description: Error creating order
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Error creating order
+ *                 error:
+ *                   type: string
+ */
+router.post('/createTrialOrder', upload.single('image'), createTrialOrder);
 module.exports = router;

@@ -1,8 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db'); // Sequelize instance
-const Plan = require('./Plan'); // Plan model
+const Plan = require('./Package'); // Plan model
 const OrderStatus = require('../enums/OrderStatus');
-const  Product  = require('./Product');
+const Product = require('./Product');
 
 const Order = sequelize.define('Order', {
     customerEmail: {
@@ -20,7 +20,7 @@ const Order = sequelize.define('Order', {
     productId: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        
+
     },
     startDate: {
         type: DataTypes.DATE,
@@ -44,7 +44,7 @@ const Order = sequelize.define('Order', {
     timestamps: true,
     underscored: true,
     indexes: [
-        { fields: [ 'status'] }
+        { fields: ['status'] }
     ]
 });
 

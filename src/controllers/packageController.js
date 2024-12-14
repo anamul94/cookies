@@ -1,8 +1,8 @@
-const Plan = require('../models/Plan');
+const Plan = require('../models/Package');
 const DurationTypes = require('../enums/DurationTypes');
 const Status = require('../enums/Status');
 
-exports.createPlan = async (req, res) => {
+exports.createPackage = async (req, res) => {
     try {
         const { title, price, productID, durationType, durationValue, status } = req.body;
 

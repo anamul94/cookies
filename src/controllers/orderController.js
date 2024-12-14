@@ -1,61 +1,74 @@
 const Order = require('../models/Order');
-const  Plan  = require('../models/Plan');
 const { calculateEndDate } = require("../utils/endDateCalculation")
 const Status = require("../enums/Status"); // Status Enum
 const OrderStatus = require('../enums/OrderStatus');
 const { Op } = require('sequelize'); // Import Sequelize operators
 const Product = require('../models/Product');
 const { broadcastToClient } = require("../websocket/websocket");
-
+const Package = require('../models/Package');
+const TrialOrder = require('../models/TrialOrder');
+const { sendMail } = require('../utils/mailsender');
+const { createCustomer , checkUseExists} = require("../servicees/customerService")
+const imagekit = require("../utils/imageKit")
+const fs = require('fs');
+const path = require("path");
+const TrialOrderStatus = require('../enums/TrialOrderStatus');
 
 
 // POST: Create Order
-exports.createOrder =  async (req, res) => {
-   console.log("Order ctrl");
-    const { customerEmail, planId, startDate, durationType, phoneNumber, transactionNumber  } = req.body;
+exports.createOrder = async (req, res) => {
+    console.log("Order ctrl",req.body);
+    const { customerEmail, planIds, startDate, durationType, phoneNumber, transactionNumber } = req.body;
 
     try {
-        const plan = await Plan.findOne({ where: { id: planId, status: Status.ACTIVE } });
-        if (!plan) {
+        const plans = await Package.findAll({ where: { id: planIds, status: Status.ACTIVE } });
+        if (!plans || plans.length !== planIds.length) {
             return res.status(404).json({ message: 'Plan not found or is inactive' });
         }
 
-        // Check for any active orders for the same plan and customer
-        const activeOrder = await Order.findOne({
-            where: {
-                customerEmail,
-                planId,
-                status: {
-                    [Op.or]: [OrderStatus.ACTIVE, OrderStatus.PROCESSING], // Check for either 'active' or 'processing'
+        console.log(plans);
+
+        const orders = [];
+
+        for (const plan of plans) {
+            const activeOrder = await Order.findOne({
+                where: {
+                    customerEmail,
+                    planId: plan.id,
+                    status: {
+                        [Op.or]: [OrderStatus.ACTIVE, OrderStatus.PROCESSING], // Check for either 'active' or 'processing'
+                    },
                 },
-            },
-        });
-
-
-        if (activeOrder) {
-            return res.status(400).json({
-                message: `An ${activeOrder.status} order for this plan already exists for the specified customer.`,
             });
+            if (activeOrder) {
+                return res.status(400).json({
+                    message: `An ${activeOrder.status} order for this plan already exists for the specified customer.`,
+                });
+            }
+
+
+            // Calculate the end date based on the duration type and value
+            const calculatedEndDate = calculateEndDate(plan.durationType, plan.durationValue, new Date(startDate));
+
+            // Create the order
+            const order = await Order.create({
+                customerEmail: customerEmail,
+                planId: plan.id,
+                productId: plan.productId,
+                startDate: startDate,
+                endDate: calculatedEndDate,
+                status: OrderStatus.PROCESSING,
+                phoneNumber: phoneNumber,
+                transactionNumber: transactionNumber,
+                // Default to active
+            });
+
+            orders.push(order);
+
         }
 
-        // Calculate the end date based on the duration type and value
-        const calculatedEndDate = calculateEndDate(plan.durationType, plan.durationValue, new Date(startDate));
-
-        console.log(await plan);
-        // Create the order
-        const order = await Order.create({
-            customerEmail: customerEmail,
-            planId: planId,
-            productId: plan.productID,
-            startDate: startDate,
-            endDate: calculatedEndDate,
-            status: OrderStatus.PROCESSING,
-            phoneNumber: phoneNumber,
-            transactionNumber: transactionNumber,
-            // Default to active
-        });
-
-        res.status(201).json({ message: 'Order created successfully', order });
+        
+        res.status(201).json({ message: 'Order created successfully', orders });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error creating order', error });
@@ -127,7 +140,7 @@ exports.getActiveProductsByCustomerEmail = async (req, res) => {
             return res.status(404).json({ message: 'No active orders found for the customer' });
         }
 
-        
+
         const productIds = activeOrders.map(order => order.productId);
 
         // Fetch product details for the extracted product IDs
@@ -170,11 +183,68 @@ exports.getActiveProductsByCustomerEmail = async (req, res) => {
         res.status(200).json({ activeProducts: response });
         broadcastToClient(customerEmail, websocketResponse);
 
-       
+
     } catch (error) {
         console.error('Error fetching active products:', error);
         res.status(500).json({ message: 'Server error', error });
     }
 };
 
+exports.createTrialOrder = async (req, res) => {
+    try {
+        const { name, customerEmail,  phoneNumber, facebookId  } = req.body;
+        console.log(req.body);
+       const isTrialOrder = await TrialOrder.findOne({ where: { customerEmail } });
+        if (isTrialOrder) {
+            return res.status(400).json({ message: 'Trial order already exists for this customer' });
+        }
+        if(!req.file){
+            return res.status(400).json({ message: 'Please upload a file' });
+        }
+        const filePath = req.file.path;
+        const fileName = customerEmail + "_" + req.file.originalname;
+
+        // Upload file to ImageKit
+        let uploadedFile;
+        try {
+            uploadedFile = await imagekit.upload({
+                file: fs.readFileSync(filePath),
+                fileName,
+            });
+
+            console.log("Uploaded File URL:", uploadedFile.url);
+        } catch (uploadError) {
+            console.error("Error uploading file to ImageKit:", uploadError);
+            return res.status(500).json({ message: "Error uploading file to ImageKit", error: uploadError });
+        } finally {
+            // Clean up local file after upload
+            fs.unlink(filePath, (err) => {
+                if (err) console.error("Error deleting temporary file:", err);
+            });
+        }
+
+
+        const isCustomer = await checkUseExists(customerEmail);
+        if (!isCustomer) {
+           const customer = await createCustomer(customerEmail,name, phoneNumber, facebookId);
+           sendMail(customerEmail, "Your password", customer.password);
+        }
+        
+        const trialOrder = await TrialOrder.create({
+            name,
+            customerEmail,
+            screenShotImageId: uploadedFile.fileId,
+            screenShotUrl: uploadedFile.url,
+            facebookId: facebookId,
+            status: TrialOrderStatus.PENDING, // Explicitly assign status
+        });
+        res.status(201).json({ message: 'Trial order created successfully', trialOrder });
+
+
+    }
+    catch (error) {
+        console.error('Error creating trial order:', error);
+        res.status(500).json({ message: 'Error creating trial order', error });
+    }
+}
 

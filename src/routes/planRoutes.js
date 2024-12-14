@@ -1,5 +1,5 @@
 const express = require('express');
-const { createPlan, getPlanById, getPlansByProductId, updatePlan } = require('../controllers/planController');
+const { createPackage: createPlan, getPlanById, getPlansByProductId, updatePlan } = require('../controllers/packageController');
 const { authenticate } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
@@ -32,8 +32,11 @@ const router = express.Router();
  *                 type: number
  *                 description: Price of the plan
  *               productID:
- *                 type: integer
- *                 description: ID of the product associated with the plan
+ *                 type: array
+ *                 items:
+ *                   type: integer
+ *                 description: IDS of the product associated with the plan
+ *                 example: [1, 2, 3]
  *               durationType:
  *                 type: string
  *                 description: Type of duration (days, month, year)
@@ -85,7 +88,7 @@ router.post('/plans', createPlan);
  *         description: Error fetching plan
  */
 
-router.get('/plan/:id',  getPlanById);
+router.get('/plan/:id', getPlanById);
 
 // Route to get plans by Product ID
 /**

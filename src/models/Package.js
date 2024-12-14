@@ -5,7 +5,7 @@ const Status = require("../enums/Status");
 const  Product  = require('./Product');
 
 
-const Plan = sequelize.define('Plan', {
+const Package = sequelize.define('Package', {
     title: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -15,9 +15,9 @@ const Plan = sequelize.define('Plan', {
         allowNull: false,
     },
     productID: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.JSON,
         allowNull: false,
-       
+        defaultValue: []
     },
     durationType: {
         type: DataTypes.ENUM(...Object.values(DurationTypes)), // Spread values from the enum
@@ -40,4 +40,4 @@ const Plan = sequelize.define('Plan', {
 
 
 
-module.exports = Plan;
+module.exports = Package;

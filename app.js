@@ -8,6 +8,7 @@ const authRoutes = require('./src/routes/userRoute');
 const productRoutes = require('./src/routes/productRoute');
 const planRoutes = require('./src/routes/planRoutes'); // Import the routes
 const orderRoutes = require("./src/routes/orderRoutes")
+const customerRoutes = require("./src/routes/customerRoutes")   
 
 
 const app = express();
@@ -22,6 +23,7 @@ app.use('/auth', authRoutes);
 app.use('/products', productRoutes);
 app.use(planRoutes); // Register the Plan routes
 app.use('/order', orderRoutes);
+app.use('/customer', customerRoutes)
 
 // Start Server
 const PORT = process.env.PORT || 3000;
