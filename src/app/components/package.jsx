@@ -1,7 +1,7 @@
 "use client";
 import Link from 'next/link';
 
-const Package = ({ id, title, description, price, duration, status }) => {
+const Package = ({ id, title, description, price, durationValue, durationType, status }) => {
   return (
     <Link href={`/packages/${id}`} className={`block ${status !== 'active' ? 'pointer-events-none' : ''}`}>
       <div 
@@ -26,7 +26,7 @@ const Package = ({ id, title, description, price, duration, status }) => {
                 ${price}
               </p>
               <p className="text-gray-500 text-sm">
-                Duration: {duration}
+                Duration: {durationValue} {durationType}
               </p>
             </div>
             
