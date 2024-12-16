@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Navbar from './components/Navbar';
+import { isAuthenticated, getAuthToken } from '@/utils/auth';
 
 const OrderStatus = {
   ACTIVE: 'active',
@@ -10,6 +12,7 @@ const OrderStatus = {
 };
 
 export default function Home() {
+  const router = useRouter();
   const [orders, setOrders] = useState([]);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
@@ -22,10 +25,17 @@ export default function Home() {
 
   const fetchOrders = async () => {
     try {
+      if (!isAuthenticated()) {
+        router.push('/auth/login');
+        return;
+      }
+
+      const token = getAuthToken();
       const response = await fetch('http://localhost:8000/order/search', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           page,
@@ -35,13 +45,19 @@ export default function Home() {
         }),
       });
 
+      if (response.status === 401) {
+        router.push('/auth/login');
+        return;
+      }
+
       if (!response.ok) {
         throw new Error('Failed to fetch orders');
       }
 
       const data = await response.json();
-      setOrders(data.orders);
-      setTotal(data.total);
+      
+      setOrders(Array.isArray(data.data) ? data.data : []);
+      setTotal(data.total || 0);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching orders:', error);
@@ -61,21 +77,27 @@ export default function Home() {
 
   const updateOrder = async (orderId) => {
     try {
+      const token = getAuthToken();
       const response = await fetch(`http://localhost:8000/order/${orderId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
           status: editStatus
         }),
       });
 
+      if (response.status === 401) {
+        router.push('/auth/login');
+        return;
+      }
+
       if (!response.ok) {
         throw new Error('Failed to update order');
       }
 
-      // Refresh orders after update
       fetchOrders();
       setEditingOrder(null);
       setEditStatus('');
@@ -85,6 +107,10 @@ export default function Home() {
   };
 
   useEffect(() => {
+    if (!isAuthenticated()) {
+      router.push('/auth/login');
+      return;
+    }
     fetchOrders();
   }, [page, customerEmail, status]);
 

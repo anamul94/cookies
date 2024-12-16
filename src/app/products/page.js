@@ -2,45 +2,65 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '../components/Navbar';
+import ProductEditModal from '../components/ProductEditModal';
+import { fetchWithAuth } from '@/utils/api';
 
 export default function Products() {
   const router = useRouter();
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [editingProduct, setEditingProduct] = useState(null);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [title, setTitle] = useState('');
+  const [status, setStatus] = useState('');
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://localhost:8000/products/search', {
+      const response = await fetchWithAuth('http://localhost:8000/products/search', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({
+          title,
+          status,
           page,
-          limit,
-        }),
+          limit
+        })
       });
+      
+      if (!response) return;
 
       if (!response.ok) {
         throw new Error('Failed to fetch products');
       }
 
       const data = await response.json();
-      setProducts(data.products);
-      setTotal(data.total);
-      setLoading(false);
+      console.log('API response:', data);
+      setProducts(data.products || []);
+      setTotal(data.total || 0);
+      setPage(data.page || 1);
     } catch (error) {
       console.error('Error fetching products:', error);
+    } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchProducts();
-  }, [page]);
+  }, [page, title, status]);
+
+  const handleEdit = (product) => {
+    setEditingProduct(product);
+  };
+
+  const handleUpdate = () => {
+    fetchProducts();
+    setEditingProduct(null);
+  };
 
   const totalPages = Math.ceil(total / limit);
 
@@ -50,12 +70,30 @@ export default function Products() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
         <div className="sm:flex sm:items-center sm:justify-between mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Products</h1>
-          <button
-            onClick={() => router.push('/products/create')}
-            className="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            Add New Product
-          </button>
+          <div className="mt-4 sm:mt-0 sm:flex sm:space-x-4">
+            <input
+              type="text"
+              placeholder="Search by title"
+              className="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:w-72 sm:text-sm border-gray-300 rounded-md bg-white text-gray-900 px-4 py-2"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="mt-2 sm:mt-0 shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:w-48 sm:text-sm border-gray-300 rounded-md bg-white text-gray-900 px-4 py-2"
+            >
+              <option value="" className="text-gray-500">All Status</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+            <button
+              onClick={() => router.push('/products/create')}
+              className="mt-2 sm:mt-0 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+            >
+              Add Product
+            </button>
+          </div>
         </div>
 
         {loading ? (
@@ -75,13 +113,7 @@ export default function Products() {
                       URL
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Cookie
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Created At
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
@@ -95,33 +127,18 @@ export default function Products() {
                         {product.title}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <a href={product.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-900">
-                          {product.url}
-                        </a>
-                      </td>
-                      <td className="px-6 py-4 whitespace-normal text-sm text-gray-500">
-                        <pre className="bg-gray-50 p-2 rounded overflow-auto max-w-xs">
-                          {JSON.stringify(product.cookie, null, 2)}
-                        </pre>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                          ${product.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                          {product.status}
-                        </span>
+                        {product.url}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(product.createdAt).toLocaleDateString()}
+                        {product.status}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <div className="flex space-x-2">
-                          <button
-                            className="text-indigo-600 hover:text-indigo-900"
-                            onClick={() => router.push(`/products/${product.id}`)}
-                          >
-                            Edit
-                          </button>
-                        </div>
+                        <button
+                          onClick={() => handleEdit(product)}
+                          className="text-indigo-600 hover:text-indigo-900"
+                        >
+                          Edit
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -129,38 +146,63 @@ export default function Products() {
               </table>
             </div>
 
-            <div className="flex justify-between items-center mt-4">
-              <div className="text-sm text-gray-700">
-                Showing page {page} of {totalPages}
-              </div>
-              <div className="space-x-2">
+            <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+              <div className="flex-1 flex justify-between sm:hidden">
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className={`px-4 py-2 border rounded-md ${
-                    page === 1
-                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                      : 'bg-white text-gray-700 hover:bg-gray-50'
-                  }`}
+                  className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                 >
                   Previous
                 </button>
                 <button
                   onClick={() => setPage((p) => p + 1)}
                   disabled={page >= totalPages}
-                  className={`px-4 py-2 border rounded-md ${
-                    page >= totalPages
-                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                      : 'bg-white text-gray-700 hover:bg-gray-50'
-                  }`}
+                  className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
                 >
                   Next
                 </button>
+              </div>
+              <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                <div className="text-sm text-gray-700">
+                  Showing page {page} of {totalPages}
+                </div>
+                <div className="space-x-2">
+                  <button
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={page === 1}
+                    className={`px-4 py-2 border rounded-md ${
+                      page === 1
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        : 'bg-white text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    Previous
+                  </button>
+                  <button
+                    onClick={() => setPage((p) => p + 1)}
+                    disabled={page >= totalPages}
+                    className={`px-4 py-2 border rounded-md ${
+                      page >= totalPages
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        : 'bg-white text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    Next
+                  </button>
+                </div>
               </div>
             </div>
           </>
         )}
       </div>
+
+      <ProductEditModal
+        isOpen={!!editingProduct}
+        onClose={() => setEditingProduct(null)}
+        product={editingProduct}
+        onUpdate={handleUpdate}
+      />
     </main>
   );
 }
