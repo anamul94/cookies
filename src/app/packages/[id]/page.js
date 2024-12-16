@@ -1,324 +1,83 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Navbar from '../../components/Navbar';
+import Navbar from '../../../components/Navbar';
 
-export default function EditPackage({ params }) {
+export default function PackageDetails({ params }) {
   const router = useRouter();
+  const [packageData, setPackageData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    price: '',
-    productID: [],
-    durationValue: '',
-    durationType: 'days',
-    status: 'active'
-  });
 
-  // Fetch initial data
   useEffect(() => {
-    const fetchInitialData = async () => {
+    const fetchPackage = async () => {
       try {
-        setLoading(true);
-        
-        // Fetch products
-        const productsRes = await fetch('http://localhost:8000/products/search');
-        const productsData = await productsRes.json();
-        setProducts(productsData);
-        setFilteredProducts(productsData);
-
-        // Fetch package data
-        const packageRes = await fetch(`http://localhost:8000/plans/${params.id}`);
-        const packageData = await packageRes.json();
-
-        // Set form data with existing values
-        setFormData({
-          title: packageData.title || '',
-          description: packageData.description || '',
-          price: packageData.price ? packageData.price.toString() : '',
-          productID: packageData.productID || [],
-          durationValue: packageData.durationValue ? packageData.durationValue.toString() : '',
-          durationType: packageData.durationType || 'days',
-          status: packageData.status || 'active'
-        });
-      } catch (err) {
-        setError('Failed to load package data');
-        console.error('Error loading package:', err);
+        const response = await fetch(`http://localhost:8000/packages/${params.id}`);
+        const data = await response.json();
+        setPackageData(data);
+      } catch (error) {
+        console.error('Error fetching package:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchInitialData();
+    fetchPackage();
   }, [params.id]);
 
-  // Filter products based on search
-  useEffect(() => {
-    if (searchTerm.trim() === '') {
-      setFilteredProducts(products);
-    } else {
-      const filtered = products.filter(product => 
-        product.title.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setFilteredProducts(filtered);
-    }
-  }, [searchTerm, products]);
-
-  // Handle form field changes
-  const handleChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
-  // Handle product selection
-  const handleProductSelect = (productId) => {
-    setFormData(prev => ({
-      ...prev,
-      productID: prev.productID.includes(productId)
-        ? prev.productID.filter(id => id !== productId)
-        : [...prev.productID, productId]
-    }));
-  };
-
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch(`http://localhost:8000/plans/${params.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          price: parseFloat(formData.price),
-          durationValue: parseInt(formData.durationValue),
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update package');
-      }
-
-      router.push('/packages');
-    } catch (err) {
-      setError('Failed to update package. Please try again.');
-      console.error('Error updating package:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <main className="min-h-screen bg-gray-50">
-        <Navbar />
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
-  if (error) {
-    return (
-      <main className="min-h-screen bg-gray-50">
-        <Navbar />
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
-          <div className="bg-red-50 border-l-4 border-red-400 p-4">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div className="ml-3">
-                <p className="text-sm text-red-700">{error}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
-    );
+  if (loading || !packageData) {
+    return <div>Loading...</div>;
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
-        <div className="md:flex md:items-center md:justify-between mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Edit Package</h1>
-        </div>
-
-        <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-          <form onSubmit={handleSubmit} className="p-8">
-            <div className="space-y-6">
-              <div>
-                <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  id="title"
-                  required
-                  className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
-                  value={formData.title}
-                  onChange={(e) => handleChange('title', e.target.value)}
-                  placeholder="Enter package title"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-                  Description
-                </label>
-                <textarea
-                  id="description"
-                  rows={4}
-                  required
-                  className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
-                  value={formData.description}
-                  onChange={(e) => handleChange('description', e.target.value)}
-                  placeholder="Enter package description"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
-                  Price
-                </label>
-                <input
-                  type="number"
-                  id="price"
-                  required
-                  min="0"
-                  step="0.01"
-                  className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
-                  value={formData.price}
-                  onChange={(e) => handleChange('price', e.target.value)}
-                  placeholder="0.00"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Products
-                </label>
-                <div className="mb-4">
-                  <input
-                    type="text"
-                    placeholder="Search products..."
-                    className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-                <div className="max-h-60 overflow-y-auto border border-gray-300 rounded-md">
-                  {filteredProducts.map((product) => (
-                    <div
-                      key={product.id}
-                      className="flex items-center p-3 hover:bg-gray-50 cursor-pointer"
-                      onClick={() => handleProductSelect(product.id)}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={formData.productID.includes(product.id)}
-                        onChange={() => {}}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                      />
-                      <label className="ml-3 block text-sm text-gray-700">
-                        {product.title}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="durationValue" className="block text-sm font-medium text-gray-700 mb-2">
-                    Duration Value
-                  </label>
-                  <input
-                    type="number"
-                    id="durationValue"
-                    required
-                    min="1"
-                    className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
-                    value={formData.durationValue}
-                    onChange={(e) => handleChange('durationValue', e.target.value)}
-                    placeholder="Enter duration value"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="durationType" className="block text-sm font-medium text-gray-700 mb-2">
-                    Duration Type
-                  </label>
-                  <select
-                    id="durationType"
-                    required
-                    className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
-                    value={formData.durationType}
-                    onChange={(e) => handleChange('durationType', e.target.value)}
-                  >
-                    <option value="days">Days</option>
-                    <option value="months">Months</option>
-                    <option value="years">Years</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">
-                  Status
-                </label>
-                <select
-                  id="status"
-                  required
-                  className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
-                  value={formData.status}
-                  onChange={(e) => handleChange('status', e.target.value)}
-                >
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </select>
-              </div>
-
-              <div className="flex justify-end space-x-4 pt-4">
-                <button
-                  type="button"
-                  onClick={() => router.push('/packages')}
-                  className="px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className={`px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-                    loading ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
-                >
-                  {loading ? 'Saving...' : 'Save Changes'}
-                </button>
-              </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white rounded-lg shadow p-6">
+          <h1 className="text-2xl font-bold mb-4">{packageData.title}</h1>
+          
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div>
+              <h3 className="font-semibold">Duration</h3>
+              <p>{packageData.durationValue} {packageData.durationType}</p>
             </div>
-          </form>
+            <div>
+              <h3 className="font-semibold">Status</h3>
+              <p className={packageData.status === 'active' ? 'text-green-600' : 'text-red-600'}>
+                {packageData.status}
+              </p>
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <h3 className="font-semibold mb-2">Included Products</h3>
+            <div className="space-y-2">
+              {packageData.products.map(product => (
+                <div key={product.id} className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                  <span>{product.title}</span>
+                  <span className={`text-sm ${product.status === 'active' ? 'text-green-600' : 'text-red-600'}`}>
+                    {product.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex space-x-4">
+            <button
+              onClick={() => router.push('/packages')}
+              className="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
+            >
+              Back
+            </button>
+            <button
+              onClick={() => router.push(`/packages/${params.id}/edit`)}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Edit Package
+            </button>
+          </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

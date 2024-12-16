@@ -1,11 +1,13 @@
+"use client";
+import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import Navbar from '../../components/Navbar';
 import Product from '../../components/product';
 import PackageActions from './PackageActions';
-import PackageInteractions from './PackageInteractions';
 
 async function getPackageData(id) {
     try {
-        const res = await fetch(`http://localhost:8000/plan/${id}`, { 
+        const res = await fetch(`http://localhost:8000/packages/${id}`, { 
             cache: 'no-store',
             headers: {
                 'Accept': 'application/json',
@@ -24,8 +26,41 @@ async function getPackageData(id) {
     }
 }
 
-export default async function PackageDetails({ params }) {
-    const packageData = await getPackageData(params.id);
+export default function PackageDetails({ params }) {
+    const router = useRouter();
+    const [packageData, setPackageData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const data = await getPackageData(params.id);
+            setPackageData(data);
+            setLoading(false);
+        };
+        fetchData();
+    }, [params.id]);
+
+    const handlePurchase = () => {
+        const searchParams = new URLSearchParams({
+            planId: params.id,
+            title: packageData.title,
+            price: packageData.price
+        });
+        router.push(`/purchase?${searchParams.toString()}`);
+    };
+
+    if (loading || !packageData) {
+        return (
+            <div className="min-h-screen bg-gray-50">
+                <Navbar />
+                <main className="pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                    <div className="text-center">
+                        <h2 className="text-2xl font-semibold">Loading...</h2>
+                    </div>
+                </main>
+            </div>
+        );
+    }
 
     if (!packageData) {
         return (
@@ -45,19 +80,15 @@ export default async function PackageDetails({ params }) {
     return (
         <div className="min-h-screen bg-gray-50">
             <Navbar />
-            <main className="pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-                <PackageActions />
-
-                <div className="bg-white rounded-lg shadow-lg p-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="bg-white rounded-lg shadow p-6">
                     <div className="flex justify-between items-start mb-6">
-                        <h1 className="text-4xl font-bold text-gray-900">
-                            {packageData.title}
-                        </h1>
-                        <span 
-                            className={`px-3 py-1 rounded-full text-sm ${
+                        <h1 className="text-2xl font-bold">{packageData.title}</h1>
+                        <span
+                            className={`px-3 py-1 rounded-full text-sm font-medium ${
                                 packageData.status === 'active'
                                     ? 'bg-green-100 text-green-800'
-                                    : 'bg-gray-100 text-gray-800'
+                                    : 'bg-red-100 text-red-800'
                             }`}
                         >
                             {packageData.status === 'active' ? 'Active' : 'Inactive'}
@@ -78,18 +109,14 @@ export default async function PackageDetails({ params }) {
                                 </p>
                             </div>
 
-                            <div>
-                                <h2 className="text-xl font-semibold text-gray-800">Products Included</h2>
-                                <div className="mt-2 space-y-2">
-                                    {packageData.products?.map(product => (
-                                        <Product 
-                                            key={product.id}
-                                            title={product.title}
-                                            status={product.status}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
+                            {packageData.status === 'active' && (
+                                <button 
+                                    className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors mt-6"
+                                    onClick={handlePurchase}
+                                >
+                                    Purchase Package
+                                </button>
+                            )}
                         </div>
 
                         <div className="space-y-4">
@@ -103,14 +130,22 @@ export default async function PackageDetails({ params }) {
                                 </p>
                             </div>
 
-                            <PackageInteractions 
-                                status={packageData.status} 
-                                id={packageData.id}
-                            />
+                            <div>
+                                <h2 className="text-xl font-semibold text-gray-800">Products Included</h2>
+                                <div className="mt-2 space-y-2">
+                                    {packageData.products?.map(product => (
+                                        <Product 
+                                            key={product.id}
+                                            title={product.title}
+                                            status={product.status}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </main>
+            </div>
         </div>
     );
 }
