@@ -6,7 +6,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /products/create:
+ * /products/:
  *   post:
  *     summary: Create a new product
  *     tags: [Products]
@@ -90,7 +90,7 @@ const router = express.Router();
  *       500:
  *         description: Server error
  */
-router.post('/create', authenticate, createProduct);
+router.post('/', authenticate,  createProduct);
 
 
 

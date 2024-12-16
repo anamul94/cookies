@@ -1,41 +1,55 @@
-const express = require('express');
-const { createPackage: createPlan, getPlanById, getPlansByProductId, updatePlan, getAllPackages } = require('../controllers/packageController');
-const { authenticate } = require('../middlewares/authMiddleware');
-
+const express = require("express");
 const router = express.Router();
+const {
+  createPackage,
+  getPackageById,
+  getPackagesByProductId: getPackagesByProductId,
+  updatePlan,
+  getAllPackagesWithPagination,
+} = require("../controllers/packageController");
+const { authenticate } = require("../middlewares/authMiddleware");
+
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
 
 /**
  * @swagger
- * /plans:
+ * /packages/:
  *   post:
- *     summary: Create a new plan
- *     tags: [Plans]
+ *     summary: Create a new package
+ *     tags: [Packages]
  *     security:
  *       - bearerAuth: []
+ *     consumes:
+ *       - multipart/form-data
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
  *               - title
- *               - price
+ *               - priceInBdt
+ *               - priceInUsd
  *               - productID
  *               - durationType
  *               - durationValue
+ *               - status
+ *               - image
  *             properties:
  *               title:
  *                 type: string
- *                 description: Title of the plan
- *               price:
+ *                 description: Title of the package
+ *               priceInBdt:
  *                 type: number
- *                 description: Price of the plan
+ *                 description: Price of the package in BDT
+ *               priceInUsd:
+ *                 type: number
+ *                 description: Price of the package in USD
  *               productID:
- *                 type: array
- *                 items:
- *                   type: integer
- *                 description: IDS of the product associated with the plan
+ *                 type: string
+ *                 description: IDs of the products associated with the package
  *                 example: [1, 2, 3]
  *               durationType:
  *                 type: string
@@ -49,31 +63,58 @@ const router = express.Router();
  *                 description: Value of the duration
  *               status:
  *                 type: string
- *                 description: Status of the plan (active, inactive)
+ *                 description: Status of the package (active, inactive)
  *                 enum:
  *                   - active
  *                   - inactive
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image of the package
  *     responses:
  *       201:
- *         description: Plan created successfully
+ *         description: Package created successfully
  *       400:
  *         description: Validation error
  *       500:
  *         description: Server error
  */
-router.post('/plans', createPlan);
+router.post("/", authenticate, upload.single("image"), createPackage);
 
 /**
  * @swagger
- * /plans:
- *   get:
- *     summary: Get all available plans
- *     tags: [Plans]
+ * /packages/search:
+ *   post:
+ *     summary: Get all available packages
+ *     tags: [Packages]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               page:
+ *                 type: integer
+ *                 description: Page number
+ *                 example: 1
+ *               limit:
+ *                 type: integer
+ *                 description: Number of items per page
+ *                 example: 10
+ *               title:
+ *                 type: string
+ *                 description: Title of the package
+ *                 example: Package Three
+ *               status:
+ *                 type: string
+ *                 description: Status of the package
+ *                 example: active
  *     responses:
  *       200:
- *         description: Successfully retrieved a list of plans
+ *         description: Successfully retrieved a list of packages
  *         content:
  *           application/json:
  *             schema:
@@ -83,16 +124,14 @@ router.post('/plans', createPlan);
  *                 properties:
  *                   title:
  *                     type: string
- *                     description: Title of the plan
+ *                     description: Title of the package
  *                     example: Package Three
  *                   price:
  *                     type: number
- *                     description: Price of the plan
+ *                     description: Price of the package
  *                     example: 330
  *                   productID:
- *                     type: array
- *                     items:
- *                       type: integer
+ *                     type: string
  *                     description: IDs of the products associated with the plan
  *                     example: [2]
  *                   durationType:
@@ -118,42 +157,40 @@ router.post('/plans', createPlan);
  *         description: Server error
  */
 
-router.get('/plans',getAllPackages)
+router.post("/search", getAllPackagesWithPagination);
 
 // Route to get plan by ID
 /**
  * @swagger
- * /plan/{id}:
+ * /packages/{id}:
  *   get:
- *     summary: Get a plan by ID
- *     tags: [Plans]
- *     security:
- *       - BearerAuth: [] # JWT token
+ *     summary: Get a package by ID
+ *     tags: [Packages]
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
- *         description: ID of the plan to retrieve
+ *         description: ID of the package to retrieve
  *         schema:
  *           type: integer
  *     responses:
  *       200:
- *         description: The requested plan
+ *         description: The requested package
  *       404:
- *         description: Plan not found
+ *         description: Package not found
  *       500:
- *         description: Error fetching plan
+ *         description: Error fetching package
  */
 
-router.get('/plan/:id', getPlanById);
+router.get("/:id", getPackageById);
 
-// Route to get plans by Product ID
+// Route to get packages by Product ID
 /**
  * @swagger
- * /plans/product/{productId}:
+ * /packages/product/{productId}:
  *   get:
- *     summary: Get all plans by Product ID
- *     tags: [Plans]
+ *     summary: Get all packages by Product ID
+ *     tags: [Packages]
  *     security:
  *       - BearerAuth: [] # JWT token
  *     parameters:
@@ -165,41 +202,40 @@ router.get('/plan/:id', getPlanById);
  *           type: integer
  *     responses:
  *       200:
- *         description: List of plans for the product
+ *         description: List of packages for the product
  *       404:
- *         description: No plans found
+ *         description: No packages found
  *       500:
- *         description: Error fetching plans
+ *         description: Error fetching packages
  */
 
-router.get('/plans/product/:productId', getPlansByProductId);
-
+router.get("/packages/product/:productId", getPackagesByProductId);
 
 // Route to update a plan by ID
 /**
  * @swagger
- * /plan/{id}:
+ * /packages/{id}:
  *   put:
- *     summary: Update a plan by ID
- *     tags: [Plans]
+ *     summary: Update a package by ID
+ *     tags: [Packages]
  *     security:
  *       - BearerAuth: [] # JWT token
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
- *         description: ID of the plan to update
+ *         description: ID of the package to update
  *         schema:
  *           type: integer
  *       - name: title
  *         in: body
- *         description: Title of the plan
+ *         description: Title of the package
  *         required: false
  *         schema:
  *           type: string
  *       - name: price
  *         in: body
- *         description: Price of the plan
+ *         description: Price of the package
  *         required: false
  *         schema:
  *           type: number
@@ -225,23 +261,22 @@ router.get('/plans/product/:productId', getPlansByProductId);
  *           type: integer
  *       - name: status
  *         in: body
- *         description: Status of the plan (active/inactive)
+ *         description: Status of the package (active/inactive)
  *         required: false
  *         schema:
  *           type: string
  *           enum: [active, inactive]
  *     responses:
  *       200:
- *         description: Plan updated successfully
+ *         description: Package updated successfully
  *       400:
  *         description: Invalid input
  *       404:
- *         description: Plan not found
+ *         description: Package not found
  *       500:
- *         description: Error updating plan
+ *         description: Error updating package
  */
 
-router.put('/plan/:id', authenticate, updatePlan);
-
+router.put("/packages/:id", updatePlan);
 
 module.exports = router;

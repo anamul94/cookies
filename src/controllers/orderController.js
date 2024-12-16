@@ -324,3 +324,35 @@ exports.getOrderById = async (req, res) => {
         res.status(500).json({ message: 'Error fetching order', error });
     }
 };
+
+exports.updateOrder = async (req, res) => {
+    try {
+       console.log('update order', req.body);
+        const { id } = req.params;
+        const { customerEmail, status } = req.body;
+        console.log('update order', req.body);
+        // Find the order by primary key
+        const order = await Order.findByPk(id);
+
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        // Update fields only if they are defined and not null
+        if (customerEmail !== undefined && customerEmail !== null) {
+            order.customerEmail = customerEmail;
+        }
+
+        if (status !== undefined && status !== null) {
+            order.status = status;
+        }
+
+        // Save the updated order
+        await order.save();
+
+        res.status(200).json({ message: 'Order updated successfully', order });
+    } catch (error) {
+        console.error('Error updating order:', error);
+        res.status(500).json({ message: 'Error updating order', error });
+    }
+};

@@ -1,43 +1,49 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db'); // Your Sequelize instance
-const DurationTypes = require('../enums/DurationTypes'); // Import the DurationTypes enum
-const Status = require("../enums/Status");
-const  Product  = require('./Product');
-
+const sequelize = require('../config/db');
 
 const Package = sequelize.define('Package', {
-    title: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    price: {
-        type: DataTypes.FLOAT,
-        allowNull: false,
-    },
-    productID: {
-        type: DataTypes.JSON,
-        allowNull: false,
-        defaultValue: []
-    },
-    durationType: {
-        type: DataTypes.ENUM(...Object.values(DurationTypes)), // Spread values from the enum
-        allowNull: false,
-    },
-    durationValue: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        validate: {
-            min: 1,
-        },
-    },
-    status: {
-        type: DataTypes.ENUM(Object.values(Status)), // Enum with 'active' and 'inactive'
-        defaultValue: Status.ACTIVE, // Default status is 'active'
-    },
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  priceInBdt: {
+    type: DataTypes.DECIMAL(10,2),
+    allowNull: false
+  },
+  priceInUsd: {
+    type: DataTypes.DECIMAL(10,2),
+    allowNull: false
+  },
+  productID: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  durationType: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  durationValue: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  status: {
+    type: DataTypes.STRING,
+    defaultValue: 'active'
+  },
+  imageId: {
+    type: DataTypes.STRING
+  },
+  imageUrl: {
+    type: DataTypes.TEXT
+  }
 }, {
-    timestamps: true, // Adds createdAt and updatedAt fields
+  tableName: 'Packages',
+  timestamps: true
 });
-
-
 
 module.exports = Package;

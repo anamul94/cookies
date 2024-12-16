@@ -68,3 +68,20 @@ FROM orders o
 JOIN users u ON o.user_id = u.id
 JOIN plans pl ON o.plan_id = pl.id
 JOIN products p ON pl.product_id = p.id;
+
+-- Add this table definition to your schema.sql file
+CREATE TABLE IF NOT EXISTS Packages (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL,
+    priceInBdt DECIMAL(10,2) NOT NULL,
+    priceInUsd DECIMAL(10,2) NOT NULL,
+    productID INT NOT NULL,
+    durationType VARCHAR(50) NOT NULL,
+    durationValue INT NOT NULL,
+    status VARCHAR(50) DEFAULT 'active',
+    imageId VARCHAR(255),
+    imageUrl TEXT,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (productID) REFERENCES Products(id)
+);

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createOrder, getActiveOrdersByEmail, getActiveProductsByCustomerEmail, createTrialOrder, searchOrdersWithPagination, getOrderById } = require('../controllers/orderController'); 
+const { createOrder, getActiveOrdersByEmail, getActiveProductsByCustomerEmail, createTrialOrder, searchOrdersWithPagination, getOrderById, updateOrder } = require('../controllers/orderController'); 
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 
@@ -94,85 +94,37 @@ router.get(('/:id'), getOrderById);
 
 /**
  * @swagger
- * /order/active:
- *   get:
- *     summary: Get all active orders by customer's email
+ * /order/{id}:
+ *   put:
+ *     summary: Update an order's status or email
  *     tags: [Order]
+ *     description: Updates the status or customer email of an order by its ID. Only fields provided in the request body will be updated.
  *     parameters:
- *       - in: query
- *         name: customerEmail
- *         schema:
- *           type: string
- *         required: true
- *         description: Customer's email address
- *     responses:
- *       200:
- *         description: Successfully retrieved active orders
- *       400:
- *         description: Missing customer email
- *       404:
- *         description: No active orders found
- *       500:
- *         description: Server error
- */
-router.get('/active', getActiveOrdersByEmail);
-
-
-
-/**
- * @swagger
- * /order/products:
- *   get:
- *     summary: Get active products by customer email
- *     tags: [Order]
- *     parameters:
- *       - in: query
- *         name: customerEmail
+ *       - in: path
+ *         name: id
  *         required: true
  *         schema:
- *           type: string
- *           format: email
- *         description: The customer's email address
- *       - in: query
- *         name: mac
- *         required: true
- *         schema:
- *           type: string
- *           format: string
- *         description: The customer's MAC address
- *     responses:
- *       200:
- *         description: List of active products with remaining days
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   productTitle:
- *                     type: string
- *                     description: The title of the product
- *                   productUrl:
- *                     type: string
- *                     description: The URL of the product
- *                   cookie:
- *                     type: string
- *                     description: The product cookie value
- *                   remainingDays:
- *                     type: integer
- *                     description: The number of days remaining before the order expires
+ *           type: integer
+ *         description: The ID of the order to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               customerEmail:
+ *                 type: string
+ *                 description: The new email of the customer
+ *               status:
+ *                 type: string
+ *                 description: The new status of the order
  *             example:
- *               - productTitle: "Premium Cookie Subscription"
- *                 productUrl: "https://example.com/product/1"
- *                 cookie: "abcd1234"
- *                 remainingDays: 15
- *               - productTitle: "Exclusive Membership"
- *                 productUrl: "https://example.com/product/2"
- *                 cookie: "xyz9876"
- *                 remainingDays: 5
- *       400:
- *         description: Invalid email provided
+ *               customerEmail: "example@domain.com"
+ *               status: "active"
+ *     responses:
+ *       200:
+ *         description: Order updated successfully
  *         content:
  *           application/json:
  *             schema:
@@ -180,9 +132,12 @@ router.get('/active', getActiveOrdersByEmail);
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "Invalid email provided"
+ *                   example: "Order updated successfully"
+ *                 order:
+ *                   type: object
+ *                   description: The updated order details
  *       404:
- *         description: No active orders found for the customer
+ *         description: Order not found
  *         content:
  *           application/json:
  *             schema:
@@ -190,9 +145,9 @@ router.get('/active', getActiveOrdersByEmail);
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "No active orders found for this email"
+ *                   example: "Order not found"
  *       500:
- *         description: Server error
+ *         description: Error updating order
  *         content:
  *           application/json:
  *             schema:
@@ -200,9 +155,16 @@ router.get('/active', getActiveOrdersByEmail);
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "An unexpected error occurred"
+ *                   example: "Error updating order"
+ *                 error:
+ *                   type: string
  */
-router.get('/products', getActiveProductsByCustomerEmail);
+
+router.put('/:id', updateOrder);
+
+
+
+
 
 
 /**
