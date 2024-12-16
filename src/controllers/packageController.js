@@ -45,6 +45,11 @@ exports.createPackage = async (req, res) => {
     } catch (error) {
       console.error("Error uploading file:", error);
       return res.status(500).json({ message: "Error uploading file", error });
+    } finally {
+      // Clean up local file after upload
+      fs.unlink(filePath, (err) => {
+        if (err) console.error("Error deleting temporary file:", err);
+      });
     }
 
     // Parse productID value
