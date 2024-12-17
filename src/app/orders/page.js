@@ -1,15 +1,17 @@
 "use client";
 import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
+import { useRouter } from 'next/navigation';
 
 const OrderStatus = {
     ACTIVE: 'active',
     EXPIRED: 'expired',
     CANCELLED: 'cancelled',
-    PROCESSING: "processiing"
+    PROCESSING: "processing"
 };
 
 export default function OrdersDashboard() {
+    const router = useRouter();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -33,10 +35,17 @@ export default function OrdersDashboard() {
         setError('');
 
         try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                router.push('/auth/login');
+                return;
+            }
+
             const response = await fetch('http://localhost:8000/order/search', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
                     page: currentPage,
@@ -47,6 +56,10 @@ export default function OrdersDashboard() {
             });
 
             if (!response.ok) {
+                if (response.status === 401) {
+                    router.push('/auth/login');
+                    return;
+                }
                 throw new Error('Failed to fetch orders');
             }
 
@@ -69,40 +82,62 @@ export default function OrdersDashboard() {
         setEditingStatus(newStatus);
     };
 
+    const startEditing = (order) => {
+        if (order.orderType !== 'regular') {
+            alert("This is a trial order. Please update its status from the Trial Orders page.");
+            return;
+        }
+        setEditingOrderId(order.id);
+        setEditingStatus(order.status);
+    };
+
     const handleStatusUpdate = async (orderId) => {
+        const order = orders.find(o => o.id === orderId);
+        if (!order || order.orderType !== 'regular') {
+            alert("This is a trial order. Please update its status from the Trial Orders page.");
+            setEditingOrderId(null);
+            setEditingStatus('');
+            return;
+        }
+
         setUpdatingStatus(true);
         try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                router.push('/auth/login');
+                return;
+            }
+
             const response = await fetch(`http://localhost:8000/order/${orderId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({ status: editingStatus })
             });
 
             if (!response.ok) {
+                if (response.status === 401) {
+                    router.push('/auth/login');
+                    return;
+                }
                 throw new Error('Failed to update status');
             }
 
-            // Update local state
-            setOrders(orders.map(order => 
-                order.id === orderId 
-                    ? { ...order, status: editingStatus }
-                    : order
-            ));
+            await fetchOrders();
             setEditingOrderId(null);
             setEditingStatus('');
         } catch (err) {
             console.error('Error updating order status:', err);
-            alert('Failed to update order status. Please try again.');
+            if (err.message === 'Failed to update status') {
+                alert('Failed to update order status. Please try again.');
+            } else {
+                alert('An unexpected error occurred. Please try again.');
+            }
         } finally {
             setUpdatingStatus(false);
         }
-    };
-
-    const startEditing = (order) => {
-        setEditingOrderId(order.id);
-        setEditingStatus(order.status);
     };
 
     const cancelEditing = () => {
@@ -177,6 +212,12 @@ export default function OrdersDashboard() {
                                             Order ID
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Transaction Number
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Order Type
+                                        </th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Customer Email
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -196,13 +237,19 @@ export default function OrdersDashboard() {
                                 <tbody className="bg-white divide-y divide-gray-200">
                                     {orders.map((order) => (
                                         <tr key={order.id}>
-                                            <td className="px-6 py-4 whitespace-nowrap">
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                                 {order.id}
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                {order.transactionNumber || '-'}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                {order.orderType || '-'}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                                 {order.customerEmail}
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                                 ${order.totalPrice || 0}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
@@ -229,7 +276,7 @@ export default function OrdersDashboard() {
                                                     </span>
                                                 )}
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                                 {new Date(order.createdAt).toLocaleDateString()}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap space-x-2">
