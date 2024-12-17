@@ -6,6 +6,10 @@ import Navbar from '../components/Navbar';
 import Package from '../components/package';
 import ErrorModal from '../components/ErrorModal';
 import Link from 'next/link';
+import  PackageOrderType  from '../constant/PackageOrderType.enum'; // Adjust import if necessary
+
+
+
 
 export default function Packages() {
     const router = useRouter();
@@ -23,6 +27,7 @@ export default function Packages() {
                 const response = await axios.post('http://localhost:8000/packages/search', {
                     page,
                     limit,
+                    packageType: PackageOrderType.REGULAR
                 }, {
                     headers: {
                         'Accept': 'application/json',

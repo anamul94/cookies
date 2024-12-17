@@ -2,10 +2,14 @@ export const fetchWithAuth = async (url, options = {}) => {
   const token = localStorage.getItem('token');
   
   const headers = {
-    'Content-Type': 'application/json',
     'Authorization': `Bearer ${token}`,
     ...options.headers,
   };
+
+  // Only set Content-Type if it's not FormData
+  if (!(options.body instanceof FormData)) {
+    headers['Content-Type'] = 'application/json';
+  }
 
   const config = {
     ...options,
@@ -15,7 +19,10 @@ export const fetchWithAuth = async (url, options = {}) => {
   config.method = (options.method || 'GET').toUpperCase();
 
   if (['POST', 'PUT', 'PATCH'].includes(config.method) && options.body) {
-    config.body = typeof options.body === 'string' ? options.body : JSON.stringify(options.body);
+    // Don't stringify if it's FormData
+    if (!(options.body instanceof FormData)) {
+      config.body = typeof options.body === 'string' ? options.body : JSON.stringify(options.body);
+    }
   }
 
   try {

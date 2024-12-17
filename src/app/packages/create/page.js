@@ -6,6 +6,7 @@ import { Status } from "@/app/constants/status";
 import { isAuthenticated } from "@/utils/auth";
 import { fetchWithAuth } from "@/utils/api";
 import DurationTypes from "@/app/constants/duration";
+import PackageOrderType from '@/app/constant/PackageOrderType.enum';
 
 export default function CreatePackage() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function CreatePackage() {
     durationType: DurationTypes.DAYS,
     durationValue: 1,
     status: Status.ACTIVE,
+    packageType: PackageOrderType.REGULAR,
     image: null,
   });
 
@@ -73,7 +75,10 @@ export default function CreatePackage() {
       formData.append("durationType", packageData.durationType);
       formData.append("durationValue", packageData.durationValue);
       formData.append("status", packageData.status);
-      formData.append("image", packageData.image);
+      formData.append("packageType", packageData.packageType);
+      if (packageData.image) {
+        formData.append("image", packageData.image);
+      }
 
       // Convert form data to an object and log it
       const formDataObject = Object.fromEntries(formData.entries());
@@ -81,7 +86,7 @@ export default function CreatePackage() {
 
       const response = await fetchWithAuth("http://localhost:8000/packages/", {
         method: "POST",
-        
+        headers: {},
         body: formData,
       });
 
@@ -282,6 +287,27 @@ export default function CreatePackage() {
                   }
                 />
               </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="packageType"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Package Type
+              </label>
+              <select
+                id="packageType"
+                required
+                className="mt-1 block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm border-gray-300 rounded-md px-4 py-2"
+                value={packageData.packageType}
+                onChange={(e) =>
+                  setPackageData({ ...packageData, packageType: e.target.value })
+                }
+              >
+                <option value={PackageOrderType.REGULAR}>Regular</option>
+                <option value={PackageOrderType.TRIAL}>Trial</option>
+              </select>
             </div>
 
             <div>
