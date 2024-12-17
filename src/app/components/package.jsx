@@ -12,6 +12,7 @@ export default function Package({
   durationType,
   imageUrl,
   status,
+  packageType,
   onEdit,
 }) {
   return (
@@ -51,13 +52,22 @@ export default function Package({
             </div>
           </div>
 
-          {/* Status */}
-          <p
-            className={`text-center font-semibold uppercase tracking-wide ${status === "active" ? "text-green-600" : "text-red-500"
+          {/* Status and Package Type */}
+          <div className="flex justify-between items-center">
+            <span
+              className={`inline-flex px-3 py-1 text-sm font-medium rounded-full ${
+                status === "active" 
+                  ? "bg-green-100 text-green-800" 
+                  : "bg-red-100 text-red-800"
               }`}
-          >
-            Status: {status}
-          </p>
+            >
+              {status}
+            </span>
+
+            <span className="inline-flex px-3 py-1 text-sm font-medium rounded-full bg-blue-100 text-blue-800">
+              {packageType}
+            </span>
+          </div>
         </div>
       </div>
     </Link>
