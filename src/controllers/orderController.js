@@ -14,6 +14,7 @@ const fs = require('fs');
 const path = require("path");
 const TrialOrderStatus = require('../enums/TrialOrderStatus');
 const OrderItems = require('../models/OrderItems'); // Import OrderItems model
+const { default: PackageOrderType } = require('../enums/PackageOrderType.enum');
 
 
 // POST: Create Order
@@ -51,19 +52,27 @@ exports.createOrder = async (req, res) => {
 
         const orderItemIds = [];
         const startDate = new Date();
+        let totalPriceInBdt = 0;
+        let totalPriceInUsd = 0;
+
+        console.log("plans", plans);
 
         // Create OrderItems for each plan
         for (const plan of plans) {
             console.log("Plan", plan.productID);
-            
-            const orderItems = await OrderItems.create({
-                productId: plan.productID,
-                startDate: startDate,
-                endDate: calculateEndDate(plan.durationType, plan.durationValue, startDate),
-                packageId: plan.id
-            });
-          
-            orderItemIds.push(orderItems.id);
+            const productIds = plan.productID.split(",").map(Number);
+            console.log("productIds", productIds);
+            for (const productId of productIds) {
+                const orderItems = await OrderItems.create({
+                    productId: productId,
+                    startDate: startDate,
+                    endDate: calculateEndDate(plan.durationType, plan.durationValue, startDate),
+                    packageId: plan.id
+                });
+                orderItemIds.push(orderItems.id);
+                totalPriceInBdt += plan.priceInBdt;
+                totalPriceInUsd += plan.priceInUsd;
+            }
         }
 
         // Create main order with all OrderItems
@@ -74,12 +83,13 @@ exports.createOrder = async (req, res) => {
             transactionNumber: transactionNumber,
             paymentMethod: paymentMethod,
             OrderItems: orderItemIds,
+            orderType: PackageOrderType.REGULAR 
         });
 
         res.status(201).json({ 
-            message: 'Order created successfully', 
+            message: 'Order placed successfully', 
             orderId: order.id,
-            orderItems: orderItemIds 
+            orderItems: orderItemIds,
         });
     } catch (error) {
         console.error(error);
@@ -203,8 +213,9 @@ exports.getActiveProductsByCustomerEmail = async (req, res) => {
 };
 
 exports.createTrialOrder = async (req, res) => {
+   console.log("Trial order ctrl", req.body);
     try {
-        const { name, customerEmail, phoneNumber, facebookId } = req.body;
+        const { name, customerEmail, phoneNumber, facebookId, packageId } = req.body;
         console.log(req.body);
         const isTrialOrder = await TrialOrder.findOne({ where: { customerEmail } });
         if (isTrialOrder) {
@@ -242,14 +253,40 @@ exports.createTrialOrder = async (req, res) => {
             sendMail(customerEmail, "Your password", customer.password);
         }
 
-        const trialOrder = await TrialOrder.create({
-            name,
-            customerEmail,
-            screenShotImageId: uploadedFile.fileId,
-            screenShotUrl: uploadedFile.url,
-            facebookId: facebookId,
-            status: TrialOrderStatus.PENDING,
+        const package = await Package.findByPk(packageId);
+        if (!package) {
+            return res.status(404).json({ message: 'Package not found' });
+        }
+        const orderItemIds = [];
+        const productIds = package.productID.split(",").map(Number);
+        for (const productId of productIds) {
+            const orderItem = await OrderItems.create({
+                productId: productId,
+                startDate: new Date(),
+                endDate: calculateEndDate(package.durationType, package.durationValue, new Date()),
+                packageId: packageId
+            });
+            orderItemIds.push(orderItem.id);
+        }
+        const order = await Order.create({
+            customerEmail: customerEmail,
+            status: OrderStatus.PROCESSING,
+            phoneNumber: phoneNumber,
+            transactionNumber: "Trial",
+            paymentMethod:PackageOrderType.OTHER,
+            OrderItems: orderItemIds,
+            orderType: PackageOrderType.TRIAL 
         });
+        
+         const trialOrder = await TrialOrder.create({
+           name,
+           customerEmail,
+           screenShotImageId: uploadedFile.fileId,
+           screenShotUrl: uploadedFile.url,
+           facebookId: facebookId,
+           status: OrderStatus.PROCESSING,
+           orderId: order.id
+         });
         res.status(201).json({ message: 'Trial order created successfully', trialOrder });
 
 
@@ -261,6 +298,7 @@ exports.createTrialOrder = async (req, res) => {
 }
 
 exports.searchOrdersWithPagination = async (req, res) => {
+   console.log("search order ctrl", req.body);
     try {
         const { page = 1, limit = 10, customerEmail, status } = req.body;
         const offset = (page - 1) * limit;
@@ -286,6 +324,8 @@ exports.searchOrdersWithPagination = async (req, res) => {
             limit: parseInt(limit),
             offset: parseInt(offset),
         });
+
+        console.log("orders", orders);
 
         res.status(200).json({
             total: count,
@@ -355,4 +395,62 @@ exports.updateOrder = async (req, res) => {
         console.error('Error updating order:', error);
         res.status(500).json({ message: 'Error updating order', error });
     }
+};
+
+exports.getOrderById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const order = await Order.findByPk(id);
+        res.status(200).json({ order });
+    } catch (error) {
+        console.error('Error fetching order by ID:', error);
+        res.status(500).json({ message: 'Error fetching order', error });
+    }
+};
+
+exports.updateTrialOrderStatus = async (req, res) => {
+    console.log("update trial order status ctrl", req.body);
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+
+        // Find the trial order by primary key
+        const trialOrder = await TrialOrder.findByPk(id);
+
+        if (!trialOrder) {
+            return res.status(404).json({ message: 'Trial order not found' });
+        }
+
+        // Update the trial order status
+        trialOrder.status = status;
+        await trialOrder.save();
+
+        // Find the associated order by the orderId in the trial order
+        const order = await Order.findByPk(trialOrder.orderId);
+
+        if (order) {
+            // Update the order status
+            order.status = status;
+            await order.save();
+        }
+
+        res.status(200).json({ message: 'Trial order and order status updated successfully', trialOrder });
+    } catch (error) {
+        console.error('Error updating trial order and order status:', error);
+        res.status(500).json({ message: 'Error updating trial order and order status', error });
+    }
+};
+
+exports.searchTrialOrdersWithPagination = async (req, res) => {
+    const { page = 1, limit = 10, status, customerEmail     } = req.body;
+    const offset = (page - 1) * limit;
+    const where = {};
+    if (status) {
+        where.status = status;
+    }
+    if (customerEmail) {
+        where.customerEmail = customerEmail;
+    }
+    const {count, rows: trialOrders} = await TrialOrder.findAndCountAll({ limit, offset, where });
+    res.status(200).json({ total: count, page: parseInt(page), limit: parseInt(limit), trialOrders });
 };

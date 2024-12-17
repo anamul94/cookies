@@ -37,6 +37,7 @@ const upload = multer({ dest: "uploads/" });
  *               - durationValue
  *               - status
  *               - image
+ *               - packageType
  *             properties:
  *               title:
  *                 type: string
@@ -48,9 +49,11 @@ const upload = multer({ dest: "uploads/" });
  *                 type: number
  *                 description: Price of the package in USD
  *               productID:
- *                 type: string
+ *                 type: array
+ *                 items:
+ *                   type: string
  *                 description: IDs of the products associated with the package
- *                 example: [1, 2, 3]
+ *                 example: ["1", "2", "3"]
  *               durationType:
  *                 type: string
  *                 description: Type of duration (days, month, year)
@@ -71,6 +74,12 @@ const upload = multer({ dest: "uploads/" });
  *                 type: string
  *                 format: binary
  *                 description: Image of the package
+ *               packageType:
+ *                 type: string
+ *                 description: Type of the package (regular, trial)
+ *                 enum:
+ *                   - regular
+ *                   - trial
  *     responses:
  *       201:
  *         description: Package created successfully
@@ -277,6 +286,6 @@ router.get("/packages/product/:productId", getPackagesByProductId);
  *         description: Error updating package
  */
 
-router.put("/packages/:id", updatePlan);
+router.put("/:id", updatePlan);
 
 module.exports = router;

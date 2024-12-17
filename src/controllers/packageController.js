@@ -17,6 +17,7 @@ exports.createPackage = async (req, res) => {
       durationType,
       durationValue,
       status,
+      packageType,
     } = req.body;
 
     // Validate durationType against DurationTypes enum
@@ -58,21 +59,23 @@ exports.createPackage = async (req, res) => {
       //   : [parseInt(productID)];
     
 
-    const newPlan = await Package.create({
+    const productIDs = productID.join(",");
+    const newPackage = await Package.create({
       title,
       priceInBdt,
       priceInUsd,
-      productID,
+      productID: productIDs,
       durationType,
       durationValue,
       status: status || Status.ACTIVE,
       imageId: uploadedFile.fileId,
       imageUrl: uploadedFile.url,
+      packageType: packageType || PackageOrderType.REGULAR,
     });
 
     res
       .status(201)
-      .json({ message: "Plan created successfully", plan: newPlan });
+      .json({ message: "Package created successfully", package: newPackage });
   } catch (error) {
     console.error("Error creating package:", error);
     res.status(500).json({ message: "Error creating package", error });
@@ -80,7 +83,8 @@ exports.createPackage = async (req, res) => {
 };
 
 exports.getAllPackagesWithPagination = async (req, res) => {
-  const { page = 1, limit = 10, title, status } = req.body;
+  console.log("getAllPackagesWithPagination", req.body);
+  const { page = 1, limit = 10, title, status, packageType } = req.body;
   const offset = (page - 1) * limit;
 
   const where = {};
@@ -89,6 +93,9 @@ exports.getAllPackagesWithPagination = async (req, res) => {
   }
   if (status) {
     where.status = status;
+  }
+  if (packageType) {
+    where.packageType = packageType;
   }
 
   const packages = await Package.findAll({ limit, offset, where });
@@ -128,13 +135,17 @@ exports.getPackageById = async (req, res) => {
     const response = {
       id: plan.id,
       title: plan.title,
-      price: plan.price,
+      priceInBdt: plan.priceInBdt,
+      priceInUsd: plan.priceInUsd,
       durationType: plan.durationType,
       durationValue: plan.durationValue,
       status: plan.status,
       createdAt: plan.createdAt,
       updatedAt: plan.updatedAt,
       products, // Include the products array instead of productID
+      imageId: plan.imageId,
+      imageUrl: plan.imageUrl,
+      packageType: plan.packageType,
     };
 
     // Send the response
@@ -163,6 +174,7 @@ exports.getPackagesByProductId = async (req, res) => {
 
 // Update Plan by ID
 exports.updatePlan = async (req, res) => {
+  console.log("updatePlan", req.body);
   const { id } = req.params; // Extract Plan ID from the request parameters
   const {
     title,
@@ -186,7 +198,7 @@ exports.updatePlan = async (req, res) => {
     plan.title = title || plan.title;
     plan.priceInBdt = priceInBdt || plan.priceInBdt;
     plan.priceInUsd = priceInUsd || plan.priceInUsd;
-    plan.productID = productID || plan.productID;
+    plan.productID = productID.join(",") || plan.productID;
     plan.durationType = durationType || plan.durationType;
     plan.durationValue = durationValue || plan.durationValue;
     plan.status = status || plan.status;

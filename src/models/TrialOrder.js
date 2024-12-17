@@ -1,6 +1,6 @@
 const {  DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
-const TrialOrderStatus = require('../enums/TrialOrderStatus');  
+const OrderStatus = require('../enums/OrderStatus');
 
 
 const TrialOrder = sequelize.define('TrialOrder', {
@@ -28,9 +28,13 @@ const TrialOrder = sequelize.define('TrialOrder', {
     },
    
    status: {
-        type: DataTypes.ENUM(...Object.values(TrialOrderStatus)),
+        type: DataTypes.ENUM(...Object.values(OrderStatus)),
         allowNull: false,
-        defaultValue: TrialOrderStatus.PENDING,
+        defaultValue: OrderStatus.PROCESSING,
+    },
+   orderId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
     },
 }, {
     timestamps: true,

@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
+const { default: PackageOrderType } = require('../enums/PackageOrderType.enum');
 
 const Package = sequelize.define('Package', {
   id: {
@@ -40,6 +41,11 @@ const Package = sequelize.define('Package', {
   },
   imageUrl: {
     type: DataTypes.TEXT
+  },
+  packageType: {
+    type: DataTypes.ENUM(PackageOrderType.REGULAR, PackageOrderType.TRIAL),
+    allowNull: false,
+    defaultValue: PackageOrderType.REGULAR
   }
 }, {
   tableName: 'Packages',

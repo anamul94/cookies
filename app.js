@@ -10,7 +10,7 @@ const packageRoutes = require('./src/routes/packageRoutes'); // Import the route
 const orderRoutes = require("./src/routes/orderRoutes")
 const customerRoutes = require("./src/routes/customerRoutes")   
 const loggerMiddleware = require('./src/middleware/loggingMiddleware');
-
+const trialOrderRoutes = require("./src/routes/trialOrderRoutes")
 const app = express();
 
 app.use(cors());
@@ -25,7 +25,7 @@ app.use('/products', productRoutes);
 app.use('/packages', packageRoutes); // Register the Plan routes
 app.use('/order', orderRoutes);
 app.use('/customer', customerRoutes)
-
+app.use('/trial-order', trialOrderRoutes);
 // Start Server
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

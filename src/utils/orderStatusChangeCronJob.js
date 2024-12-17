@@ -15,9 +15,7 @@ cron.schedule("0 */12 * * *", async () => {
                     endDate: {
                         [Op.lt]: new Date(), // Check if endDate is in the past
                     },
-                    status: {
-                        [Op.ne]: OrderStatus.EXPIRED, // Only update orders not already expired
-                    },
+                    status: OrderStatus.ACTIVE, // Only update active orders
                 },
             }
         );
