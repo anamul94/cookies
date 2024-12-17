@@ -1,6 +1,6 @@
 "use client";
-import React from 'react';
-import Link from 'next/link';
+import React from "react";
+import Link from "next/link";
 
 export default function Package({
   id,
@@ -15,45 +15,50 @@ export default function Package({
   onEdit,
 }) {
   return (
-    <Link href={`/packages/${id}`} className="block">
-      <div className="bg-white shadow-md rounded-lg p-6 hover:shadow-lg transition duration-300">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
-          <button
-            onClick={onEdit}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            Edit
-          </button>
-        </div>
+    <Link href={`/packages/${id}`} className="block group">
+      <div className="bg-white border border-gray-200 shadow-md rounded-xl overflow-hidden hover:shadow-xl transition-transform transform hover:-translate-y-2 duration-300">
+        {/* Image Section */}
         {imageUrl && (
-          <div className="mb-4">
+          <div className="relative w-full h-48">
             <img
               src={imageUrl}
               alt={title}
-              className="w-full h-48 object-cover rounded-md"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
           </div>
         )}
-        <p className="text-gray-600 mb-4">{description}</p>
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-gray-600">Price (BDT): {priceInBdt}</p>
-            <p className="text-gray-800 font-semibold text-lg">
-              Price (USD): {priceInUsd}
-            </p>
+
+        {/* Card Content */}
+        <div className="p-6">
+          <h2 className="text-2xl font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors duration-300">
+            {title}
+          </h2>
+
+          <p className="text-gray-600 mb-4 line-clamp-2">{description}</p>
+
+          {/* Pricing and Duration */}
+          <div className="flex justify-between items-center mb-4">
+            <div>
+              <p className="text-bold text-lg text-black mb-2 text-gray-500">Price(USD): ${priceInUsd}</p>
+              <p className="text-sm text-gray-500">Price(BDT): ৳{priceInBdt}</p>
+            </div>
+
+            <div className="text-right">
+              <p className="text-sm text-gray-500">Duration:</p>
+              <p className="text-lg font-semibold text-gray-800">
+                {durationValue} {durationType}
+              </p>
+            </div>
           </div>
-          <p className="text-gray-600">
-            Duration: {durationValue} {durationType}
+
+          {/* Status */}
+          <p
+            className={`text-center font-semibold uppercase tracking-wide ${status === "active" ? "text-green-600" : "text-red-500"
+              }`}
+          >
+            Status: {status}
           </p>
         </div>
-        <p
-          className={`mt-4 font-semibold ${
-            status === "active" ? "text-green-600" : "text-red-600"
-          }`}
-        >
-          Status: {status}
-        </p>
       </div>
     </Link>
   );
