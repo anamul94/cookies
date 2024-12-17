@@ -102,7 +102,7 @@ export default function Packages() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                     {packages.map((pkg) => (
-                        <Link key={pkg.id} href={`/packages/${pkg.id}`}>
+                        <div key={pkg.id} className="cursor-pointer" onClick={() => router.push(`/packages/${pkg.id}`)}>
                             <Package
                                 id={pkg.id}
                                 title={pkg.title}
@@ -115,7 +115,7 @@ export default function Packages() {
                                 status={pkg.status}
                                 packageType={pkg.packageType}
                             />
-                        </Link>
+                        </div>
                     ))}
                 </div>
 
