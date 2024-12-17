@@ -13,8 +13,8 @@ export default function Product({ title, status }) {
                 {status && (
                     <span
                         className={`px-2 py-1 text-xs rounded-full ${status === 'active'
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-gray-100 text-gray-800'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-gray-100 text-gray-800'
                             }`}
                     >
                         {status === 'active' ? 'Active' : 'Inactive'}

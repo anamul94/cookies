@@ -106,12 +106,19 @@ export default function PackageDetails({ params: { id } }) {
                     <div className="p-6">
                         <div className="flex justify-between items-center mb-6">
                             <h1 className="text-2xl font-bold text-gray-800">{packageData.title}</h1>
-                            {packageData.status === 'active' && (
+                            {packageData.status === 'active' ? (
                                 <button
                                     onClick={handlePurchase}
                                     className="px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300"
                                 >
                                     Purchase Now
+                                </button>
+                            ) : (
+                                <button
+                                    disabled
+                                    className="px-6 py-3 bg-gray-300 text-gray-600 rounded-full cursor-not-allowed"
+                                >
+                                    Currently Unavailable
                                 </button>
                             )}
                         </div>
@@ -133,24 +140,6 @@ export default function PackageDetails({ params: { id } }) {
                                         {packageData.durationValue > 1 ? 's' : ''}
                                     </p>
                                 </div>
-
-                                <div>
-                                    <h2 className="text-lg font-semibold text-gray-800">Status</h2>
-                                    <span className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${
-                                        packageData.status === 'active'
-                                            ? 'bg-green-100 text-green-800'
-                                            : 'bg-red-100 text-red-800'
-                                    }`}>
-                                        {packageData.status}
-                                    </span>
-                                </div>
-
-                                <div>
-                                    <h2 className="text-lg font-semibold text-gray-800">Package Type</h2>
-                                    <span className="inline-flex px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                                        {packageData.packageType}
-                                    </span>
-                                </div>
                             </div>
 
                             <div>
@@ -162,13 +151,6 @@ export default function PackageDetails({ params: { id } }) {
                                             className="flex justify-between items-center p-4 bg-gray-50 rounded-lg border border-gray-200"
                                         >
                                             <span className="font-medium text-gray-800">{product.title}</span>
-                                            <span className={`inline-flex px-2 py-1 text-xs rounded-full ${
-                                                product.status === 'active'
-                                                    ? 'bg-green-100 text-green-800'
-                                                    : 'bg-red-100 text-red-800'
-                                            }`}>
-                                                {product.status}
-                                            </span>
                                         </div>
                                     ))}
                                 </div>

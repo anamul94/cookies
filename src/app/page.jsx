@@ -85,7 +85,6 @@ export default function HomePage() {
                     durationType={pkg.durationType}
                     status={pkg.status}
                     imageUrl={pkg.imageUrl}
-                    packageType={pkg.packageType}
                   />
                 ))}
               </div>

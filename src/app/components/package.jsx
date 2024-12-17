@@ -12,12 +12,13 @@ export default function Package({
   durationType,
   imageUrl,
   status,
-  packageType,
   onEdit,
 }) {
+  const isActive = status === "active";
+  
   return (
-    <Link href={`/packages/${id}`} className="block group">
-      <div className="bg-white border border-gray-200 shadow-md rounded-xl overflow-hidden hover:shadow-xl transition-transform transform hover:-translate-y-2 duration-300">
+    <div className="block group">
+      <div className={`bg-white border border-gray-200 shadow-md rounded-xl overflow-hidden hover:shadow-xl transition-transform transform hover:-translate-y-2 duration-300 ${!isActive ? 'opacity-70' : ''}`}>
         {/* Image Section */}
         {imageUrl && (
           <div className="relative w-full h-48">
@@ -43,7 +44,6 @@ export default function Package({
               <p className="text-bold text-lg text-black mb-2 text-gray-500">Price(USD): ${priceInUsd}</p>
               <p className="text-sm text-gray-500">Price(BDT): ৳{priceInBdt}</p>
             </div>
-
             <div className="text-right">
               <p className="text-sm text-gray-500">Duration:</p>
               <p className="text-lg font-semibold text-gray-800">
@@ -52,23 +52,30 @@ export default function Package({
             </div>
           </div>
 
-          {/* Status and Package Type */}
+          {/* Status */}
           <div className="flex justify-between items-center">
             <span
               className={`inline-flex px-3 py-1 text-sm font-medium rounded-full ${status === "active"
-                  ? "bg-green-100 text-green-800"
-                  : "bg-red-100 text-red-800"
+                ? "bg-green-100 text-green-800"
+                : "bg-red-100 text-red-800"
                 }`}
             >
-              {status}
-            </span>
-
-            <span className="inline-flex px-3 py-1 text-sm font-medium rounded-full bg-blue-100 text-blue-800">
-              {packageType}
+              {status === "active" ? "Available" : "Unavailable"}
             </span>
           </div>
+
+          {/* Purchase Button */}
+          {isActive ? (
+            <Link href={`/packages/${id}`} className="mt-4 block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-300">
+              View Details
+            </Link>
+          ) : (
+            <button disabled className="mt-4 block w-full text-center px-4 py-2 bg-gray-300 text-gray-600 rounded-full cursor-not-allowed">
+              Currently Unavailable
+            </button>
+          )}
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
