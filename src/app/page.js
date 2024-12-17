@@ -3,7 +3,7 @@ import Package from './components/package';
 
 async function getPackages() {
   try {
-    const res = await fetch('http://localhost:8000/plans', {
+    const res = await fetch('http://localhost:8000/packages', {
       cache: 'no-store',
       headers: {
         'Accept': 'application/json',

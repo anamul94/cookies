@@ -15,7 +15,7 @@ export default function Packages() {
         console.log('useEffect triggered'); // Debug log
 
         // Test if fetch is working
-        fetch('http://localhost:8000/plan/3')
+        fetch('http://localhost:8000/')
             .then(res => {
                 console.log('Raw response:', res);
                 return res.json();

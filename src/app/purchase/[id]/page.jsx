@@ -6,7 +6,7 @@ import PurchaseForm from './PurchaseForm';
 
 async function getPackageData(id) {
     try {
-        const res = await fetch(`http://localhost:8000/plan/${id}`, { 
+        const res = await fetch(`http://localhost:8000/packages/${id}`, { 
             cache: 'no-store',
             headers: {
                 'Accept': 'application/json',
@@ -59,7 +59,7 @@ export default async function PurchasePage({ params }) {
                         <div className="space-y-6">
                             <div>
                                 <h3 className="text-xl font-semibold text-gray-800">{packageData.title}</h3>
-                                <p className="text-3xl font-bold text-blue-600 mt-2">${packageData.price}</p>
+                                <p className="text-3xl font-bold text-blue-600 mt-2">Price: ${packageData.priceInUsd} ৳{packageData.priceInBdt}</p>
                             </div>
 
                             <div>
@@ -76,7 +76,6 @@ export default async function PurchasePage({ params }) {
                                         <Product 
                                             key={product.id}
                                             title={product.title}
-                                            status={product.status}
                                         />
                                     ))}
                                 </div>

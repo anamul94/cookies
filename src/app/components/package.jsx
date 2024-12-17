@@ -1,55 +1,74 @@
 "use client";
-import Link from 'next/link';
+import React from "react";
+import Link from "next/link";
 
-const Package = ({ id, title, description, price, duration, status }) => {
+export default function Package({
+  id,
+  title,
+  description,
+  priceInUsd,
+  priceInBdt,
+  durationValue,
+  durationType,
+  imageUrl,
+  status,
+  packageType,
+  onEdit,
+}) {
   return (
-    <Link href={`/packages/${id}`} className={`block ${status !== 'active' ? 'pointer-events-none' : ''}`}>
-      <div 
-        className={`bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300
-          ${status !== 'active' ? 'opacity-50' : ''}`}
-      >
-        <div className="space-y-4">
-          <div className="flex justify-between items-start">
-            <h2 className="text-2xl font-semibold text-gray-800">{title}</h2>
-            {status !== 'active' && (
-              <span className="px-2 py-1 text-xs bg-gray-200 text-gray-600 rounded">
-                Inactive
-              </span>
-            )}
+    <Link href={`/packages/${id}`} className="block group">
+      <div className="bg-white border border-gray-200 shadow-md rounded-xl overflow-hidden hover:shadow-xl transition-transform transform hover:-translate-y-2 duration-300">
+        {/* Image Section */}
+        {imageUrl && (
+          <div className="relative w-full h-48">
+            <img
+              src={imageUrl}
+              alt={title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            />
           </div>
-          
-          <p className="text-gray-600">{description}</p>
-          
-          <div className="flex justify-between items-center pt-4 border-t border-gray-200">
-            <div className="space-y-1">
-              <p className="text-3xl font-bold text-blue-600">
-                ${price}
-              </p>
-              <p className="text-gray-500 text-sm">
-                Duration: {duration}
+        )}
+
+        {/* Card Content */}
+        <div className="p-6">
+          <h2 className="text-2xl font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors duration-300">
+            {title}
+          </h2>
+
+          <p className="text-gray-600 mb-4 line-clamp-2">{description}</p>
+
+          {/* Pricing and Duration */}
+          <div className="flex justify-between items-center mb-4">
+            <div>
+              <p className="text-bold text-lg text-black mb-2 text-gray-500">Price(USD): ${priceInUsd}</p>
+              <p className="text-sm text-gray-500">Price(BDT): ৳{priceInBdt}</p>
+            </div>
+
+            <div className="text-right">
+              <p className="text-sm text-gray-500">Duration:</p>
+              <p className="text-lg font-semibold text-gray-800">
+                {durationValue} {durationType}
               </p>
             </div>
-            
-            <button 
-              className={`px-6 py-2 rounded-full transition-colors duration-300
-                ${status === 'active' 
-                  ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                  : 'bg-gray-300 text-gray-600 cursor-not-allowed'}`}
-              disabled={status !== 'active'}
-              onClick={(e) => {
-                e.preventDefault();
-                if (status === 'active') {
-                  console.log('Selected package:', id);
-                }
-              }}
+          </div>
+
+          {/* Status and Package Type */}
+          <div className="flex justify-between items-center">
+            <span
+              className={`inline-flex px-3 py-1 text-sm font-medium rounded-full ${status === "active"
+                  ? "bg-green-100 text-green-800"
+                  : "bg-red-100 text-red-800"
+                }`}
             >
-              {status === 'active' ? 'Select' : 'Unavailable'}
-            </button>
+              {status}
+            </span>
+
+            <span className="inline-flex px-3 py-1 text-sm font-medium rounded-full bg-blue-100 text-blue-800">
+              {packageType}
+            </span>
           </div>
         </div>
       </div>
     </Link>
   );
-};
-
-export default Package;
+}
