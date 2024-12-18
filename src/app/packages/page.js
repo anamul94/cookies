@@ -7,6 +7,8 @@ import Package from '../components/package';
 import ErrorModal from '../components/ErrorModal';
 import Link from 'next/link';
 import PackageOrderType from '../constant/PackageOrderType.enum';
+import { API_BASE_URL } from '../../app/constants/api';
+
 
 export default function Packages() {
     const router = useRouter();
@@ -32,7 +34,7 @@ export default function Packages() {
                     requestBody.packageType = selectedPackageType;
                 }
 
-                const response = await axios.post('http://localhost:8000/packages/search', requestBody, {
+                const response = await axios.post(`${API_BASE_URL}/packages/search`, requestBody, {
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'

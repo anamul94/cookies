@@ -4,6 +4,7 @@ import { useState, useEffect, use } from 'react';
 import Navbar from '../../components/Navbar';
 import { fetchWithAuth } from '@/utils/api';
 import { isAuthenticated } from '@/utils/auth';
+import { API_BASE_URL } from '../../../app/constants/api';
 
 export default function PackageDetails({ params }) {
   const router = useRouter();
@@ -19,7 +20,7 @@ export default function PackageDetails({ params }) {
 
     const fetchPackage = async () => {
       try {
-        const response = await fetchWithAuth(`http://localhost:8000/packages/${id}`);
+        const response = await fetchWithAuth(`${API_BASE_URL}/packages/${id}`);
         if (!response) return;
         
         if (!response.ok) {

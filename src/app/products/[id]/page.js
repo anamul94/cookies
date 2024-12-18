@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "../../components/Navbar";
+import { API_BASE_URL } from '../../../app/constants/api';
+
 
 export default function EditProduct({ params }) {
   const router = useRouter();
@@ -13,7 +15,7 @@ export default function EditProduct({ params }) {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/products/${params.id}`);
+        const response = await fetch(`${API_BASE_URL}/products/${params.id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch product");
         }
@@ -44,7 +46,7 @@ export default function EditProduct({ params }) {
         console.log("Cookie is not a valid JSON, keeping it as a string");
       }
 
-      const response = await fetch(`http://localhost:8000/products/${params.id}`, {
+      const response = await fetch(`${API_BASE_URL}/products/${params.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

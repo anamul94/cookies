@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import Navbar from '../components/Navbar';
 import ProductEditModal from '../components/ProductEditModal';
 import { fetchWithAuth } from '@/utils/api';
+import { API_BASE_URL } from '../../app/constants/api';
 
 export default function Products() {
   const router = useRouter();
@@ -18,7 +19,7 @@ export default function Products() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetchWithAuth('http://localhost:8000/products/search', {
+      const response = await fetchWithAuth(`${API_BASE_URL}/products/search`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`

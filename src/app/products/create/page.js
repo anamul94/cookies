@@ -5,6 +5,8 @@ import Navbar from '../../components/Navbar';
 import { Status } from '@/app/constants/status';
 import { isAuthenticated } from '@/utils/auth';
 import { fetchWithAuth } from '@/utils/api';
+import { API_BASE_URL } from '../../../app/constants/api';
+
 
 export default function CreateProduct() {
   const router = useRouter();
@@ -34,7 +36,7 @@ export default function CreateProduct() {
 
   const fetchProductDetails = async (productId) => {
     try {
-      const response = await fetchWithAuth(`http://localhost:8000/products/${productId}`);
+      const response = await fetchWithAuth(`${API_BASE_URL}/products/${productId}`);
       
       if (!response) return;
       
@@ -74,8 +76,8 @@ export default function CreateProduct() {
       }
 
       const url = isEditing 
-        ? `http://localhost:8000/products/${product.id}`
-        : 'http://localhost:8000/products';
+        ? `${API_BASE_URL}/products/${product.id}`
+        : `${API_BASE_URL}/products`;
       
       const method = isEditing ? 'PUT' : 'POST';
 

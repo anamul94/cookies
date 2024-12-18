@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { API_BASE_URL } from '../../../app/constants/api';
 
 export default function SignupPage() {
   const router = useRouter();
@@ -15,7 +16,12 @@ export default function SignupPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:8000/auth/register', {
+      console.log('Sending request:', {
+        url: `${API_BASE_URL}/auth/register`,
+        method: 'POST',
+        data: formData
+      });
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -24,6 +30,7 @@ export default function SignupPage() {
       });
 
       const data = await response.json();
+      console.log('API response:', data);
       
       if (response.ok) {
         router.push('/auth/login'); // Redirect to login page after successful registration

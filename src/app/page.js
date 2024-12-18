@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from './components/Navbar';
 import { isAuthenticated, getAuthToken } from '@/utils/auth';
+import { API_BASE_URL } from '../app/constants/api';
 
 const OrderStatus = {
   ACTIVE: 'active',
@@ -31,7 +32,7 @@ export default function Home() {
       }
 
       const token = getAuthToken();
-      const response = await fetch('http://localhost:8000/order/search', {
+      const response = await fetch(`${base_url}/order/search`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -78,7 +79,7 @@ export default function Home() {
   const updateOrder = async (orderId) => {
     try {
       const token = getAuthToken();
-      const response = await fetch(`http://localhost:8000/order/${orderId}`, {
+      const response = await fetch(`${base_url}/order/${orderId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

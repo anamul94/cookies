@@ -7,6 +7,8 @@ import { isAuthenticated } from "@/utils/auth";
 import { fetchWithAuth } from "@/utils/api";
 import DurationTypes from "@/app/constants/duration";
 import PackageOrderType from '@/app/constant/PackageOrderType.enum';
+import { API_BASE_URL } from '../../../app/constants/api';
+
 
 export default function CreatePackage() {
   const router = useRouter();
@@ -36,7 +38,7 @@ export default function CreatePackage() {
   const fetchProducts = async () => {
     try {
       const response = await fetchWithAuth(
-        "http://localhost:8000/products/search",
+        `${API_BASE_URL}/products/search`,
         {
           method: "POST",
           body: JSON.stringify({
@@ -84,7 +86,7 @@ export default function CreatePackage() {
       const formDataObject = Object.fromEntries(formData.entries());
       console.log("Form Data:", formDataObject);
 
-      const response = await fetchWithAuth("http://localhost:8000/packages/", {
+      const response = await fetchWithAuth(`${API_BASE_URL}/packages/`, {
         method: "POST",
         headers: {},
         body: formData,

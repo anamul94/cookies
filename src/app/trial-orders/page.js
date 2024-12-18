@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { API_BASE_URL } from '../../app/constants/api';
 
 const OrderStatus = {
     ACTIVE: 'active',
@@ -41,7 +42,7 @@ export default function TrialOrdersDashboard() {
                 return;
             }
 
-            const response = await fetch('http://localhost:8000/order/search-trial-order', {
+            const response = await fetch(`${API_BASE_URL}/order/search-trial-order`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -105,7 +106,7 @@ export default function TrialOrdersDashboard() {
                 return;
             }
 
-            const response = await fetch(`http://localhost:8000/order/update-trial-order-status/${orderId}`, {
+            const response = await fetch(`${API_BASE_URL}/order/update-trial-order-status/${orderId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
