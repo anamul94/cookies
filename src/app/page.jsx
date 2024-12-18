@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Package from './components/package';
+import { API_BASE_URL } from '../app/constants/api';
+
 
 export default function HomePage() {
   const [packages, setPackages] = useState([]);
@@ -12,14 +14,14 @@ export default function HomePage() {
   const fetchPackages = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:8000/packages/search', {
+      const response = await fetch(`${API_BASE_URL}/packages/search`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           page: 1,
-          limit: 6 // Show fewer packages on home page
+          limit: 10,
         }),
       });
 

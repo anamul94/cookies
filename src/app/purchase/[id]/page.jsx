@@ -3,10 +3,11 @@
 import Navbar from '../../components/Navbar';
 import Product from '../../components/product';
 import PurchaseForm from './PurchaseForm';
+import { API_BASE_URL } from '../../constants/api';
 
 async function getPackageData(id) {
     try {
-        const res = await fetch(`http://localhost:8000/packages/${id}`, { 
+        const res = await fetch(`${API_BASE_URL}/packages/${id}`, { 
             cache: 'no-store',
             headers: {
                 'Accept': 'application/json',

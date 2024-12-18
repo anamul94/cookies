@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Package from '../components/package';
+import { API_BASE_URL } from '../constants/api';
+
 
 export default function ShopPage() {
   const [packages, setPackages] = useState([]);
@@ -15,7 +17,7 @@ export default function ShopPage() {
   const fetchPackages = async (page) => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:8000/packages/search', {
+      const response = await fetch(`${API_BASE_URL}/packages/search`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

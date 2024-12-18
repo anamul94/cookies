@@ -2,35 +2,54 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 const Navbar = () => {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
+  const isActive = (path) => pathname === path;
+
   return (
-    <nav className="bg-white shadow-lg fixed w-full z-50">
+    <nav className="bg-blue-600 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link href="/" className="flex-shrink-0">
-              <Image
-                src="/logo.png"
-                alt="Logo"
-                width={40}
-                height={40}
-                className="w-auto h-8"
-              />
+            <Link href="/" className="flex-shrink-0 text-white text-xl font-bold">
+              Cookie
             </Link>
           </div>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/shop" className="text-gray-600 hover:text-blue-600 transition-colors">
+            <Link
+              href="/shop"
+              className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
+                isActive('/shop')
+                  ? 'text-white border-b-2 border-white'
+                  : 'text-blue-100 hover:text-white hover:border-b-2 hover:border-blue-100'
+              }`}
+            >
               Shop
             </Link>
-            <Link href="/trial" className="text-gray-600 hover:text-blue-600 transition-colors">
+            <Link
+              href="/trial"
+              className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
+                isActive('/trial')
+                  ? 'text-white border-b-2 border-white'
+                  : 'text-blue-100 hover:text-white hover:border-b-2 hover:border-blue-100'
+              }`}
+            >
               Trial
             </Link>
-            <Link href="/about" className="text-gray-600 hover:text-blue-600 transition-colors">
+            <Link
+              href="/about"
+              className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
+                isActive('/about')
+                  ? 'text-white border-b-2 border-white'
+                  : 'text-blue-100 hover:text-white hover:border-b-2 hover:border-blue-100'
+              }`}
+            >
               About
             </Link>
           </div>
@@ -59,14 +78,29 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white">
-            <Link href="/shop" className="block px-3 py-2 rounded-md text-gray-600 hover:text-blue-600 hover:bg-gray-100">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-blue-600">
+            <Link
+              href="/shop"
+              className={`block px-3 py-2 rounded-md text-blue-100 hover:text-white hover:bg-blue-700 ${
+                isActive('/shop') ? 'text-white' : ''
+              }`}
+            >
               Shop
             </Link>
-            <Link href="/trial" className="block px-3 py-2 rounded-md text-gray-600 hover:text-blue-600 hover:bg-gray-100">
+            <Link
+              href="/trial"
+              className={`block px-3 py-2 rounded-md text-blue-100 hover:text-white hover:bg-blue-700 ${
+                isActive('/trial') ? 'text-white' : ''
+              }`}
+            >
               Trial
             </Link>
-            <Link href="/about" className="block px-3 py-2 rounded-md text-gray-600 hover:text-blue-600 hover:bg-gray-100">
+            <Link
+              href="/about"
+              className={`block px-3 py-2 rounded-md text-blue-100 hover:text-white hover:bg-blue-700 ${
+                isActive('/about') ? 'text-white' : ''
+              }`}
+            >
               About
             </Link>
           </div>

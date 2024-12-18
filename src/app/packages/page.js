@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
 import Package from '../components/package';
+import { API_BASE_URL } from '../constants/api';
 
 export default function Packages() {
     console.log('Component rendered'); // Debug log

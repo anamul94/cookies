@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 
 export default function PackageActions({ id, packageData }) {
     const router = useRouter();
-    
+
     const handlePurchase = () => {
         router.push(`/purchase/${id}`);
     };

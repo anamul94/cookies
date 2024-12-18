@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { PaymentMethods, PaymentMethodLabels } from '../../constants/enums';
+import { API_BASE_URL } from '../../constants/api';
 
 export default function PurchaseForm({ packageId }) {
     const router = useRouter();
@@ -24,7 +25,7 @@ export default function PurchaseForm({ packageId }) {
         setError(null);
         
         try {
-            const response = await fetch('http://localhost:8000/order/create', {
+            const response = await fetch(`${API_BASE_URL}/order/create`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',

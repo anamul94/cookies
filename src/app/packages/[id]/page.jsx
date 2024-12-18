@@ -1,16 +1,17 @@
 import React from 'react';
 import Navbar from '../../components/Navbar';
 import PackageActions from './PackageActions';
+import { API_BASE_URL } from '../../constants/api';
 
 async function getPackageData(id) {
-    const response = await fetch(`http://localhost:8000/packages/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/packages/${id}`, {
         cache: 'no-store'
     });
-    
+
     if (!response.ok) {
         throw new Error('Failed to fetch package');
     }
-    
+
     return response.json();
 }
 

@@ -1,9 +1,10 @@
 import Navbar from './components/Navbar';
 import Package from './components/package';
+import { API_BASE_URL } from '../app/constants/api';
 
 async function getPackages() {
   try {
-    const res = await fetch('http://localhost:8000/packages', {
+    const res = await fetch(`${API_BASE_URL}/packages`, {
       cache: 'no-store',
       headers: {
         'Accept': 'application/json',
@@ -39,3 +40,4 @@ export default async function Home() {
     </main>
   );
 }
+  
