@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import { useRouter } from 'next/navigation';
+import { isAuthenticated } from '@/utils/auth';
+import { API_BASE_URL } from '../../app/constants/api';
 
 const OrderStatus = {
     ACTIVE: 'active',
@@ -30,6 +32,14 @@ export default function OrdersDashboard() {
         status: ''
     });
 
+    useEffect(() => {
+        if (!isAuthenticated()) {
+            router.push('/auth/login');
+            return;
+        }
+        fetchOrders();
+    }, [currentPage, filters]);
+
     const fetchOrders = async () => {
         setLoading(true);
         setError('');
@@ -41,7 +51,7 @@ export default function OrdersDashboard() {
                 return;
             }
 
-            const response = await fetch('http://localhost:8000/order/search', {
+            const response = await fetch(`${API_BASE_URL}/order/search`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -74,10 +84,6 @@ export default function OrdersDashboard() {
         }
     };
 
-    useEffect(() => {
-        fetchOrders();
-    }, [currentPage, filters]);
-
     const handleStatusChange = (newStatus) => {
         setEditingStatus(newStatus);
     };
@@ -108,7 +114,7 @@ export default function OrdersDashboard() {
                 return;
             }
 
-            const response = await fetch(`http://localhost:8000/order/${orderId}`, {
+            const response = await fetch(`${API_BASE_URL}/order/${orderId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

@@ -8,7 +8,7 @@ import ErrorModal from '../components/ErrorModal';
 import Link from 'next/link';
 import PackageOrderType from '../constant/PackageOrderType.enum';
 import { API_BASE_URL } from '../../app/constants/api';
-
+import { isAuthenticated } from '@/utils/auth';
 
 export default function Packages() {
     const router = useRouter();
@@ -22,8 +22,13 @@ export default function Packages() {
     const [selectedPackageType, setSelectedPackageType] = useState('all');
 
     useEffect(() => {
+        if (!isAuthenticated()) {
+            router.push('/auth/login');
+            return;
+        }
         const fetchPackages = async () => {
             try {
+                const token = localStorage.getItem('token');
                 const requestBody = {
                     page,
                     limit
@@ -37,7 +42,8 @@ export default function Packages() {
                 const response = await axios.post(`${API_BASE_URL}/packages/search`, requestBody, {
                     headers: {
                         'Accept': 'application/json',
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
                     }
                 });
 

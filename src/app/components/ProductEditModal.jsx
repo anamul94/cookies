@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Modal from './Modal';
 import { Status } from '@/app/constants/status';
 import { fetchWithAuth } from '@/utils/api';
+import { API_BASE_URL } from '@/app/constants/api';
 
 export default function ProductEditModal({ isOpen, onClose, product, onUpdate }) {
   const [formData, setFormData] = useState({
@@ -73,13 +74,13 @@ export default function ProductEditModal({ isOpen, onClose, product, onUpdate })
       }
 
       console.log('Sending update request:', {
-        url: `http://localhost:8000/products/${product.id}`,
+        url: `${API_BASE_URL}/products/${product.id}`,
         method: 'PUT',
         data: updateData
       });
 
       const response = await fetchWithAuth(
-        `http://localhost:8000/products/${product.id}`,
+        `${API_BASE_URL}/products/${product.id}`,
         {
           method: 'PUT',
           body: updateData, // fetchWithAuth will handle JSON.stringify

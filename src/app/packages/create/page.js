@@ -71,9 +71,10 @@ export default function CreatePackage() {
       formData.append("title", packageData.title);
       formData.append("priceInBdt", packageData.priceInBdt);
       formData.append("priceInUsd", packageData.priceInUsd);
-      packageData.productID.forEach((productId) => {
-        formData.append("productID", productId);
-      });
+      // Send product IDs as a single comma-separated string
+      if (packageData.productID && packageData.productID.length > 0) {
+        formData.append("productID", packageData.productID.join(','));
+      }
       formData.append("durationType", packageData.durationType);
       formData.append("durationValue", packageData.durationValue);
       formData.append("status", packageData.status);
