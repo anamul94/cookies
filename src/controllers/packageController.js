@@ -59,12 +59,12 @@ exports.createPackage = async (req, res) => {
       //   : [parseInt(productID)];
     
 
-    const productIDs = productID.join(",");
+    // const productIDs = productID.join(",");
     const newPackage = await Package.create({
       title,
       priceInBdt,
       priceInUsd,
-      productID: productIDs,
+      productID,
       durationType,
       durationValue,
       status: status || Status.ACTIVE,
