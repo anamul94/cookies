@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, session } = require("electron");
 const axios = require("axios");
 const path = require("path");
 const os = require("os");
+const fs = require('fs');
 const WebSocket = require("ws");
 const { getActiveProducts, subscribeToWebSocket, requestNewPassword } = require("./api");
 
@@ -63,6 +64,28 @@ const handleWebSocketMessage = (message, email, macAddress) => {
     }
 };
 
+// Function to load all extensions from a directory
+const loadExtensions = async (extensionsDir) => {
+    try {
+        const extensions = fs.readdirSync(extensionsDir, { withFileTypes: true })
+            .filter(dirent => dirent.isDirectory())
+            .map(dirent => path.join(extensionsDir, dirent.name));
+
+        for (const extensionPath of extensions) {
+            try {
+                await session.defaultSession.loadExtension(extensionPath, {
+                    allowFileAccess: true
+                });
+                console.log(`Loaded extension from: ${extensionPath}`);
+            } catch (error) {
+                console.error(`Error loading extension from ${extensionPath}:`, error);
+            }
+        }
+    } catch (error) {
+        console.error('Error loading extensions:', error);
+    }
+};
+
 app.whenReady().then(() => {
     macAddress = getMacAddress();
 
@@ -102,17 +125,34 @@ app.whenReady().then(() => {
     });
 
     ipcMain.handle("open-url-with-cookies", async (event, { url, cookies }) => {
+        // Load extensions from accs folder
+        const extensionsPath = path.join(__dirname, 'accs');
+        await loadExtensions(extensionsPath);
+
         const newWindow = new BrowserWindow({
             width: 1024,
             height: 768,
             webPreferences: {
                 contextIsolation: true,
                 nodeIntegration: false,
-            },
+                webSecurity: true,
+                allowRunningInsecureContent: false,
+                plugins: true,
+                experimentalFeatures: true
+            }
         });
 
+        // Set cookies before loading the URL
         await setDynamicCookies(cookies, url);
-        newWindow.loadURL(url);
+
+        try {
+            await newWindow.loadURL(url, {
+                userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            });
+            console.log("URL loaded successfully with cookies and extensions");
+        } catch (error) {
+            console.error("Error loading URL:", error);
+        }
     });
 
     ipcMain.handle("get-mac-address", () => macAddress); // Expose MAC address to renderer

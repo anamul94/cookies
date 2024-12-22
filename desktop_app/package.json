@@ -1,32 +1,77 @@
 {
-  "name": "electron-app",
+  "name": "cookie-manager",
   "version": "1.0.0",
-  "description": "My Electron App for managing cookies",
+  "description": "Cookie Manager Desktop Application",
   "main": "main.js",
   "scripts": {
-    "start": "npx electron .",
-    "build": "electron-builder"
+    "start": "electron .",
+    "build": "electron-builder -wl",
+    "build:win": "electron-builder --win --x64",
+    "build:linux": "electron-builder --linux"
   },
   "build": {
-    "appId": "com.example.myapp",
-    "productName": "CookieManager",
+    "appId": "com.cookiemanager.app",
+    "productName": "Cookie Manager",
+    "asar": true,
     "directories": {
       "output": "dist"
     },
     "files": [
-      "**/*"
+      "**/*",
+      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+      "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+      "!**/node_modules/*.d.ts",
+      "!**/node_modules/.bin",
+      "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
+      "!.editorconfig",
+      "!**/._*",
+      "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
+      "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
+      "!**/{appveyor.yml,.travis.yml,circle.yml}",
+      "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"
     ],
     "win": {
-      "target": "nsis",
-      "icon": "./icon.ico"
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "publisherName": "Cookie Manager"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": false,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Cookie Manager",
+      "include": "build/installer.nsh",
+      "deleteAppDataOnUninstall": true
     },
     "linux": {
-      "target": "AppImage",
-      "icon": "./icon.ico"
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64"]
+        },
+        {
+          "target": "deb",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icons",
+      "category": "Utility",
+      "maintainer": "Cookie Manager Team"
     }
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["cookie", "manager", "desktop", "electron"],
+  "author": "Cookie Manager Team",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.7.9",
