@@ -1,16 +1,26 @@
 'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { API_BASE_URL } from '@/app/constants/api';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
   const [error, setError] = useState('');
+
+  // Check if user is already logged in
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const from = searchParams.get('from') || '/products';
+      router.push(from);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,18 +36,19 @@ export default function LoginPage() {
       const data = await response.json();
       
       if (response.ok) {
-        // Store token in localStorage
+        // Store token in both localStorage and cookie
         localStorage.setItem('token', data.token);
+        document.cookie = `token=${data.token}; path=/; max-age=86400; SameSite=Strict`; // 24 hours
         
-        // Store token in cookie
-        document.cookie = `token=${data.token}; path=/; max-age=3600; SameSite=Strict`;
-        
-        router.push('/products');
+        // Redirect to the original page or products page
+        const from = searchParams.get('from') || '/products';
+        router.push(from);
       } else {
         setError(data.message || 'Login failed');
       }
     } catch (err) {
       setError('Something went wrong');
+      console.error('Login error:', err);
     }
   };
 
@@ -96,4 +107,4 @@ export default function LoginPage() {
       </div>
     </div>
   );
-} 
+}

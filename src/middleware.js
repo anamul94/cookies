@@ -4,22 +4,26 @@ export function middleware(request) {
   // Get the path
   const path = request.nextUrl.pathname;
 
-  // Define protected routes
+  // Define protected routes - include all variations
   const protectedRoutes = [
-    '/products/create',
+    '/products',
     '/packages',
     '/orders',
   ];
 
-  // Check if the current path is a protected route
-  const isProtectedRoute = protectedRoutes.some(route => path.startsWith(route));
+  // Check if the current path is a protected route or its sub-route
+  const isProtectedRoute = protectedRoutes.some(route => 
+    path === route || path.startsWith(`${route}/`)
+  );
 
-  // Get the token from the request headers
-  const token = request.cookies.get('token')?.value || request.headers.get('Authorization')?.replace('Bearer ', '');
+  // Get token from cookies first, then from localStorage
+  const token = request.cookies.get('token')?.value;
 
   // If it's a protected route and there's no token, redirect to login
   if (isProtectedRoute && !token) {
-    return NextResponse.redirect(new URL('/auth/login', request.url));
+    const loginUrl = new URL('/auth/login', request.url);
+    loginUrl.searchParams.set('from', path); // Store the original path
+    return NextResponse.redirect(loginUrl);
   }
 
   // Add the token to the request headers if it exists
@@ -40,8 +44,15 @@ export function middleware(request) {
 // Configure which routes to run middleware on
 export const config = {
   matcher: [
+    /*
+     * Match all routes starting with:
+     * - /products
+     * - /packages
+     * - /orders
+     * This includes all sub-routes
+     */
     '/products/:path*',
     '/packages/:path*',
     '/orders/:path*',
   ],
-}; 
+};
