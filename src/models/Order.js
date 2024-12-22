@@ -1,11 +1,9 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db'); // Sequelize instance
-const Plan = require('./Package'); // Plan model
-const OrderStatus = require('../enums/OrderStatus');
-const Product = require('./Product');
-const PaymentMethods = require('../enums/PaymentMethos.enum');
-const OrderItems = require('./OrderItems');
-const { default: PackageOrderType } = require('../enums/PackageOrderType.enum');
+// Order.js
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/db");
+const OrderStatus = require("../enums/OrderStatus");
+const PaymentMethods = require("../enums/PaymentMethos.enum");
+const { default: PackageOrderType } = require("../enums/PackageOrderType.enum");
 
 const Order = sequelize.define(
   "Order",
@@ -31,12 +29,11 @@ const Order = sequelize.define(
     paymentMethod: {
       type: DataTypes.ENUM(...Object.values(PaymentMethods)),
     },
-
-    OrderItems: {
-      type: DataTypes.JSON,
-      allowNull: false,
-      defaultValue: [],
-    },
+    // orderItems: {
+    //   type: DataTypes.JSON,
+    //   allowNull: false,
+    //   defaultValue: [],
+    // },
     totalPriceInBdt: {
       type: DataTypes.FLOAT,
       allowNull: true,
@@ -60,18 +57,6 @@ const Order = sequelize.define(
   }
 );
 
-
 module.exports = Order;
 
-// ... existing code ...
-
-module.exports = Order;
-
-// Sync the Orders model separately
-Order.sync({ alter: true })
-  .then(() => {
-    console.log('Orders table created successfully');
-  })
-  .catch((error) => {
-    console.error('Error creating Orders table:', error);
-  });
+Order.sync({ alter: true });

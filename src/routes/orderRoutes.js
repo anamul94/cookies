@@ -1,44 +1,41 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 const {
   createOrder,
   getActiveOrdersByEmail,
-  getActiveProductsByCustomerEmail,
+  getActiveOrderByCustomerEmail,
   createTrialOrder,
   getOrderById,
   updateOrder,
   searchOrdersWithPagination,
   searchTrialOrdersWithPagination,
   updateTrialOrderStatus,
-} = require("../controllers/orderController"); 
+} = require("../controllers/orderController");
 const multer = require("multer");
-const { authenticate } = require('../middlewares/authMiddleware');
+const { authenticate } = require("../middleware/authMiddleware");
 const upload = multer({ dest: "uploads/" });
+const { customerAuth } = require("../middleware/customerAuthMiddleware");
 
-// Create a new order for a customer
-router.post('/create', createOrder);
+// 1. Specific POST routes
+router.post("/create", createOrder);
+router.post("/createTrialOrder", upload.single("image"), createTrialOrder);
+router.post(
+  "/getActiveOrderByCustomerEmail",
+  customerAuth,
+  getActiveOrderByCustomerEmail
+);
+router.post("/search", searchOrdersWithPagination);
+router.post("/search-trial-order", searchTrialOrdersWithPagination);
 
-// Create a new trial order for a customer
-router.post('/createTrialOrder', upload.single('image'), createTrialOrder);
-
+// 2. Specific PUT routes
 router.put(
   "/update-trial-order-status/:id",
   authenticate,
   updateTrialOrderStatus
 );
+router.put("/:id", updateOrder);
 
-// Get an order by ID
-router.get('/:id', getOrderById);
-
-// Update an order's status or email
-router.put('/:id', updateOrder);
-
-// Update a trial order's status
-
-// Search for orders with pagination
-router.post('/search', searchOrdersWithPagination);
-
-// Search for trial orders with pagination
-router.post("/search-trial-order", searchTrialOrdersWithPagination);
+// 3. Specific GET routes
+router.get("/:id", getOrderById);
 
 module.exports = router;

@@ -8,9 +8,9 @@ const loggingMiddleware = (req, res, next) => {
     console.log(`URL: ${originalUrl}`);
     
     // Safely check and log body
-    if (req.body && Object.keys(req.body).length > 0) {
-        console.log('Body:', JSON.stringify(req.body, null, 2));
-    }
+    // if (req.body && Object.keys(req.body).length > 0) {
+    //     console.log('Body:', JSON.stringify(req.body, null, 2));
+    // }
     
     // Safely check and log query
     if (req.query && Object.keys(req.query).length > 0) {
@@ -31,9 +31,9 @@ const loggingMiddleware = (req, res, next) => {
     res.send = function(body) {
         console.log('=== Response Log ===');
         console.log(`Status: ${res.statusCode}`);
-        if (body) {
-            console.log('Body:', typeof body === 'string' ? body : JSON.stringify(body, null, 2));
-        }
+        // if (body) {
+        //     console.log('Body:', typeof body === 'string' ? body : JSON.stringify(body, null, 2));
+        // }
         console.log('=================');
         
         // Call the original send function

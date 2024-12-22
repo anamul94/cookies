@@ -7,7 +7,7 @@ const {
   updatePlan,
   getAllPackagesWithPagination,
 } = require("../controllers/packageController");
-const { authenticate } = require("../middlewares/authMiddleware");
+const { authenticate } = require("../middleware/authMiddleware");
 
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });

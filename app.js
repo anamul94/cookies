@@ -17,7 +17,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 setupSwagger(app);
-// app.use(loggerMiddleware);
+app.use(loggerMiddleware);
 
 // Routes
 app.use('/auth', authRoutes);
