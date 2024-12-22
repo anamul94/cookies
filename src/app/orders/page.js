@@ -160,6 +160,10 @@ export default function OrdersDashboard() {
         setCurrentPage(1); // Reset to first page when filters change
     };
 
+    const handleViewDetails = (orderId) => {
+        router.push(`/orders/${orderId}`);
+    };
+
     const totalPages = Math.ceil(totalOrders / limit);
 
     return (
@@ -233,7 +237,7 @@ export default function OrdersDashboard() {
                                             Status
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Created At
+                                            Order At
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Actions
@@ -304,12 +308,20 @@ export default function OrdersDashboard() {
                                                         </button>
                                                     </>
                                                 ) : (
-                                                    <button
-                                                        onClick={() => startEditing(order)}
-                                                        className="text-blue-600 hover:text-blue-900"
-                                                    >
-                                                        Edit
-                                                    </button>
+                                                    <>
+                                                        <button
+                                                            onClick={() => startEditing(order)}
+                                                            className="text-blue-600 hover:text-blue-900 mr-2"
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleViewDetails(order.id)}
+                                                            className="text-indigo-600 hover:text-indigo-900"
+                                                        >
+                                                            View Details
+                                                        </button>
+                                                    </>
                                                 )}
                                             </td>
                                         </tr>
