@@ -41,7 +41,7 @@ const subscribeToWebSocket = (email, macAddress, onMessageCallback) => {
         const messageString = data.toString();
         const message = JSON.parse(messageString);
         console.log("Parsed WebSocket message:", message);
-        
+
         if (onMessageCallback) {
             onMessageCallback(message, email, macAddress);
         }
@@ -58,7 +58,22 @@ const subscribeToWebSocket = (email, macAddress, onMessageCallback) => {
     return ws;
 };
 
+// Function to request new password
+const requestNewPassword = async (email) => {
+    try {
+        const response = await axios.post(
+            `${API_BASE_URL}/customer/newPassword`,
+            { email }
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error requesting new password:", error);
+        throw error;
+    }
+};
+
 module.exports = {
     getActiveProducts,
-    subscribeToWebSocket
+    subscribeToWebSocket,
+    requestNewPassword
 };

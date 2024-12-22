@@ -6,6 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <title>Cookies Merging App</title>
+    <style>
+        .tab-container {
+            margin-bottom: 20px;
+        }
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .tab-button {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: #f0f0f0;
+            border-radius: 4px;
+        }
+        .tab-button.active {
+            background: #007bff;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
 </head>
 
 <body>
@@ -14,23 +41,41 @@
     </header>
 
     <div id="appContainer">
-        <h1>Available Products</h1>
-
-        <div class="input-group">
-            <div class="input-field">
-                <label for="customerEmail">Customer Email:</label>
-                <input type="email" id="customerEmail" placeholder="example@gmail.com">
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" data-tab="products">Products</button>
+                <button class="tab-button" data-tab="reset">Reset Password</button>
             </div>
-            
-            <div class="input-field">
-                <label for="password">Password:</label>
-                <input type="password" id="password" placeholder="Enter your password">
+
+            <div id="productsTab" class="tab-content active">
+                <h1>Available Products</h1>
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="customerEmail">Customer Email:</label>
+                        <input type="email" id="customerEmail" placeholder="example@gmail.com">
+                    </div>
+                    
+                    <div class="input-field">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" placeholder="Enter your password">
+                    </div>
+                </div>
+                <button id="fetchProducts">Fetch Products</button>
+                <div id="productsContainer"></div>
+            </div>
+
+            <div id="resetTab" class="tab-content">
+                <h1>Reset Password</h1>
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="resetEmail">Email:</label>
+                        <input type="email" id="resetEmail" placeholder="Enter your email">
+                    </div>
+                </div>
+                <button id="resetPassword">Request New Password</button>
+                <div id="resetMessage"></div>
             </div>
         </div>
-        
-        <button id="fetchProducts">Fetch Products</button>
-
-        <div id="productsContainer"></div>
     </div>
 
     <footer>
@@ -38,6 +83,46 @@
     </footer>
 
     <script>
+        // Tab switching functionality
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons and contents
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked button and corresponding content
+                button.classList.add('active');
+                const tabId = button.getAttribute('data-tab') + 'Tab';
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Reset password functionality
+        document.getElementById("resetPassword").addEventListener("click", async () => {
+            const resetEmailInput = document.getElementById("resetEmail");
+            const email = resetEmailInput.value.trim();
+            const messageDiv = document.getElementById("resetMessage");
+
+            if (!email) {
+                messageDiv.innerHTML = "<p style='color: red;'>Please enter your email address.</p>";
+                return;
+            }
+
+            resetEmailInput.disabled = true;
+            messageDiv.innerHTML = "<p>Processing request...</p>";
+
+            try {
+                await window.electronAPI.requestNewPassword(email);
+                messageDiv.innerHTML = "<p style='color: green;'>Password reset instructions have been sent to your email.</p>";
+            } catch (error) {
+                console.error("Error requesting password reset:", error);
+                messageDiv.innerHTML = "<p style='color: red;'>Error requesting password reset. Please try again later.</p>";
+            } finally {
+                resetEmailInput.disabled = false;
+            }
+        });
+
+        // Products functionality
         document.getElementById("fetchProducts").addEventListener("click", async () => {
             const emailInput = document.getElementById("customerEmail");
             const passwordInput = document.getElementById("password");
@@ -46,9 +131,6 @@
 
             if (!email || !password) {
                 alert("Please enter both email and password.");
-                // Re-enable the inputs
-                emailInput.disabled = false;
-                passwordInput.disabled = false;
                 return;
             }
 
@@ -94,7 +176,7 @@
                 console.error("Error fetching products:", error);
                 container.innerHTML = "<p>Error fetching products. Please try again later.</p>";
             } finally {
-                // Re-enable inputs after fetch completes (whether success or error)
+                // Re-enable inputs after fetch completes
                 emailInput.disabled = false;
                 passwordInput.disabled = false;
             }

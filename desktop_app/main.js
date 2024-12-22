@@ -3,7 +3,7 @@ const axios = require("axios");
 const path = require("path");
 const os = require("os");
 const WebSocket = require("ws");
-const { getActiveProducts, subscribeToWebSocket } = require("./api");
+const { getActiveProducts, subscribeToWebSocket, requestNewPassword } = require("./api");
 
 let mainWindow;
 let macAddress = null;
@@ -90,6 +90,15 @@ app.whenReady().then(() => {
 
         // Fetch data from the backend API
         return await getActiveProducts(customerEmail, password, macAddress);
+    });
+
+    ipcMain.handle("request-new-password", async (event, email) => {
+        try {
+            return await requestNewPassword(email);
+        } catch (error) {
+            console.error("Error requesting new password:", error);
+            throw error;
+        }
     });
 
     ipcMain.handle("open-url-with-cookies", async (event, { url, cookies }) => {
