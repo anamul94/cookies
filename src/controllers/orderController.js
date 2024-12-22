@@ -383,12 +383,12 @@ exports.getOrderById = async (req, res) => {
       {
         model: Product,
         as: "product", // Alias defined in association
-        attributes: ["id", "name", "price"], // Include only required fields
+        attributes: ["id", "title", "url", "cookie"], // Include only required fields
       },
       {
         model: Package,
         as: "package", // Alias defined in association
-        attributes: ["id", "title", "description"], // Include only required fields
+        attributes: ["id", "title"], // Include only required fields
       },
     ],
   });
@@ -396,8 +396,12 @@ exports.getOrderById = async (req, res) => {
   console.log(orderItems);
 
 
+    const response = {
+      order,
+      orderItems,
+    };
 
-    res.status(200).json({ order });
+    res.status(200).json({ response });
   } catch (error) {
     console.error("Error fetching order by ID:", error);
     res.status(500).json({ message: "Error fetching order", error });
@@ -437,16 +441,6 @@ exports.updateOrder = async (req, res) => {
   }
 };
 
-exports.getOrderById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const order = await Order.findByPk(id);
-    res.status(200).json({ order });
-  } catch (error) {
-    console.error("Error fetching order by ID:", error);
-    res.status(500).json({ message: "Error fetching order", error });
-  }
-};
 
 exports.updateTrialOrderStatus = async (req, res) => {
   console.log("update trial order status ctrl", req.body);
@@ -501,6 +495,7 @@ exports.searchTrialOrdersWithPagination = async (req, res) => {
     limit,
     offset,
     where,
+    order: [['id', 'DESC']],
   });
   res.status(200).json({
     total: count,
@@ -509,3 +504,13 @@ exports.searchTrialOrdersWithPagination = async (req, res) => {
     trialOrders,
   });
 };
+
+exports.updateOrderItemStatus = async (req, res) => {
+  console.log("update order item status ctrl", req.body);
+  const { id } = req.params;
+  const { status } = req.body;
+  const orderItem = await OrderItems.findByPk(id);
+  orderItem.status = status;
+  await orderItem.save();
+  res.status(200).json({ message: "Order item status updated successfully", orderItem });
+}

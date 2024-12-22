@@ -10,6 +10,7 @@ const {
   searchOrdersWithPagination,
   searchTrialOrdersWithPagination,
   updateTrialOrderStatus,
+  updateOrderItemStatus,
 } = require("../controllers/orderController");
 const multer = require("multer");
 const { authenticate } = require("../middleware/authMiddleware");
@@ -33,9 +34,11 @@ router.put(
   authenticate,
   updateTrialOrderStatus
 );
+router.put("/update-order-item-status/:id", authenticate, updateOrderItemStatus);
+
 router.put("/:id", updateOrder);
 
 // 3. Specific GET routes
-router.get("/:id", getOrderById);
+router.get("/:id",  getOrderById);
 
 module.exports = router;
