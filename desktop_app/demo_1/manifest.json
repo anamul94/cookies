@@ -1,0 +1,26 @@
+{
+    "manifest_version": 3,
+    "name": "Cookie Setter Extension",
+    "version": "1.0",
+    "description": "Set cookies dynamically and open URLs.",
+    "permissions": [
+        "declarativeNetRequest",
+        "activeTab",
+        "webRequest",
+        "scripting"
+    ],
+    "host_permissions": [
+        "https://app.pluralsight.com/*"
+    ],
+    "action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+            "16": "icons/app.png",
+            "48": "icons/app.png",
+            "128": "icons/app.png"
+        }
+    },
+    "background": {
+        "service_worker": "background.js"
+    }
+}

@@ -3,6 +3,7 @@ const axios = require("axios");
 const path = require("path");
 const os = require("os");
 const WebSocket = require("ws");
+const { getActiveProducts, subscribeToWebSocket } = require("./api");
 
 let mainWindow;
 let macAddress = null;
@@ -28,7 +29,6 @@ const getMacAddress = () => {
     return "00:00:00:00:00:00"; // Default value if no MAC address is found
 };
 
-
 // Function to set dynamic cookies
 const setDynamicCookies = async (cookies, url) => {
     const cookiePromises = cookies.map((cookie) => {
@@ -52,38 +52,15 @@ const setDynamicCookies = async (cookies, url) => {
     }
 };
 
-// Function to connect to WebSocket
-const subscribeToWebSocket = (email) => {
-    ws = new WebSocket("ws://localhost:3000"); // Replace with your WebSocket server URL
-
-    ws.on("open", () => {
-        console.log("WebSocket connected");
-        ws.send(JSON.stringify({ type: "subscribe", email })); // Subscribe with email
-    });
-
-    ws.on("message", (data) => {
-        const messageString = data.toString();
-
-        // Parse the string into a JSON object
-        const message = JSON.parse(messageString);
-
-        console.log("Parsed WebSocket message:", message);
-        if (message.customerEmail === email && message.mac === macAddress) {
-            console.log("Valid WebSocket data received:", message);
-        } else {
-            console.error("Invalid WebSocket data received. Refreshing interface.");
-            mainWindow.reload(); // Refresh the interface
-            app.quit();
-        }
-    });
-
-    ws.on("close", () => {
-        console.log("WebSocket disconnected");
-    });
-
-    ws.on("error", (error) => {
-        console.error("WebSocket error:", error);
-    });
+// Function to handle WebSocket message
+const handleWebSocketMessage = (message, email, macAddress) => {
+    if (message.customerEmail === email && message.mac === macAddress) {
+        console.log("Valid WebSocket data received:", message);
+    } else {
+        console.error("Invalid WebSocket data received. Refreshing interface.");
+        mainWindow.reload();
+        app.quit();
+    }
 };
 
 app.whenReady().then(() => {
@@ -107,22 +84,12 @@ app.whenReady().then(() => {
 
     mainWindow.loadFile("index.html");
 
-    ipcMain.handle("get-active-products", async (event, customerEmail) => {
-        // Subscribe to WebSocket
-        if (ws) ws.close(); // Close existing WebSocket connection
-        subscribeToWebSocket(customerEmail);
+    ipcMain.handle("get-active-products", async (event, customerEmail, password) => {
+        // Subscribe to WebSocket with the message handler
+        subscribeToWebSocket(customerEmail, macAddress, handleWebSocketMessage);
 
         // Fetch data from the backend API
-        try {
-            const response = await axios.get(
-                `http://localhost:3000/order/products?customerEmail=${encodeURIComponent(customerEmail)}&mac=${encodeURIComponent(macAddress)}`
-            );
-
-            return response.data.activeProducts;
-        } catch (error) {
-            console.error("Error fetching data from API:", error);
-            return [];
-        }
+        return await getActiveProducts(customerEmail, password, macAddress);
     });
 
     ipcMain.handle("open-url-with-cookies", async (event, { url, cookies }) => {
@@ -142,10 +109,8 @@ app.whenReady().then(() => {
     ipcMain.handle("get-mac-address", () => macAddress); // Expose MAC address to renderer
 });
 
-
 app.on("window-all-closed", () => {
     if (process.platform !== "darwin") {
         app.quit();
     }
 });
-

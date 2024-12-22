@@ -1,0 +1,136 @@
+{
+   "background": {
+      "scripts": [
+         "files/background.js"
+      ]
+   },
+   "browser_action": {
+      "default_icon": "icons/128.png",
+      "default_popup": "files/popup.html",
+      "default_title": "SEOToolBD"
+   },
+   "content_scripts": [
+      {
+         "js": [
+            "files/v2.js"
+         ],
+         "matches": [
+            "https://seotoolbd.com/*"
+         ]
+      },
+      {
+         "js": [
+            "files/content.js"
+         ],
+         "matches": [
+            "*://*.seotoolbd.com/*/?url=*"
+         ]
+      },
+      {
+         "js": [
+            "files/helium10.js"
+         ],
+         "matches": [
+            "*://*.helium10.com/*"
+         ]
+      },
+      {
+         "js": [
+            "files/semrush.js"
+         ],
+         "matches": [
+            "*://*.semrush.com/*"
+         ]
+      },
+      {
+         "js": [
+            "files/moz.js"
+         ],
+         "matches": [
+            "*://*.moz.com/*"
+         ]
+      },
+      {
+         "js": [
+            "files/ubersuggest.js"
+         ],
+         "matches": [
+            "*://*.neilpatel.com/*"
+         ]
+      },
+      {
+         "js": [
+            "files/keywordrevealer.js"
+         ],
+         "matches": [
+            "*://*.keywordrevealer.com/*"
+         ]
+      },
+      {
+         "js": [
+            "files/wordai.js"
+         ],
+         "matches": [
+            "*://*.wordai.com/*"
+         ]
+      },
+      {
+         "js": [
+            "files/woorank.js"
+         ],
+         "matches": [
+            "*://*.woorank.com/*"
+         ]
+      },
+      {
+         "js": [
+            "files/spyfu.js"
+         ],
+         "matches": [
+            "*://*.spyfu.com/*"
+         ]
+      },
+      {
+         "js": [
+            "files/wave.js"
+         ],
+         "matches": [
+            "*://wave.video/*"
+         ]
+      }
+   ],
+   "description": "Access SEO Tools by One Click",
+   "externally_connectable": {
+      "matches": [
+         "*://*.seotoolbd.com/*"
+      ],
+      "accepts_tls_channel_id": false
+   },
+   "homepage_url": "https://seotoolbd.com",
+   "icons": {
+      "16": "icons/16.png",
+      "32": "icons/32.png",
+      "128": "icons/128.png"
+   },
+   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self' https://www.google-analytics.com",
+   "manifest_version": 2,
+   "name": "SEO Tool BD",
+   "key": "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCXeWt394bmQIeeTbyM5pnCk2gIOdshrRzrmC4Nbgbo6eBZW/672CWXzUn27sQJ0RCcVKCnZg8AqLh/ESrWSKB4Fn4m+/b6M+2CKj+8/LHEV77pe5sfhaRmMaiGsLIsFHzAaSekCi/0aBNPNC8y8L1DcxRx+3GcZ01DxwFDATvEQPnYB9JLpuDa9Gkmw7KTdfbvCW6PXaWajJ6PTbUvFB9rOCuzkteIHorvbxTQHC/JAwui7xJIeDdt5cjgSSpopq/qUVSCXsbQnc5b6c42TJrtGXAtbchv1SR85euuvWrc0MNUp1GfFbuhJTYORYGQm7Jo/xz958Ji+PS9YHzYmAKDAgMBAAECggEAATPgvLSB8ZrNZT0w3OgLWsZHte5Msqpx7L2l2aJyaBTpGHdfYA3BMywChz92B1smcD3EONa82D1yT1y8vcSEA1Ov8JCvihJnP9FWN7thTqdnHXZkLct9HegVcmjWQQ2RTHNnODfMz6Of1lVDZZNJ13fJZFWTVyMoca24u5nc00+YRRCXClFql7eYgWb6fODTzm9Fi/cETw0+vKJD9cHpro9aUSwt8cTz4wiMYnP/kvZb6VehunPnBHJJd0Ywa6r80B3gDT6l2gUeELdKa6JpCEQfj3Tt+2YhjaxXseqlkbgn0J+AmCr3LvqB6QIcEbSPD8IPjShw0p90rkKo+1kAHQKBgQDRVlMLR1LHylhgHca8EoMQqTFfLN/1x9IZe7tEN4r2feWb7jcelWx8IIy8sIu8qcC0OZTpKapkBW7v5yjAd3Ee6jNHCanIRirw5nKa/LeRxMLSXg1tpEhChgf3a6WMTRsbFnDQSrV3VqT1E3e1YdrItbPctm50uUb5Uqy3lSjvDwKBgQC5PTDHJDnQBr+eXr6hPPyf5p0uelApkG9BK51irhoQZ5B0KuBBZYGTZ9ImJWwsDqbbMFkByovf4qD+yVHTgxbHbMMOJoa7WX7MJYyCt7uzo7wXQoGeI41uCfZ9y7irPQZHU8qjGw/QDQMEujNzOVb4/Iw9UqSFO+ymJigBoZY1TQKBgQC7jyvCvDnINlzuaV9pnPB/mghZbRyQ22M8X+cOnPFOHsj95/bM2TalFIjkew4IkNPO5pSsQB+hlFisbCHQKHRbLZ2Z9WeAwJWy19cxVGKpIXEpCQnhBcOUjwBOR83BIki6AWY8yeNDNIeB6dpk0nMzR9IKXA4lWOfldZS4u9U8MwKBgQCRN1Ay/co4s+GqVNoa6wWckRyt4ANR4kHllDyIrLYQIDBVcXtmqR3AokZT00iO7VmPQcK1LcUj2bWep9J2/zBvXGs5f6hl3Q4TGmih3UnP1U9R6LhWccag+jx7d6aoz2lJp32XClMGJf00yoglD1GIVevW8x+4tzaZNhZs2PE5jQKBgDp4OhmoJvVqnpXxsT6Bl5VvtcLtEXKjt8v0GArCIrZxP/fkclJ3d3Rwv7dNIjYY1h1udutSHdRjnIljOvD4JhUW9UpQPVqXH7VksXWzhYz6L9fuL1bj+UUfAKfIm/0WMoRyuSXEuU3Bcg7G/TjPGRKQL7xKSlckgItOl3kkTVlg",
+   "offline_enabled": true,
+   "permissions": [
+      "activeTab",
+      "cookies",
+      "proxy",
+      "unlimitedStorage",
+      "storage",
+      "management",
+      "tabs",
+      "webRequestBlocking",
+      "webRequest",
+      "webNavigation",
+      "<all_urls>"
+   ],
+   "short_name": "SEO Tool BD",
+   "update_url": "https://seotoolbd.com/update.xml",
+   "version": "3.0.9"
+}

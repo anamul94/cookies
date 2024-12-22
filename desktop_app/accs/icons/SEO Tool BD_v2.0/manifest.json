@@ -1,0 +1,93 @@
+{
+    "manifest_version" : 2,
+    "name" : "SEO Tool BD",
+    "version" : "2.0",
+    "permissions": [ "cookies", "webRequestBlocking", "webRequest", "<all_urls>"],
+    "background":{
+        "scripts":["background.js"]
+    },
+    "browser_action": {} ,
+	"homepage_url": "https://seotoolbd.com",
+	"icons": {
+      "16": "icons/16.png",
+      "32": "icons/32.png",
+      "128": "icons/128.png"
+   },
+    "content_scripts": [
+	{
+      "all_frames": true,
+      "js": [ "scripts/x46x49.js" ],
+      "matches": [ "*://ahrefs.com/*" ],
+      "run_at": "document_end"
+   }, {
+      "all_frames": true,
+      "js": [ "scripts/x46x47.js" ],
+      "matches": [ "*://*.semrush.com/*" ],
+      "run_at": "document_end"
+   }, {
+      "all_frames": true,
+      "js": [ "scripts/x46x48.js" ],
+      "matches": [ "*://*.moz.com/*" ],
+      "run_at": "document_end"
+   }, {
+      "all_frames": true,
+      "js": [ "scripts/x46x50.js" ],
+      "matches": [ "*://*.woorank.com/*" ],
+      "run_at": "document_end"
+   }, {
+      "all_frames": true,
+      "js": [ "scripts/x46x51.js" ],
+      "matches": [ "*://*.canva.com/*" ],
+      "run_at": "document_end"
+   }, {
+      "all_frames": true,
+      "js": [ "scripts/x46x52.js" ],
+      "matches": [ "*://*.grammarly.com/*" ],
+      "run_at": "document_end"
+   }, {
+      "all_frames": true,
+      "js": [ "scripts/x46x53.js" ],
+      "matches": [ "*://*.wordai.com/*" ],
+      "run_at": "document_end"
+   },  {
+      "all_frames": true,
+      "js": [ "scripts/x46x54.js" ],
+      "matches": [ "*://*.storybase.com/*" ],
+      "run_at": "document_end"
+   },  {
+      "all_frames": true,
+      "js": [ "scripts/x46x55.js" ],
+      "matches": [ "*://*.linkedin.com/*" ],
+      "run_at": "document_end"
+   },  {
+      "all_frames": true,
+      "js": [ "scripts/x46x56.js" ],
+      "matches": [ "*://*.crazyegg.com/*" ],
+      "run_at": "document_end"
+   },  {
+      "all_frames": true,
+      "js": [ "scripts/x46x57.js" ],
+      "matches": [ "*://*.buzzsumo.com/*" ],
+      "run_at": "document_end"
+   },  {
+      "all_frames": true,
+      "js": [ "scripts/x46x58.js" ],
+      "matches": [ "*://*.amztracker.com/*" ],
+      "run_at": "document_end"
+   },  {
+      "all_frames": true,
+      "js": [ "scripts/x46x59.js" ],
+      "matches": [ "*://*.articlebuilder.net/*" ],
+      "run_at": "document_end"
+   },  {
+      "all_frames": true,
+      "js": [ "scripts/x46x60.js" ],
+      "matches": [ "*://*.skillshare.com/*" ],
+      "run_at": "document_end"
+   }, {
+        "matches" : ["<all_urls>"],
+        "js": [ "scripts/x46x45.js", "scripts/x46x46.js" , "scripts/x46x44.js" ],
+        "run_at": "document_end"
+        }
+    ]
+}
