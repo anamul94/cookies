@@ -4,6 +4,7 @@ const sequelize = require("../config/db");
 const OrderStatus = require("../enums/OrderStatus");
 const PaymentMethods = require("../enums/PaymentMethos.enum");
 const { default: PackageOrderType } = require("../enums/PackageOrderType.enum");
+const CurrencyEnum = require("../enums/CurrencyEnum");
 
 const Order = sequelize.define(
   "Order",
@@ -34,15 +35,15 @@ const Order = sequelize.define(
     //   allowNull: false,
     //   defaultValue: [],
     // },
-    totalPriceInBdt: {
+    totalPrice: {
       type: DataTypes.FLOAT,
       allowNull: true,
       defaultValue: 0,
     },
-    totalPriceInUsd: {
-      type: DataTypes.FLOAT,
-      allowNull: true,
-      defaultValue: 0,
+    currency: {
+      type: DataTypes.ENUM(...Object.values(CurrencyEnum)),
+      allowNull: false,
+      defaultValue: CurrencyEnum.BDT,
     },
     orderType: {
       type: DataTypes.ENUM(...Object.values(PackageOrderType)),

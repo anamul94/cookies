@@ -18,6 +18,7 @@ const path = require("path");
 const TrialOrderStatus = require("../enums/TrialOrderStatus");
 const OrderItems = require("../models/OrderItems"); // Import OrderItems model
 const { default: PackageOrderType } = require("../enums/PackageOrderType.enum");
+const CurrencyEnum = require("../enums/CurrencyEnum");
 
 // POST: Create Order
 exports.createOrder = async (req, res) => {
@@ -29,6 +30,7 @@ exports.createOrder = async (req, res) => {
     phoneNumber,
     transactionNumber,
     paymentMethod,
+    currency,
   } = req.body;
 
   try {
@@ -67,31 +69,33 @@ exports.createOrder = async (req, res) => {
 
     const orderItemIds = [];
     const startDate = new Date();
-    let totalPriceInBdt = 0;
-    let totalPriceInUsd = 0;
+    let totalPrice = 0;
 
-      console.log("plans", plans);
-      
-      for (const plan of plans) {
-        const productIds = plan.productID.split(",").map(Number);
-          console.log("productIds", productIds);
-          totalPriceInBdt += plan.priceInBdt;
-          totalPriceInUsd += plan.priceInUsd;
+    console.log("plans", plans);
+
+    for (const plan of plans) {
+      const productIds = plan.productID.split(",").map(Number);
+      console.log("productIds", productIds);
+      if (currency === CurrencyEnum.BDT) {
+        totalPrice += Number(plan.priceInBdt);
+      } else {
+        totalPrice += Number(plan.priceInUsd);
       }
+    }
 
     // Create OrderItems for each plan
-      const plansId = plans.map((plan) => plan.id);
-      console.log("create order");
-       const order = await Order.create({
-         customerEmail: customerEmail,
-         status: OrderStatus.PROCESSING,
-         phoneNumber: phoneNumber,
-         transactionNumber: transactionNumber,
-         paymentMethod: paymentMethod,
-         orderType: PackageOrderType.REGULAR,
-         totalPriceInBdt: totalPriceInBdt,
-         totalPriceInUsd: totalPriceInUsd,
-       });
+    const plansId = plans.map((plan) => plan.id);
+    console.log("create order");
+    const order = await Order.create({
+      customerEmail: customerEmail,
+      status: OrderStatus.PROCESSING,
+      phoneNumber: phoneNumber,
+      transactionNumber: transactionNumber,
+      paymentMethod: paymentMethod,
+      orderType: PackageOrderType.REGULAR,
+      totalPrice: totalPrice,
+      currency: currency,
+    });
     console.log("order", order);
     for (const plan of plans) {
       console.log("Plan", plan.productID);
@@ -99,9 +103,9 @@ exports.createOrder = async (req, res) => {
       console.log("productIds", productIds);
       for (const productId of productIds) {
         const orderItems = await OrderItems.create({
-            status: OrderStatus.PROCESSING,
-            customerEmail: customerEmail,
-            productId: productId,
+          status: OrderStatus.PROCESSING,
+          customerEmail: customerEmail,
+          productId: productId,
           startDate: startDate,
           endDate: calculateEndDate(
             plan.durationType,
@@ -112,13 +116,10 @@ exports.createOrder = async (req, res) => {
           orderId: order.id,
         });
         orderItemIds.push(orderItems.id);
-        totalPriceInBdt += plan.priceInBdt;
-        totalPriceInUsd += plan.priceInUsd;
       }
     }
 
-        // Create main order with all OrderItems
-   
+    // Create main order with all OrderItems
 
     res.status(201).json({
       message: "Order placed successfully",
@@ -218,7 +219,6 @@ exports.getActiveOrderByCustomerEmail = async (req, res) => {
   }
 };
 
-
 exports.createTrialOrder = async (req, res) => {
   console.log("Trial order ctrl", req.body);
   try {
@@ -295,13 +295,12 @@ exports.createTrialOrder = async (req, res) => {
           package.durationValue,
           new Date()
         ),
-          packageId: packageId,
+        packageId: packageId,
         status: OrderStatus.PROCESSING,
         orderId: order.id,
       });
       orderItemIds.push(orderItem.id);
     }
-    
 
     const trialOrder = await TrialOrder.create({
       name,
@@ -347,7 +346,7 @@ exports.searchOrdersWithPagination = async (req, res) => {
       where: filter,
       limit: parseInt(limit),
       offset: parseInt(offset),
-      order: [['id', 'DESC']],
+      order: [["id", "DESC"]],
     });
 
     console.log("orders", orders);
@@ -377,24 +376,23 @@ exports.getOrderById = async (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
-  const orderItems = await OrderItems.findAll({
-    where: { orderId: order.id },
-    include: [
-      {
-        model: Product,
-        as: "product", // Alias defined in association
-        attributes: ["id", "title", "url", "cookie"], // Include only required fields
-      },
-      {
-        model: Package,
-        as: "package", // Alias defined in association
-        attributes: ["id", "title"], // Include only required fields
-      },
-    ],
-  });
+    const orderItems = await OrderItems.findAll({
+      where: { orderId: order.id },
+      include: [
+        {
+          model: Product,
+          as: "product", // Alias defined in association
+          attributes: ["id", "title", "url", "cookie"], // Include only required fields
+        },
+        {
+          model: Package,
+          as: "package", // Alias defined in association
+          attributes: ["id", "title"], // Include only required fields
+        },
+      ],
+    });
 
-  console.log(orderItems);
-
+    console.log(orderItems);
 
     const response = {
       order,
@@ -428,7 +426,10 @@ exports.updateOrder = async (req, res) => {
 
     if (status !== undefined && status !== null) {
       order.status = status;
-      await OrderItems.update({ status: status }, { where: { orderId: order.id } });
+      await OrderItems.update(
+        { status: status },
+        { where: { orderId: order.id } }
+      );
     }
 
     // Save the updated order
@@ -440,7 +441,6 @@ exports.updateOrder = async (req, res) => {
     res.status(500).json({ message: "Error updating order", error });
   }
 };
-
 
 exports.updateTrialOrderStatus = async (req, res) => {
   console.log("update trial order status ctrl", req.body);
@@ -465,7 +465,10 @@ exports.updateTrialOrderStatus = async (req, res) => {
     if (order) {
       // Update the order status
       order.status = status;
-      await OrderItems.update({ status: status }, { where: { orderId: order.id } });
+      await OrderItems.update(
+        { status: status },
+        { where: { orderId: order.id } }
+      );
       await order.save();
     }
 
@@ -495,7 +498,7 @@ exports.searchTrialOrdersWithPagination = async (req, res) => {
     limit,
     offset,
     where,
-    order: [['id', 'DESC']],
+    order: [["id", "DESC"]],
   });
   res.status(200).json({
     total: count,
@@ -512,5 +515,7 @@ exports.updateOrderItemStatus = async (req, res) => {
   const orderItem = await OrderItems.findByPk(id);
   orderItem.status = status;
   await orderItem.save();
-  res.status(200).json({ message: "Order item status updated successfully", orderItem });
-}
+  res
+    .status(200)
+    .json({ message: "Order item status updated successfully", orderItem });
+};
