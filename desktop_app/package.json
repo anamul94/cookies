@@ -38,7 +38,12 @@
         }
       ],
       "icon": "build/icon.ico",
-      "publisherName": "Cookie Manager"
+      "publisherName": "Cookie Manager",
+      "legalTrademarks": "Cookie Manager",
+      "requestedExecutionLevel": "asInvoker",
+      "signingHashAlgorithms": ["sha256"],
+      "verifyUpdateCodeSignature": false,
+      "signAndEditExecutable": false
     },
     "nsis": {
       "oneClick": true,
@@ -52,7 +57,12 @@
       "createStartMenuShortcut": true,
       "shortcutName": "Cookie Manager",
       "include": "build/installer.nsh",
-      "deleteAppDataOnUninstall": true
+      "deleteAppDataOnUninstall": true,
+      "displayLanguageSelector": false,
+      "installerSidebar": false,
+      "artifactName": "${productName} Setup.${ext}",
+      "uninstallDisplayName": "${productName}",
+      "differentialPackage": false
     },
     "linux": {
       "target": [
@@ -71,7 +81,11 @@
     }
   },
   "keywords": ["cookie", "manager", "desktop", "electron"],
-  "author": "Cookie Manager Team",
+  "author": {
+    "name": "Cookie Manager Team",
+    "email": "support@cookiemanager.com",
+    "url": "https://cookiemanager.com"
+  },
   "license": "ISC",
   "dependencies": {
     "axios": "^1.7.9",
