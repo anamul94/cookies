@@ -1,121 +1,121 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
+import Link from "next/link";
 
 export default function Footer() {
-    return (
-        <footer className="bg-[#2563EB]">
-            <div className="max-w-7xl max-h-50 mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {/* Company Info */}
-                    <div>
-                        <h3 className="text-white text-lg font-bold mb-4">Cookie</h3>
-                        <p className="text-blue-100 text-sm">
-                            Empowering businesses with innovative solutions for seamless customer service management.
-                        </p>
-                    </div>
+  return (
+    <footer className="bg-[#2563EB]">
+      <div className="max-w-7xl max-h-50 mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Company Info */}
+          <div>
+            <h3 className="text-white text-lg font-bold mb-4">Cookie</h3>
+            <p className="text-blue-100 text-sm line-clamp-2">
+              Empowering businesses with innovative solutions for seamless
+              customer service management.
+            </p>
+          </div>
 
-                    {/* Quick Links */}
-                    <div>
-                        <h3 className="text-white text-lg font-bold mb-4">Quick Links</h3>
-                        <ul className="space-y-2">
-                            <li>
-                                <Link href="/about" className="text-blue-100 hover:text-white text-sm">
-                                    About Us
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/packages" className="text-blue-100 hover:text-white text-sm">
-                                    Packages
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/trial" className="text-blue-100 hover:text-white text-sm">
-                                    Free Trial
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/contact" className="text-blue-100 hover:text-white text-sm">
-                                    Contact Us
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
+          {/* Quick Links */}
+          <div>
+            <h3 className="text-white text-lg font-bold mb-4">Quick Links</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link
+                  href="/about"
+                  className="text-blue-100 hover:text-white text-sm"
+                >
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/shop"
+                  className="text-blue-100 hover:text-white text-sm"
+                >
+                  Packages
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/trial"
+                  className="text-blue-100 hover:text-white text-sm"
+                >
+                  Free Trial
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/about"
+                  className="text-blue-100 hover:text-white text-sm"
+                >
+                  Contact Us
+                </Link>
+              </li>
+            </ul>
+          </div>
 
-                    {/* Developer Info */}
-                    <div className="">
-                        <h3 className="text-white text-2xl font-bold mb-4">Developer</h3>
-                        <p className="text-blue-100 text-base mb-2">
-                            Developed by{" "}
-                            <span className="text-white font-semibold">Anamul Haque</span>
-                        </p>
-                        {/* Contact Links */}
-                        <div className="flex flex-col space-y-3 mt-4">
-                            <a
-                                href="https://github.com/anamul94"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center space-x-2 text-blue-100 hover:text-white transition-colors duration-300"
-                            >
-                                <span>
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-5 w-5"
-                                        fill="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path d="M12 .297C5.373.297 0 5.67 0 12.297c0 5.302 3.438 9.8 8.207 11.387.6.11.82-.26.82-.577v-2.155c-3.338.726-4.043-1.61-4.043-1.61-.546-1.385-1.332-1.753-1.332-1.753-1.09-.745.083-.73.083-.73 1.205.084 1.84 1.236 1.84 1.236 1.07 1.834 2.805 1.304 3.49.997.108-.775.42-1.305.762-1.605-2.665-.303-5.466-1.333-5.466-5.933 0-1.31.467-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23a11.53 11.53 0 013.003-.404c1.02.005 2.045.137 3.003.404 2.295-1.552 3.297-1.23 3.297-1.23.648 1.653.243 2.873.12 3.176.77.84 1.235 1.91 1.235 3.22 0 4.61-2.807 5.625-5.478 5.92.43.372.813 1.102.813 2.222v3.293c0 .318.217.694.825.577C20.565 22.095 24 17.599 24 12.297 24 5.67 18.627.297 12 .297z" />
-                                    </svg>
-                                </span>
-                                <span>GitHub</span>
-                            </a>
+          {/* Developer Info */}
+          <div className="">
+            <h3 className="text-white text-2xl font-bold mb-4">Developer</h3>
+            {/* <p className="text-blue-100 text-base mb-2">
+              Developed by{" "}
+              <span className="text-white font-semibold">Anamul Haque</span>
+            </p> */}
+            {/* Contact Links */}
+            <div className="flex flex-col space-y-3 mt-4">
+              
 
-                            <a
-                                href="https://www.linkedin.com/in/md-anamul-haque94/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center space-x-2 text-blue-100 hover:text-white transition-colors duration-300"
-                            >
-                                <span>
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-5 w-5"
-                                        fill="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path d="M20.447 20.452h-3.554v-5.568c0-1.328-.026-3.042-1.855-3.042-1.856 0-2.141 1.45-2.141 2.949v5.661h-3.549V9h3.414v1.561h.048c.476-.9 1.635-1.849 3.366-1.849 3.601 0 4.267 2.37 4.267 5.452v6.288zM5.337 7.433c-1.145 0-2.072-.927-2.072-2.072S4.192 3.289 5.337 3.289s2.072.927 2.072 2.072-0.927 2.072-2.072 2.072zM7.119 20.452H3.558V9h3.561v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.727v20.547C0 23.226.792 24 1.771 24h20.451C23.2 24 24 23.226 24 22.274V1.727C24 .774 23.2 0 22.225 0z" />
-                                    </svg>
-                                </span>
-                                <span>LinkedIn</span>
-                            </a>
+              <Link
+                href="https://wa.me/01718234953"
+                target="_blank"
+                className="flex items-center space-x-2 text-blue-100 hover:text-white transition-colors duration-300"
+              >
+                <span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    fill="currentColor"
+                    viewBox="0 0 50 50"
+                  >
+                    <path d="M 25 2 C 12.309534 2 2 12.309534 2 25 C 2 29.079097 3.1186875 32.88588 4.984375 36.208984 L 2.0371094 46.730469 A 1.0001 1.0001 0 0 0 3.2402344 47.970703 L 14.210938 45.251953 C 17.434629 46.972929 21.092591 48 25 48 C 37.690466 48 48 37.690466 48 25 C 48 12.309534 37.690466 2 25 2 z M 25 4 C 36.609534 4 46 13.390466 46 25 C 46 36.609534 36.609534 46 25 46 C 21.278025 46 17.792121 45.029635 14.761719 43.333984 A 1.0001 1.0001 0 0 0 14.033203 43.236328 L 4.4257812 45.617188 L 7.0019531 36.425781 A 1.0001 1.0001 0 0 0 6.9023438 35.646484 C 5.0606869 32.523592 4 28.890107 4 25 C 4 13.390466 13.390466 4 25 4 z M 16.642578 13 C 16.001539 13 15.086045 13.23849 14.333984 14.048828 C 13.882268 14.535548 12 16.369511 12 19.59375 C 12 22.955271 14.331391 25.855848 14.613281 26.228516 L 14.615234 26.228516 L 14.615234 26.230469 C 14.588494 26.195329 14.973031 26.752191 15.486328 27.419922 C 15.999626 28.087653 16.717405 28.96464 17.619141 29.914062 C 19.422612 31.812909 21.958282 34.007419 25.105469 35.349609 C 26.554789 35.966779 27.698179 36.339417 28.564453 36.611328 C 30.169845 37.115426 31.632073 37.038799 32.730469 36.876953 C 33.55263 36.755876 34.456878 36.361114 35.351562 35.794922 C 36.246248 35.22873 37.12309 34.524722 37.509766 33.455078 C 37.786772 32.688244 37.927591 31.979598 37.978516 31.396484 C 38.003976 31.104927 38.007211 30.847602 37.988281 30.609375 C 37.969311 30.371148 37.989581 30.188664 37.767578 29.824219 C 37.302009 29.059804 36.774753 29.039853 36.224609 28.767578 C 35.918939 28.616297 35.048661 28.191329 34.175781 27.775391 C 33.303883 27.35992 32.54892 26.991953 32.083984 26.826172 C 31.790239 26.720488 31.431556 26.568352 30.914062 26.626953 C 30.396569 26.685553 29.88546 27.058933 29.587891 27.5 C 29.305837 27.918069 28.170387 29.258349 27.824219 29.652344 C 27.819619 29.649544 27.849659 29.663383 27.712891 29.595703 C 27.284761 29.383815 26.761157 29.203652 25.986328 28.794922 C 25.2115 28.386192 24.242255 27.782635 23.181641 26.847656 L 23.181641 26.845703 C 21.603029 25.455949 20.497272 23.711106 20.148438 23.125 C 20.171937 23.09704 20.145643 23.130901 20.195312 23.082031 L 20.197266 23.080078 C 20.553781 22.728924 20.869739 22.309521 21.136719 22.001953 C 21.515257 21.565866 21.68231 21.181437 21.863281 20.822266 C 22.223954 20.10644 22.02313 19.318742 21.814453 18.904297 L 21.814453 18.902344 C 21.828863 18.931014 21.701572 18.650157 21.564453 18.326172 C 21.426943 18.001263 21.251663 17.580039 21.064453 17.130859 C 20.690033 16.232501 20.272027 15.224912 20.023438 14.634766 L 20.023438 14.632812 C 19.730591 13.937684 19.334395 13.436908 18.816406 13.195312 C 18.298417 12.953717 17.840778 13.022402 17.822266 13.021484 L 17.820312 13.021484 C 17.450668 13.004432 17.045038 13 16.642578 13 z M 16.642578 15 C 17.028118 15 17.408214 15.004701 17.726562 15.019531 C 18.054056 15.035851 18.033687 15.037192 17.970703 15.007812 C 17.906713 14.977972 17.993533 14.968282 18.179688 15.410156 C 18.423098 15.98801 18.84317 16.999249 19.21875 17.900391 C 19.40654 18.350961 19.582292 18.773816 19.722656 19.105469 C 19.863021 19.437122 19.939077 19.622295 20.027344 19.798828 L 20.027344 19.800781 L 20.029297 19.802734 C 20.115837 19.973483 20.108185 19.864164 20.078125 19.923828 C 19.867096 20.342656 19.838461 20.445493 19.625 20.691406 C 19.29998 21.065838 18.968453 21.483404 18.792969 21.65625 C 18.639439 21.80707 18.36242 22.042032 18.189453 22.501953 C 18.016221 22.962578 18.097073 23.59457 18.375 24.066406 C 18.745032 24.6946 19.964406 26.679307 21.859375 28.347656 C 23.05276 29.399678 24.164563 30.095933 25.052734 30.564453 C 25.940906 31.032973 26.664301 31.306607 26.826172 31.386719 C 27.210549 31.576953 27.630655 31.72467 28.119141 31.666016 C 28.607627 31.607366 29.02878 31.310979 29.296875 31.007812 L 29.298828 31.005859 C 29.655629 30.601347 30.715848 29.390728 31.224609 28.644531 C 31.246169 28.652131 31.239109 28.646231 31.408203 28.707031 L 31.408203 28.708984 L 31.410156 28.708984 C 31.487356 28.736474 32.454286 29.169267 33.316406 29.580078 C 34.178526 29.990889 35.053561 30.417875 35.337891 30.558594 C 35.748225 30.761674 35.942113 30.893881 35.992188 30.894531 C 35.995572 30.982516 35.998992 31.07786 35.986328 31.222656 C 35.951258 31.624292 35.8439 32.180225 35.628906 32.775391 C 35.523582 33.066746 34.975018 33.667661 34.283203 34.105469 C 33.591388 34.543277 32.749338 34.852514 32.4375 34.898438 C 31.499896 35.036591 30.386672 35.087027 29.164062 34.703125 C 28.316336 34.437036 27.259305 34.092596 25.890625 33.509766 C 23.114812 32.325956 20.755591 30.311513 19.070312 28.537109 C 18.227674 27.649908 17.552562 26.824019 17.072266 26.199219 C 16.592866 25.575584 16.383528 25.251054 16.208984 25.021484 L 16.207031 25.019531 C 15.897202 24.609805 14 21.970851 14 19.59375 C 14 17.077989 15.168497 16.091436 15.800781 15.410156 C 16.132721 15.052495 16.495617 15 16.642578 15 z"></path>
+                  </svg>
+                </span>
+                <span>+8801718234953</span>
+              </Link>
 
-                            <a
-                                href="mailto:example@email.com"
-                                className="flex items-center space-x-2 text-blue-100 hover:text-white transition-colors duration-300"
-                            >
-                                <span>
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-5 w-5"
-                                        fill="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path d="M20 4H4C2.897 4 2 4.897 2 6v12c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2zm0 2v.511l-8 5.326-8-5.326V6h16zM4 18V9.489l7.386 4.91a1 1 0 001.228 0L20 9.489V18H4z" />
-                                    </svg>
-                                </span>
-                                <span>Email: anamul.ice14@gmail.com</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Copyright */}
-                <div className="mt-8 pt-8 border-t border-blue-500">
-                    <p className="text-center text-blue-100 text-sm">
-                        © {new Date().getFullYear()} Cookie. All rights reserved.
-                    </p>
-                </div>
+              <Link
+                href="mailto:example@email.com"
+                className="flex items-center space-x-2 text-blue-100 hover:text-white transition-colors duration-300"
+              >
+                <span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M20 4H4C2.897 4 2 4.897 2 6v12c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2zm0 2v.511l-8 5.326-8-5.326V6h16zM4 18V9.489l7.386 4.91a1 1 0 001.228 0L20 9.489V18H4z" />
+                  </svg>
+                </span>
+                <span>anamul.ice14@gmail.com</span>
+              </Link>
             </div>
-        </footer>
-    );
+          </div>
+        </div>
+
+        {/* Copyright */}
+        <div className="mt-8 pt-8 border-t border-blue-500">
+          <p className="text-sm text-center">
+            ©{new Date().getFullYear()} Cookies. All rights reserved | Developed By <Link
+              href="#"
+              className="hover:text-white  transition-colors duration-300"
+            >
+              Anamul Haque
+            </Link>
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
 }
