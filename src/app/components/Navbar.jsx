@@ -1,8 +1,8 @@
-"use client"
-import Link from 'next/link';
-import Image from 'next/image';
-import { useState } from 'react';
-import { usePathname } from 'next/navigation';
+"use client";
+import Link from "next/link";
+import Image from "next/image";
+import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -15,7 +15,10 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link href="/" className="flex-shrink-0 text-white text-xl font-bold">
+            <Link
+              href="/"
+              className="flex-shrink-0 text-white text-xl font-bold"
+            >
               Cookie
             </Link>
           </div>
@@ -25,9 +28,9 @@ const Navbar = () => {
             <Link
               href="/shop"
               className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
-                isActive('/shop')
-                  ? 'text-white border-b-2 border-white'
-                  : 'text-blue-100 hover:text-white hover:border-b-2 hover:border-blue-100'
+                isActive("/shop")
+                  ? "text-white border-b-2 border-white"
+                  : "text-gray-300 hover:text-white hover:border-b-2 hover:border-gray-300"
               }`}
             >
               Shop
@@ -35,9 +38,9 @@ const Navbar = () => {
             <Link
               href="/trial"
               className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
-                isActive('/trial')
-                  ? 'text-white border-b-2 border-white'
-                  : 'text-blue-100 hover:text-white hover:border-b-2 hover:border-blue-100'
+                isActive("/trial")
+                  ? "text-white border-b-2 border-white"
+                  : "text-gray-300 hover:text-white hover:border-b-2 hover:border-gray-300"
               }`}
             >
               Trial
@@ -45,9 +48,9 @@ const Navbar = () => {
             <Link
               href="/about"
               className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
-                isActive('/about')
-                  ? 'text-white border-b-2 border-white'
-                  : 'text-blue-100 hover:text-white hover:border-b-2 hover:border-blue-100'
+                isActive("/about")
+                  ? "text-white border-b-2 border-white"
+                  : "text-gray-300 hover:text-white hover:border-b-2 hover:border-gray-300"
               }`}
             >
               About
@@ -62,12 +65,32 @@ const Navbar = () => {
             >
               <span className="sr-only">Open main menu</span>
               {!isOpen ? (
-                <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                <svg
+                  className="block h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
                 </svg>
               ) : (
-                <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="block h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               )}
             </button>
@@ -81,24 +104,24 @@ const Navbar = () => {
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-blue-600">
             <Link
               href="/shop"
-              className={`block px-3 py-2 rounded-md text-blue-100 hover:text-white hover:bg-blue-700 ${
-                isActive('/shop') ? 'text-white' : ''
+              className={`block px-3 py-2 rounded-md text-gray-300 hover:text-white hover:bg-blue-700 ${
+                isActive("/shop") ? "text-white" : ""
               }`}
             >
               Shop
             </Link>
             <Link
               href="/trial"
-              className={`block px-3 py-2 rounded-md text-blue-100 hover:text-white hover:bg-blue-700 ${
-                isActive('/trial') ? 'text-white' : ''
+              className={`block px-3 py-2 rounded-md text-gray-300 hover:text-white hover:bg-blue-700 ${
+                isActive("/trial") ? "text-white" : ""
               }`}
             >
               Trial
             </Link>
             <Link
               href="/about"
-              className={`block px-3 py-2 rounded-md text-blue-100 hover:text-white hover:bg-blue-700 ${
-                isActive('/about') ? 'text-white' : ''
+              className={`block px-3 py-2 rounded-md text-gray-300 hover:text-white hover:bg-blue-700 ${
+                isActive("/about") ? "text-white" : ""
               }`}
             >
               About
