@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Cookie App",
-  description: "Cookie App",
+  title: "Accstool",
+  description: "Accstool webstore",
 };
 
 export default function RootLayout({ children }) {

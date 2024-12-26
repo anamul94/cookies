@@ -19,7 +19,7 @@ const Navbar = () => {
               href="/"
               className="flex-shrink-0 text-white text-xl font-bold"
             >
-              Cookie
+              Accstool
             </Link>
           </div>
 

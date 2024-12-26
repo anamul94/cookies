@@ -47,7 +47,7 @@ export default function HomePage() {
       <section className="sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center py-10">
           <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
-            Welcome to Cookie
+            Welcome to Accstool Webstore
           </h1>
           <p className="text-xl text-gray-600 mb-8">
             Discover our amazing packages and start your journey today
