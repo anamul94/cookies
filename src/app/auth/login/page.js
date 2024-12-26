@@ -1,23 +1,23 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
-import { API_BASE_URL } from '@/app/constants/api';
+"use client";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { API_BASE_URL } from "@/app/constants/api";
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   // Check if user is already logged in
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
-      const from = searchParams.get('from') || '/products';
+      const from = searchParams.get("from") || "/products";
       router.push(from);
     }
   }, []);
@@ -26,29 +26,29 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
 
       const data = await response.json();
-      
+
       if (response.ok) {
         // Store token in both localStorage and cookie
-        localStorage.setItem('token', data.token);
+        localStorage.setItem("token", data.token);
         document.cookie = `token=${data.token}; path=/; max-age=86400; SameSite=Strict`; // 24 hours
-        
+
         // Redirect to the original page or products page
-        const from = searchParams.get('from') || '/products';
+        const from = searchParams.get("from") || "/products";
         router.push(from);
       } else {
-        setError(data.message || 'Login failed');
+        setError(data.message || "Login failed");
       }
     } catch (err) {
-      setError('Something went wrong');
-      console.error('Login error:', err);
+      setError("Something went wrong");
+      console.error("Login error:", err);
     }
   };
 
@@ -58,7 +58,7 @@ export default function LoginPage() {
         <h2 className="text-center text-3xl font-extrabold text-gray-900">
           Sign in to your account
         </h2>
-        
+
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
             {error}
@@ -74,7 +74,9 @@ export default function LoginPage() {
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Email address"
                 value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
               />
             </div>
             <div>
@@ -84,7 +86,9 @@ export default function LoginPage() {
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
                 value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
               />
             </div>
           </div>
@@ -100,11 +104,22 @@ export default function LoginPage() {
         </form>
 
         <div className="text-center">
-          <Link href="/auth/signup" className="text-indigo-600 hover:text-indigo-500">
+          <Link
+            href="/auth/signup"
+            className="text-indigo-600 hover:text-indigo-500"
+          >
             Don't have an account? Sign up
           </Link>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }
