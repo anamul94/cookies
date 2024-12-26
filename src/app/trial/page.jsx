@@ -91,7 +91,7 @@ export default function TrialPage() {
       }
 
       const response = await fetch(
-        "http://localhost:8000/order/createTrialOrder",
+        `${API_BASE_URL}/order/createTrialOrder`,
         {
           method: "POST",
           body: formDataToSend,
