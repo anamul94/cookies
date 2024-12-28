@@ -7,6 +7,7 @@ import { isAuthenticated } from "@/utils/auth";
 import { Status } from "@/app/constants/status";
 import DurationTypes from "@/app/constants/duration";
 import PackageOrderType from '@/app/constant/PackageOrderType.enum';
+import { API_BASE_URL } from '@/app/constants/api';
 
 export default function EditPackage({ params }) {
   const router = useRouter();
@@ -24,6 +25,7 @@ export default function EditPackage({ params }) {
     durationValue: 1,
     status: Status.ACTIVE,
     packageType: PackageOrderType.REGULAR,
+    imageUrl: "",
   });
 
   useEffect(() => {
@@ -34,7 +36,7 @@ export default function EditPackage({ params }) {
 
     const fetchPackage = async () => {
       try {
-        const response = await fetchWithAuth(`http://localhost:8000/packages/${id}`);
+        const response = await fetchWithAuth(`${API_BASE_URL}/packages/${id}`);
         if (!response) return;
         
         if (!response.ok) {
@@ -51,6 +53,7 @@ export default function EditPackage({ params }) {
           durationValue: data.durationValue,
           status: data.status,
           packageType: data.packageType,
+          imageUrl: data.imageUrl
         });
         await fetchProducts();
       } catch (error) {
@@ -66,7 +69,7 @@ export default function EditPackage({ params }) {
   const fetchProducts = async () => {
     try {
       const response = await fetchWithAuth(
-        "http://localhost:8000/products/search",
+        `${API_BASE_URL}/products/search`,
         {
           method: "POST",
           body: JSON.stringify({
@@ -95,7 +98,7 @@ export default function EditPackage({ params }) {
     setSaving(true);
 
     try {
-      const response = await fetchWithAuth(`http://localhost:8000/packages/${id}`, {
+      const response = await fetchWithAuth(`${API_BASE_URL}/packages/${id}`, {
         method: "PUT",
         body: JSON.stringify(packageData),
       });
@@ -178,6 +181,26 @@ export default function EditPackage({ params }) {
                 }
               />
             </div>
+
+            <div>
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Image URL
+              </label>
+              <input
+                type="text"
+                id="title"
+                required
+                className="mt-1 block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm border-gray-300 rounded-md px-4 py-2"
+                value={packageData.imageUrl}
+                onChange={(e) =>
+                  setPackageData({ ...packageData, imageUrl: e.target.value })
+                }
+              />
+            </div>
+
 
             <div className="grid grid-cols-2 gap-6">
               <div>
