@@ -1,7 +1,7 @@
 {
-  "name": "cookie-manager",
+  "name": "accstool-app",
   "version": "1.0.0",
-  "description": "Cookie Manager Desktop Application",
+  "description": "Accstool Desktop Application",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -10,8 +10,8 @@
     "build:linux": "electron-builder --linux"
   },
   "build": {
-    "appId": "com.cookiemanager.app",
-    "productName": "Cookie Manager",
+    "appId": "accstool.com",
+    "productName": "Accstool",
     "asar": true,
     "directories": {
       "output": "dist"
@@ -37,9 +37,9 @@
           "arch": ["x64"]
         }
       ],
-      "icon": "build/icon.ico",
-      "publisherName": "Cookie Manager",
-      "legalTrademarks": "Cookie Manager",
+      "icon": "build/icons/AccsTool.ico",
+      "publisherName": "Accstool",
+      "legalTrademarks": "Accstool",
       "requestedExecutionLevel": "asInvoker",
       "signingHashAlgorithms": ["sha256"],
       "verifyUpdateCodeSignature": false,
@@ -50,17 +50,17 @@
       "perMachine": false,
       "allowElevation": true,
       "allowToChangeInstallationDirectory": false,
-      "installerIcon": "build/icon.ico",
-      "uninstallerIcon": "build/icon.ico",
-      "installerHeaderIcon": "build/icon.ico",
+      "installerIcon": "build/icons/AccsTool.ico",
+      "uninstallerIcon": "build/icons/AccsTool.ico",
+      "installerHeaderIcon": "build/icons/AccsTool.ico",
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Cookie Manager",
+      "shortcutName": "Accstool",
       "include": "build/installer.nsh",
       "deleteAppDataOnUninstall": true,
       "displayLanguageSelector": false,
       "installerSidebar": false,
-      "artifactName": "${productName} Setup.${ext}",
+      "artifactName": "${productName}.${ext}",
       "uninstallDisplayName": "${productName}",
       "differentialPackage": false
     },
@@ -75,16 +75,16 @@
           "arch": ["x64"]
         }
       ],
-      "icon": "build/icons",
+      "icon": "build/icons/AccsTool.png",
       "category": "Utility",
-      "maintainer": "Cookie Manager Team"
+      "maintainer": "Accstool Manager Team"
     }
   },
   "keywords": ["cookie", "manager", "desktop", "electron"],
   "author": {
-    "name": "Cookie Manager Team",
-    "email": "support@cookiemanager.com",
-    "url": "https://cookiemanager.com"
+    "name": "Accstool Manager Team",
+    "email": "support@accstool.com",
+    "url": "https://accstool.com"
   },
   "license": "ISC",
   "dependencies": {

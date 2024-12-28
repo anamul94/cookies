@@ -3,8 +3,8 @@ const WebSocket = require("ws");
 
 let ws = null;
 
-const API_BASE_URL = "https://cookies-kpxx.onrender.com";
-const WS_URL = "wss://cookies-kpxx.onrender.com";
+const API_BASE_URL = "https://api.accstool.com";
+const WS_URL = "wss://accstool.com";
 
 // Function to fetch active products
 const getActiveProducts = async (customerEmail, password, macAddress) => {
