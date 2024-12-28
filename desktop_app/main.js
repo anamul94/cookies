@@ -12,6 +12,52 @@ let mainWindow;
 let macAddress = null;
 let ws = null;
 
+// Load URL blocking configuration
+let blockedDomainPaths = {};
+
+try {
+    const configPath = path.join(__dirname, 'config', 'blocked-domains.json');
+    blockedDomainPaths = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    console.log('Loaded blocked domains configuration');
+} catch (error) {
+    console.error('Error loading blocked domains configuration:', error);
+}
+
+// Function to check if a URL is blocked
+const isBlocked = (url) => {
+    try {
+        const urlObj = new URL(url);
+        const domain = urlObj.hostname;
+        const pathname = urlObj.pathname.toLowerCase();
+
+        // Check if domain exists in blocked list
+        if (blockedDomainPaths[domain]) {
+            // Check if any blocked path matches
+            return blockedDomainPaths[domain].some(blockedPath => 
+                pathname.startsWith('/' + blockedPath)
+            );
+        }
+
+        return false;
+    } catch (error) {
+        console.error('Error checking URL:', error);
+        return false;
+    }
+};
+
+// Function to intercept requests and block specific URLs
+const setupUrlBlocking = () => {
+    // Block navigation to blocked URLs
+    session.defaultSession.webRequest.onBeforeRequest((details, callback) => {
+        if (isBlocked(details.url)) {
+            console.log(`Blocked URL: ${details.url}`);
+            callback({ cancel: true });
+        } else {
+            callback({ cancel: false });
+        }
+    });
+};
+
 // Function to get the system's MAC address
 const getMacAddress = () => {
     const networkInterfaces = os.networkInterfaces();
@@ -89,6 +135,9 @@ const loadExtensions = async (extensionsDir) => {
 };
 
 app.whenReady().then(() => {
+    // Setup URL blocking
+    setupUrlBlocking();
+    
     macAddress = getMacAddress();
 
     if (!macAddress || macAddress === "00:00:00:00:00:00") {
@@ -126,47 +175,80 @@ app.whenReady().then(() => {
         } catch (error) {
             console.error('Error requesting password reset:', error);
             if (error.response) {
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
                 throw error.response.data || 'Server error occurred';
             } else if (error.request) {
-                // The request was made but no response was received
                 throw 'No response from server. Please check your internet connection.';
             } else {
-                // Something happened in setting up the request that triggered an Error
                 throw error.message || 'An unexpected error occurred';
             }
         }
     });
 
     ipcMain.handle("open-url-with-cookies", async (event, { url, cookies }) => {
-        // Load extensions from accs folder
-        const extensionsPath = path.join(__dirname, 'accs');
-        await loadExtensions(extensionsPath);
-
-        const newWindow = new BrowserWindow({
-            width: 1024,
-            height: 768,
-            webPreferences: {
-                contextIsolation: true,
-                nodeIntegration: false,
-                webSecurity: true,
-                allowRunningInsecureContent: false,
-                plugins: true,
-                experimentalFeatures: true
-            }
-        });
-
-        // Set cookies before loading the URL
-        await setDynamicCookies(cookies, url);
-
         try {
-            await newWindow.loadURL(url, {
-                userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            // Load extensions from accs folder
+            const extensionsPath = path.join(__dirname, 'accs');
+            await loadExtensions(extensionsPath);
+
+            const newWindow = new BrowserWindow({
+                width: 1024,
+                height: 768,
+                webPreferences: {
+                    contextIsolation: true,
+                    nodeIntegration: false,
+                    webSecurity: true,
+                    allowRunningInsecureContent: false,
+                    plugins: true,
+                    experimentalFeatures: true
+                }
             });
-            console.log("URL loaded successfully with cookies and extensions");
+
+            // Set cookies before loading URL
+            await setDynamicCookies(cookies, url);
+
+            // Add navigation handler to check URLs before loading
+            newWindow.webContents.on('will-navigate', (event, navUrl) => {
+                if (isBlocked(navUrl)) {
+                    event.preventDefault();
+                    newWindow.webContents.executeJavaScript(`
+                        alert('Stay on this page.....');
+                    `);
+                }
+            });
+
+            // Also handle new window creation
+            newWindow.webContents.setWindowOpenHandler(({ url }) => {
+                if (isBlocked(url)) {
+                    newWindow.webContents.executeJavaScript(`
+                        alert('This URL has been blocked by administrator: ${url}');
+                    `);
+                    return { action: 'deny' };
+                }
+                return { action: 'allow' };
+            });
+
+            // Check initial URL
+            if (isBlocked(url)) {
+                newWindow.loadFile('index.html');  // Load main page instead
+                newWindow.webContents.once('did-finish-load', () => {
+                    newWindow.webContents.executeJavaScript(`
+                        alert('This URL has been blocked by administrator: ${url}');
+                    `);
+                });
+            } else {
+                try {
+                    await newWindow.loadURL(url, {
+                        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+                    });
+                    console.log("URL loaded successfully with cookies and extensions");
+                } catch (error) {
+                    console.error("Error loading URL:", error);
+                    throw error;
+                }
+            }
         } catch (error) {
-            console.error("Error loading URL:", error);
+            console.error('Error opening URL:', error);
+            throw error;
         }
     });
 

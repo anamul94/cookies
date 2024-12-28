@@ -110,6 +110,11 @@
     </footer>
 
     <script>
+        // Listen for URL blocked errors
+        window.electronAPI.onUrlBlockedError(({ message, url }) => {
+            alert(`${message}\nBlocked URL: ${url}`);
+        });
+
         // Tab switching functionality
         document.querySelectorAll('.tab-button').forEach(button => {
             button.addEventListener('click', () => {

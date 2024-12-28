@@ -14,6 +14,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
             throw error;
         }
     },
+    onUrlBlockedError: (callback) => ipcRenderer.on('url-blocked-error', (event, data) => callback(data))
 });
 
 contextBridge.exposeInMainWorld('electron', {

@@ -1,0 +1,24 @@
+{
+    "gale.udemy.com": [
+        "courses/ufb-cybersecurity/",
+        "courses/ufb-cybersecurity/rust",
+        "courses/ufb-cybersecurity/python",
+        "courses/ufb-cybersecurity/javascript",
+        "organization/manage/",
+        "admin/"
+    ],
+    "learn.udemy.com": [
+        "courses/ufb-cybersecurity/",
+        "courses/ufb-cybersecurity/ethical-hacking",
+        "courses/ufb-cybersecurity/networking",
+        "organization/manage/",
+        "admin/"
+    ],
+    "business.udemy.com": [
+        "courses/ufb-cybersecurity/",
+        "courses/ufb-cybersecurity/penetration",
+        "courses/ufb-cybersecurity/forensics",
+        "organization/manage/",
+        "admin/"
+    ]
+}

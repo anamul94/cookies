@@ -1,0 +1,23 @@
+{
+    "domains": {
+        "udemy.com": {
+            "blockedPaths": [
+                "courses/ufb-cybersecurity",
+                "admin"
+            ],
+            "allowedPaths": [
+            ]
+        },
+        "grammarly.com": {
+            "blockedPaths": [
+                "profile",
+                "dashboard",
+                "billing"
+            ],
+            "allowedPaths": []
+        }
+    },
+    "defaultBlockedPaths": [
+       
+    ]
+}
