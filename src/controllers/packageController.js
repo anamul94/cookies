@@ -184,6 +184,7 @@ exports.updatePlan = async (req, res) => {
     durationType,
     durationValue,
     status,
+    imageUrl,
   } = req.body;
 
   try {
@@ -202,7 +203,7 @@ exports.updatePlan = async (req, res) => {
     plan.durationType = durationType || plan.durationType;
     plan.durationValue = durationValue || plan.durationValue;
     plan.status = status || plan.status;
-
+    plan.imageUrl = imageUrl || plan.imageUrl;
     // Save the updated plan
     await plan.save();
 

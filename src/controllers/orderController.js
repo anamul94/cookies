@@ -329,6 +329,7 @@ exports.searchOrdersWithPagination = async (req, res) => {
     // Create a dynamic filter object
     let filter = {};
 
+    filter.orderType = PackageOrderType.REGULAR;
     // Only add customerEmail filter if it's provided
     if (customerEmail) {
       filter.customerEmail = customerEmail;
