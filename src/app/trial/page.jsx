@@ -183,13 +183,13 @@ export default function TrialPage() {
                       </h3>
                       <div className="mt-2 flex items-center justify-between">
                         <div>
-                          <p className="text-sm text-[#5C3D14]/70">Price:</p>
+                          <p className="text-md text-[#5C3D14]/90">Price:</p>
                           <p className="text-lg font-medium text-[#5C3D14]">
-                            ৳{pkg.priceInBdt} / ${pkg.priceInUsd}
+                            ${pkg.priceInUsd} / ৳{pkg.priceInBdt}
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm text-[#5C3D14]/70">Duration:</p>
+                          <p className="text-md text-[#5C3D14]/60">Duration:</p>
                           <p className="text-lg font-medium text-[#5C3D14]">
                             {pkg.durationValue} {pkg.durationType}
                             {pkg.durationValue > 1 ? "s" : ""}
@@ -236,7 +236,7 @@ export default function TrialPage() {
                 required
                 value={formData.name}
                 onChange={handleInputChange}
-                className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm"
+                className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm text-[#5C3D14] px-4 py-3"
               />
             </div>
 
@@ -254,7 +254,7 @@ export default function TrialPage() {
                 required
                 value={formData.customerEmail}
                 onChange={handleInputChange}
-                className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm"
+                className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm text-[#5C3D14] px-4 py-3"
               />
             </div>
 
@@ -272,7 +272,7 @@ export default function TrialPage() {
                 required
                 value={formData.phoneNumber}
                 onChange={handleInputChange}
-                className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm"
+                className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm text-[#5C3D14] px-4 py-3"
               />
             </div>
 
@@ -290,7 +290,7 @@ export default function TrialPage() {
                 required
                 value={formData.facebookId}
                 onChange={handleInputChange}
-                className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm"
+                className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm text-[#5C3D14] px-4 py-3"
               />
             </div>
 

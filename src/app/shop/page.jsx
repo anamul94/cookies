@@ -23,6 +23,7 @@ export default function ShopPage() {
         body: JSON.stringify({
           page,
           limit,
+          packageType: "regular",
         }),
       });
 

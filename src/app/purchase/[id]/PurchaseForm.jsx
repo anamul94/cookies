@@ -93,7 +93,7 @@ export default function PurchaseForm({ packageId }) {
           required
           value={formData.customerName}
           onChange={handleInputChange}
-          className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm"
+          className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm text-[#5C3D14] px-4 py-3"
         />
       </div>
 
@@ -111,7 +111,7 @@ export default function PurchaseForm({ packageId }) {
           required
           value={formData.customerEmail}
           onChange={handleInputChange}
-          className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm"
+          className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm text-[#5C3D14] px-4 py-3"
         />
       </div>
 
@@ -129,7 +129,7 @@ export default function PurchaseForm({ packageId }) {
           required
           value={formData.phoneNumber}
           onChange={handleInputChange}
-          className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm"
+          className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm text-[#5C3D14] px-4 py-3"
         />
       </div>
 
@@ -146,7 +146,7 @@ export default function PurchaseForm({ packageId }) {
           required
           value={formData.paymentMethod}
           onChange={handleInputChange}
-          className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] text-[#1D3557] sm:text-sm"
+          className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm text-[#5C3D14] px-4 py-3"
         >
           {Object.entries(PaymentMethods).map(([key, value]) => (
             <option key={value} value={value} className="text-[#1D3557]">
@@ -169,7 +169,7 @@ export default function PurchaseForm({ packageId }) {
           required
           value={formData.currency}
           onChange={handleInputChange}
-          className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] text-[#1D3557] sm:text-sm"
+          className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm text-[#5C3D14] px-4 py-3"
         >
           <option value="BDT" className="text-[#1D3557]">
             BDT
@@ -194,7 +194,7 @@ export default function PurchaseForm({ packageId }) {
           required
           value={formData.transactionNumber}
           onChange={handleInputChange}
-          className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm"
+          className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm text-[#5C3D14] px-4 py-3"
         />
       </div>
 

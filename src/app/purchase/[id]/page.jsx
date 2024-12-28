@@ -2,6 +2,7 @@
 
 import Product from "../../components/product";
 import PurchaseForm from "./PurchaseForm";
+import BackButton from "../../components/BackButton";
 import { API_BASE_URL } from "../../constants/api";
 
 async function getPackageData(id) {
@@ -15,10 +16,12 @@ async function getPackageData(id) {
     });
 
     if (!res.ok) {
-      throw new Error("Failed to fetch package data");
+      console.error(`Failed to fetch package data. Status: ${res.status}`);
+      return null;
     }
 
-    return res.json();
+    const data = await res.json();
+    return data;
   } catch (error) {
     console.error("Error fetching package:", error);
     return null;
@@ -31,15 +34,10 @@ export default async function PurchasePage({ params }) {
   if (!packageData) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center text-red-600">
+        <div className="text-center text-[#5C3D14]">
           <h2 className="text-3xl font-semibold">Error</h2>
           <p className="text-lg mt-2">Package not found</p>
-          <button
-            onClick={() => window.history.back()}
-            className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300"
-          >
-            Go Back
-          </button>
+          <BackButton />
         </div>
       </div>
     );
@@ -65,7 +63,7 @@ export default async function PurchasePage({ params }) {
                 <h3 className="text-xl font-semibold text-gray-800">
                   {packageData.title}
                 </h3>
-                <p className="text-3xl font-bold text-blue-600 mt-2">
+                <p className="text-3xl font-bold text-[#5C3D14] mt-2">
                   Price: ${packageData.priceInUsd} / ৳{packageData.priceInBdt}
                 </p>
               </div>
@@ -99,7 +97,7 @@ export default async function PurchasePage({ params }) {
 
           {/* Purchase Form Section */}
           <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            <h2 className="text-2xl font-bold text-[#5C3D14] mb-6">
               Complete Your Purchase
             </h2>
             <PurchaseForm packageData={packageData} />
