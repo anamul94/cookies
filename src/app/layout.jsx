@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "Accstool",
   description: "Accstool webstore",
+  icons: {
+    icon: '/AccsTool.png',
+  },
 };
 
 export default function RootLayout({ children }) {

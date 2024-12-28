@@ -62,14 +62,14 @@ export default function PurchaseForm({ packageId }) {
 
   if (success) {
     return (
-      <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
-        <h2 className="text-2xl font-semibold text-green-800 mb-2">
+      <div className="bg-[#1D3557] rounded-md p-4">
+        <h2 className="text-2xl font-semibold text-white mb-2">
           {success.message}
         </h2>
-        <p className="text-green-600 mb-4">Order Number: {success.orderId}</p>
+        <p className="text-white mb-4">Order Number: {success.orderId}</p>
         <button
           onClick={() => router.push("/packages")}
-          className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors"
+          className="w-full flex justify-center py-3 px-4 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-[#1D3557] hover:bg-[#FCB929] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FCB929]"
         >
           Return to Packages
         </button>
@@ -82,7 +82,7 @@ export default function PurchaseForm({ packageId }) {
       <div>
         <label
           htmlFor="customerName"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-[#5C3D14]"
         >
           Full Name
         </label>
@@ -93,16 +93,16 @@ export default function PurchaseForm({ packageId }) {
           required
           value={formData.customerName}
           onChange={handleInputChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm"
         />
       </div>
 
       <div>
         <label
           htmlFor="customerEmail"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-[#5C3D14]"
         >
-          Email
+          Email Address
         </label>
         <input
           type="email"
@@ -111,14 +111,14 @@ export default function PurchaseForm({ packageId }) {
           required
           value={formData.customerEmail}
           onChange={handleInputChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm"
         />
       </div>
 
       <div>
         <label
           htmlFor="phoneNumber"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-[#5C3D14]"
         >
           Phone Number
         </label>
@@ -129,14 +129,14 @@ export default function PurchaseForm({ packageId }) {
           required
           value={formData.phoneNumber}
           onChange={handleInputChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm"
         />
       </div>
 
       <div>
         <label
           htmlFor="paymentMethod"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-[#5C3D14]"
         >
           Payment Method
         </label>
@@ -146,10 +146,10 @@ export default function PurchaseForm({ packageId }) {
           required
           value={formData.paymentMethod}
           onChange={handleInputChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 text-gray-800"
+          className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] text-[#1D3557] sm:text-sm"
         >
           {Object.entries(PaymentMethods).map(([key, value]) => (
-            <option key={value} value={value} className="text-gray-800">
+            <option key={value} value={value} className="text-[#1D3557]">
               {PaymentMethodLabels[value]}
             </option>
           ))}
@@ -158,8 +158,8 @@ export default function PurchaseForm({ packageId }) {
 
       <div>
         <label
-          htmlFor="paymentMethod"
-          className="block text-sm font-medium text-gray-700"
+          htmlFor="currency"
+          className="block text-sm font-medium text-[#5C3D14]"
         >
           Currency Type
         </label>
@@ -169,12 +169,12 @@ export default function PurchaseForm({ packageId }) {
           required
           value={formData.currency}
           onChange={handleInputChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 text-gray-800"
+          className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] text-[#1D3557] sm:text-sm"
         >
-          <option value="BDT" className="text-gray-800">
+          <option value="BDT" className="text-[#1D3557]">
             BDT
           </option>
-          <option value="USD" className="text-gray-800">
+          <option value="USD" className="text-[#1D3557]">
             USD
           </option>
         </select>
@@ -183,7 +183,7 @@ export default function PurchaseForm({ packageId }) {
       <div>
         <label
           htmlFor="transactionNumber"
-          className="block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-[#5C3D14]"
         >
           Transaction Number
         </label>
@@ -194,20 +194,20 @@ export default function PurchaseForm({ packageId }) {
           required
           value={formData.transactionNumber}
           onChange={handleInputChange}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm"
         />
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded">
-          {error}
+        <div className="rounded-md bg-red-50 p-4">
+          <div className="text-sm text-red-700">{error}</div>
         </div>
       )}
 
       <button
         type="submit"
         disabled={loading}
-        className={`w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors ${
+        className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-[#1D3557] hover:bg-[#FCB929] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FCB929] ${
           loading ? "opacity-50 cursor-not-allowed" : ""
         }`}
       >

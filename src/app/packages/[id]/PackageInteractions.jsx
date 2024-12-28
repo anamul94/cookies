@@ -12,11 +12,11 @@ export default function PackageInteractions({ status, id }) {
     return (
         <div className="space-y-4">
             {status === 'active' && (
-                <button 
-                    className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors mt-6"
+                <button
+                    className="w-full bg-[#1D3557] text-white px-6 py-3 rounded-lg hover:bg-[#FCB929] transition-colors mt-6"
                     onClick={handlePurchase}
                 >
-                    Purchase Package
+                    Buy Package
                 </button>
             )}
         </div>
