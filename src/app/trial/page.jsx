@@ -146,29 +146,28 @@ export default function TrialPage() {
     <div className="min-h-screen bg-gray-50">
       <main className="py-16 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto">
         <div className="bg-white rounded-lg shadow-lg p-8">
-          <h1 className="text-3xl font-bold text-center text-gray-900 mb-6">
+          <h1 className="text-3xl font-bold text-center text-[#5C3D14] mb-6">
             Request a Trial
           </h1>
 
           {/* Package Selection Section */}
           <div className="mb-8">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            <h2 className="text-xl font-semibold text-[#5C3D14] mb-4">
               Select a Package
             </h2>
             {packagesLoading ? (
               <div className="flex justify-center items-center h-20">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1D3557]"></div>
               </div>
             ) : (
               <div className="grid gap-4">
                 {packages.map((pkg) => (
                   <label
                     key={pkg.id}
-                    className={`relative flex p-4 cursor-pointer rounded-lg border ${
-                      formData.packageId === pkg.id.toString()
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-gray-200 hover:border-blue-200"
-                    }`}
+                    className={`relative flex p-4 cursor-pointer rounded-lg border ${formData.packageId === pkg.id.toString()
+                        ? "border-[#1D3557] bg-[#1D3557]/10"
+                        : "border-gray-200 hover:border-[#1D3557]"
+                      }`}
                   >
                     <input
                       type="radio"
@@ -179,19 +178,19 @@ export default function TrialPage() {
                       className="sr-only"
                     />
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900">
+                      <h3 className="text-lg font-semibold text-[#5C3D14]">
                         {pkg.title}
                       </h3>
                       <div className="mt-2 flex items-center justify-between">
                         <div>
-                          <p className="text-sm text-gray-500">Price:</p>
-                          <p className="text-lg font-medium text-gray-900">
+                          <p className="text-sm text-[#5C3D14]/70">Price:</p>
+                          <p className="text-lg font-medium text-[#5C3D14]">
                             ৳{pkg.priceInBdt} / ${pkg.priceInUsd}
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm text-gray-500">Duration:</p>
-                          <p className="text-lg font-medium text-gray-900">
+                          <p className="text-sm text-[#5C3D14]/70">Duration:</p>
+                          <p className="text-lg font-medium text-[#5C3D14]">
                             {pkg.durationValue} {pkg.durationType}
                             {pkg.durationValue > 1 ? "s" : ""}
                           </p>
@@ -200,11 +199,10 @@ export default function TrialPage() {
                     </div>
                     <div className="absolute top-4 right-4">
                       <div
-                        className={`h-6 w-6 rounded-full border-2 flex items-center justify-center ${
-                          formData.packageId === pkg.id.toString()
-                            ? "border-blue-500 bg-blue-500"
+                        className={`h-6 w-6 rounded-full border-2 flex items-center justify-center ${formData.packageId === pkg.id.toString()
+                            ? "border-[#1D3557] bg-[#1D3557]"
                             : "border-gray-300"
-                        }`}
+                          }`}
                       >
                         {formData.packageId === pkg.id.toString() && (
                           <div className="h-2 w-2 rounded-full bg-white"></div>
@@ -219,51 +217,51 @@ export default function TrialPage() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded">
-                {error}
+              <div className="rounded-md bg-red-50 p-4">
+                <div className="text-sm text-red-700">{error}</div>
               </div>
             )}
 
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-[#5C3D14]"
               >
-                Name
+                Full Name
               </label>
               <input
                 type="text"
                 id="name"
                 name="name"
+                required
                 value={formData.name}
                 onChange={handleInputChange}
-                required
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm"
               />
             </div>
 
             <div>
               <label
                 htmlFor="customerEmail"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-[#5C3D14]"
               >
-                Email
+                Email Address
               </label>
               <input
                 type="email"
                 id="customerEmail"
                 name="customerEmail"
+                required
                 value={formData.customerEmail}
                 onChange={handleInputChange}
-                required
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm"
               />
             </div>
 
             <div>
               <label
                 htmlFor="phoneNumber"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-[#5C3D14]"
               >
                 Phone Number
               </label>
@@ -271,56 +269,59 @@ export default function TrialPage() {
                 type="tel"
                 id="phoneNumber"
                 name="phoneNumber"
+                required
                 value={formData.phoneNumber}
                 onChange={handleInputChange}
-                required
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm"
               />
             </div>
 
             <div>
               <label
                 htmlFor="facebookId"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-[#5C3D14]"
               >
-                Facebook ID
+                Facebook Profile Link
               </label>
               <input
-                type="text"
+                type="url"
                 id="facebookId"
                 name="facebookId"
+                required
                 value={formData.facebookId}
                 onChange={handleInputChange}
-                required
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="mt-1 block w-full rounded-md border-[#1D3557] shadow-sm focus:border-[#1D3557] focus:ring-[#1D3557] sm:text-sm"
               />
             </div>
 
             <div>
               <label
                 htmlFor="screenshot"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-[#5C3D14]"
               >
-                Upload Screenshot
+                Upload Facebook Screenshot <span className="text-xs">(Follow us on <a href="https://www.facebook.com/AccsTools" target="_blank" rel="noopener noreferrer" className="text-[#FCB929] hover:text-[#FCB929]">Facebook</a>  to get  trial)</span>
               </label>
               <input
                 type="file"
                 id="screenshot"
+                name="screenshot"
                 accept="image/*"
-                onChange={handleFileChange}
                 required
-                className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                onChange={handleFileChange}
+                className="mt-1 block w-full text-sm text-[#5C3D14]
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-full file:border-0
+                file:text-sm file:font-semibold
+                file:bg-[#1D3557] file:text-white
+                hover:file:bg-[#FCB929]"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className={`w-full rounded-md px-4 py-2 text-white font-medium ${
-                loading
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-700"
-              }`}
+              className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-[#1D3557] hover:bg-[#FCB929] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FCB929] ${loading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
             >
               {loading ? "Submitting..." : "Submit Trial Request"}
             </button>

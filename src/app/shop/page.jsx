@@ -56,7 +56,7 @@ export default function ShopPage() {
     <div className="min-h-screen bg-gray-50">
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto py-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-8 text-center">
+          <h1 className="text-4xl font-bold text-[#5C3D14] mb-8 text-center">
             All Packages
           </h1>
 

@@ -10,14 +10,15 @@ export default function PackageActions({ id, packageData }) {
     };
 
     return (
-        <div>
+        <div className="flex justify-center">
             {packageData?.status === 'active' ? (
                 <button
                     onClick={handlePurchase}
-                    className="px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300"
+                    className="px-6 py-3 bg-[#1D3557] text-white rounded-full hover:bg-[#FCB929] focus:outline-none focus:ring-2 focus:ring-[#FCB929] focus:ring-offset-2 transition-colors duration-300"
                 >
-                    Purchase Now
+                    Purchase
                 </button>
+
             ) : (
                 <button
                     disabled

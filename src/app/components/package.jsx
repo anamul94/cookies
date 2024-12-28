@@ -19,9 +19,8 @@ export default function Package({
   return (
     <div className="block group">
       <div
-        className={`relative bg-white border border-gray-200 shadow-md rounded-2xl overflow-hidden hover:shadow-xl transition-transform transform  duration-300 ${
-          !isActive ? "opacity-75" : ""
-        }`}
+        className={`relative bg-white border border-gray-200 shadow-md rounded-2xl overflow-hidden hover:shadow-xl transition-transform transform  duration-300 ${!isActive ? "opacity-75" : ""
+          }`}
       >
         {/* Image Section */}
         {imageUrl && (
@@ -39,7 +38,7 @@ export default function Package({
 
         {/* Card Content */}
         <div className="p-6">
-          <h2 className="text-2xl font-extrabold text-gray-800 mb-3 group-hover:text-blue-600 transition-colors duration-300">
+          <h2 className="text-2xl font-extrabold text-[#5C3D14] mb-3 group-hover:text-[#FCB929] transition-colors duration-300">
             {title}
           </h2>
 
@@ -50,14 +49,14 @@ export default function Package({
           {/* Pricing and Duration */}
           <div className="flex justify-between items-center mb-5">
             <div>
-              <p className="text-lg font-semibold text-blue-600">
-                Price(USD): <span className="text-black">${priceInUsd}</span>
+              <p className="text-lg font-semibold text-[#5C3D14]">
+                Price(USD): <span className="text-[#5C3D14]">${priceInUsd}</span>
               </p>
-              <p className="text-sm text-gray-500">Price(BDT): ৳{priceInBdt}</p>
+              <p className="text-sm text-[#5C3D14]">Price(BDT): ৳{priceInBdt}</p>
             </div>
             <div className="text-right">
-              <p className="text-sm text-gray-500">Duration:</p>
-              <p className="text-lg font-semibold text-gray-800">
+              <p className="text-sm text-[#5C3D14]">Duration:</p>
+              <p className="text-lg font-semibold text-[#5C3D14]">
                 {durationValue} {durationType}
               </p>
             </div>
@@ -68,13 +67,13 @@ export default function Package({
             <div className="flex space-x-3">
               <Link
                 href={`/packages/${id}`}
-                className="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300"
+                className="block w-full text-center px-4 py-2 bg-[#1D3557] text-white rounded-full hover:bg-[#FCB929] focus:outline-none focus:ring-2 focus:ring-[#FCB929] focus:ring-offset-2 transition-colors duration-300"
               >
                 View Details
               </Link>
               <Link
                 href={`/purchase/${id}`}
-                className="block w-full text-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300"
+                className="block w-full text-center px-4 py-2 bg-[#1D3557] text-white rounded-full hover:bg-[#FCB929] focus:outline-none focus:ring-2 focus:ring-[#FCB929] focus:ring-offset-2 transition-colors duration-300"
               >
                 Buy Now
               </Link>
@@ -82,7 +81,7 @@ export default function Package({
           ) : (
             <button
               disabled
-              className="block w-full text-center px-4 py-2 bg-gray-300 text-gray-600 rounded-lg cursor-not-allowed"
+              className="block w-full text-center px-4 py-2 bg-gray-300 text-gray-600 rounded-full cursor-not-allowed"
             >
               Currently Unavailable
             </button>

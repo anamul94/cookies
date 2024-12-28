@@ -46,7 +46,7 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center py-10">
-          <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
+          <h1 className="text-4xl sm:text-5xl font-bold text-[#5C3D14] mb-4">
             Welcome to Accstool Webstore
           </h1>
           <p className="text-xl text-gray-600 mb-8">
@@ -58,7 +58,7 @@ export default function HomePage() {
       {/* Featured Packages Section */}
       <section className="px-4 sm:px-6 lg:px-8 pb-16">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+          <h2 className="text-3xl font-bold text-[#5C3D14] mb-8 text-center">
             Featured Packages
           </h2>
 
@@ -89,7 +89,7 @@ export default function HomePage() {
               <div className="text-center mt-12">
                 <Link
                   href="/shop"
-                  className="inline-block px-8 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
+                  className="inline-block px-8 py-3 bg-[#1D3557] text-white rounded-full hover:bg-[#FCB929] transition-colors"
                 >
                   View All Packages
                 </Link>

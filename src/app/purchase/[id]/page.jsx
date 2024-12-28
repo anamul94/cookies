@@ -102,7 +102,7 @@ export default async function PurchasePage({ params }) {
             <h2 className="text-2xl font-bold text-gray-900 mb-6">
               Complete Your Purchase
             </h2>
-            <PurchaseForm packageId={params.id} />
+            <PurchaseForm packageData={packageData} />
           </div>
         </div>
       </main>

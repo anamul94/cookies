@@ -11,15 +11,16 @@ const Navbar = () => {
   const isActive = (path) => pathname === path;
 
   return (
-    <nav className="bg-blue-600 shadow-lg">
+    <nav className="bg-[#FCB929] shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link
               href="/"
-              className="flex-shrink-0 text-white text-xl font-bold"
+              className="flex items-center space-x-2 text-[#5C3D14] text-xl font-bold hover:text-[#5C3D14]"
             >
-              Accstool
+              <Image src="/AccsTool.png" alt="Accstool Logo" width={40} height={40} />
+              <span>Accstool</span>
             </Link>
           </div>
 
@@ -29,8 +30,8 @@ const Navbar = () => {
               href="/shop"
               className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
                 isActive("/shop")
-                  ? "text-white border-b-2 border-white"
-                  : "text-gray-300 hover:text-white hover:border-b-2 hover:border-gray-300"
+                  ? "text-[#5C3D14] border-b-2 border-[#5C3D14]"
+                  : "text-[#5C3D14] hover:text-[#5C3D14] hover:border-b-2 hover:border-[#5C3D14]"
               }`}
             >
               Shop
@@ -39,8 +40,8 @@ const Navbar = () => {
               href="/trial"
               className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
                 isActive("/trial")
-                  ? "text-white border-b-2 border-white"
-                  : "text-gray-300 hover:text-white hover:border-b-2 hover:border-gray-300"
+                  ? "text-[#2B2B2B] border-b-2 border-[#2B2B2B]"
+                  : "text-[#2B2B2B] hover:text-[#2B2B2B] hover:border-b-2 hover:border-[#2B2B2B]"
               }`}
             >
               Trial
@@ -49,8 +50,8 @@ const Navbar = () => {
               href="/about"
               className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
                 isActive("/about")
-                  ? "text-white border-b-2 border-white"
-                  : "text-gray-300 hover:text-white hover:border-b-2 hover:border-gray-300"
+                  ? "text-[#2B2B2B] border-b-2 border-[#2B2B2B]"
+                  : "text-[#2B2B2B] hover:text-[#2B2B2B] hover:border-b-2 hover:border-[#2B2B2B]"
               }`}
             >
               About
@@ -61,7 +62,7 @@ const Navbar = () => {
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-blue-600 hover:bg-gray-100 focus:outline-none"
+              className="inline-flex items-center justify-center p-2 rounded-md text-[#2B2B2B] hover:text-[#2B2B2B] hover:bg-gray-100 focus:outline-none"
             >
               <span className="sr-only">Open main menu</span>
               {!isOpen ? (
@@ -101,27 +102,27 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-blue-600">
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-[#FCB929]">
             <Link
               href="/shop"
-              className={`block px-3 py-2 rounded-md text-gray-300 hover:text-white hover:bg-blue-700 ${
-                isActive("/shop") ? "text-white" : ""
+              className={`block px-3 py-2 rounded-md text-[#2B2B2B] hover:text-[#2B2B2B] hover:bg-gray-100 ${
+                isActive("/shop") ? "text-[#2B2B2B]" : ""
               }`}
             >
               Shop
             </Link>
             <Link
               href="/trial"
-              className={`block px-3 py-2 rounded-md text-gray-300 hover:text-white hover:bg-blue-700 ${
-                isActive("/trial") ? "text-white" : ""
+              className={`block px-3 py-2 rounded-md text-[#2B2B2B] hover:text-[#2B2B2B] hover:bg-gray-100 ${
+                isActive("/trial") ? "text-[#2B2B2B]" : ""
               }`}
             >
               Trial
             </Link>
             <Link
               href="/about"
-              className={`block px-3 py-2 rounded-md text-gray-300 hover:text-white hover:bg-blue-700 ${
-                isActive("/about") ? "text-white" : ""
+              className={`block px-3 py-2 rounded-md text-[#2B2B2B] hover:text-[#2B2B2B] hover:bg-gray-100 ${
+                isActive("/about") ? "text-[#2B2B2B]" : ""
               }`}
             >
               About
