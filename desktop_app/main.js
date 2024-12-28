@@ -6,6 +6,8 @@ const fs = require('fs');
 const WebSocket = require("ws");
 const { getActiveProducts, subscribeToWebSocket, requestNewPassword } = require("./api");
 
+const API_BASE_URL = 'https://api.accstool.com';
+
 let mainWindow;
 let macAddress = null;
 let ws = null;
@@ -115,12 +117,25 @@ app.whenReady().then(() => {
         return await getActiveProducts(customerEmail, password, macAddress);
     });
 
-    ipcMain.handle("request-new-password", async (event, email) => {
+    // Handle password reset request
+    ipcMain.handle('request-new-password', async (event, email) => {
         try {
-            return await requestNewPassword(email);
+            const result = await requestNewPassword(email);
+            console.log('Password reset request successful:', result);
+            return result;
         } catch (error) {
-            console.error("Error requesting new password:", error);
-            throw error;
+            console.error('Error requesting password reset:', error);
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                throw error.response.data || 'Server error occurred';
+            } else if (error.request) {
+                // The request was made but no response was received
+                throw 'No response from server. Please check your internet connection.';
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                throw error.message || 'An unexpected error occurred';
+            }
         }
     });
 

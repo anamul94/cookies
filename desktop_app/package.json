@@ -14,10 +14,12 @@
     "productName": "Accstool",
     "asar": true,
     "directories": {
-      "output": "dist"
+      "output": "dist",
+      "buildResources": "build"
     },
     "files": [
       "**/*",
+      "build/icons/*",
       "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
       "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
       "!**/node_modules/*.d.ts",
@@ -39,11 +41,8 @@
       ],
       "icon": "build/icons/AccsTool.ico",
       "publisherName": "Accstool",
-      "legalTrademarks": "Accstool",
-      "requestedExecutionLevel": "asInvoker",
-      "signingHashAlgorithms": ["sha256"],
-      "verifyUpdateCodeSignature": false,
-      "signAndEditExecutable": false
+      "signAndEditExecutable": false,
+      "verifyUpdateCodeSignature": false
     },
     "nsis": {
       "oneClick": true,
@@ -60,7 +59,7 @@
       "deleteAppDataOnUninstall": true,
       "displayLanguageSelector": false,
       "installerSidebar": false,
-      "artifactName": "${productName}.${ext}",
+      "artifactName": "${productName} Setup.${ext}",
       "uninstallDisplayName": "${productName}",
       "differentialPackage": false
     },

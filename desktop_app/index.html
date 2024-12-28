@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <title>Cookies Merging App</title>
+    <title>Accstool</title>
     <style>
         .tab-container {
             margin-bottom: 20px;
@@ -21,35 +21,54 @@
             padding: 10px 20px;
             cursor: pointer;
             border: none;
-            background: #f0f0f0;
+            background: #2B2B2B;
             border-radius: 4px;
+            color: #FCB929;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         .tab-button.active {
-            background: #007bff;
-            color: white;
+            background: #FCB929;
+            color: #2B2B2B;
         }
 
+
         .tab-content {
-            display: none;
+            display: block;
+            opacity: 0.5;
+            transition: opacity 0.6s ease;
         }
 
         .tab-content.active {
-            display: block;
+            opacity: 1;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .forgot-password a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 
 <body>
     <header>
-        Cookies Merging App
+        Accstool App
     </header>
 
     <div id="appContainer">
         <div class="tab-container">
             <div class="tab-buttons">
                 <button class="tab-button active" data-tab="products">Products</button>
-                <button class="tab-button" data-tab="reset">Reset Password</button>
             </div>
 
             <div id="productsTab" class="tab-content active">
@@ -62,29 +81,32 @@
 
                     <div class="input-field">
                         <label for="password">Password:</label>
-                        <input type="password" id="password" placeholder="Enter your password">
+                        <input type="text" id="password" placeholder="Enter your password">
                     </div>
                 </div>
-                <button id="fetchProducts">Fetch Products</button>
+                <button id="fetchProducts">Login</button>
+                <div class="forgot-password">
+                    <a href="reset-password.html">Forgot Password?</a>
+                </div>
                 <div id="productsContainer"></div>
-            </div>
-
-            <div id="resetTab" class="tab-content">
-                <h1>Reset Password</h1>
-                <div class="input-group">
-                    <div class="input-field">
-                        <label for="resetEmail">Email:</label>
-                        <input type="email" id="resetEmail" placeholder="Enter your email">
-                    </div>
-                </div>
-                <button id="resetPassword">Request New Password</button>
-                <div id="resetMessage"></div>
             </div>
         </div>
     </div>
 
     <footer>
-        &copy; 2024 Cookies Merging App. All Rights Reserved.
+        <ul>
+            <li><a href="https://wa.me/message/6UD4YOCQHTLAM1" target="_blank" rel="noopener noreferrer"
+                    className="hover:underline">
+                    WhatsApp
+                </a></li>
+            <li><a href="https://www.facebook.com/AccsTools" target="_blank" rel="noopener noreferrer"
+                    className="hover:underline">
+                    Facebook
+                </a></li>
+        </ul>
+        <p>&copy; 2024 Accstool App. All Rights Reserved.</p>
+        <p>Developed by <a _blank href="https://fusionpulsetech.com/"
+                onclick="window.electron.openExternal('https://fusionpulse.tech')">Fusion Pulse Tech</a></p>
     </footer>
 
     <script>
@@ -102,90 +124,52 @@
             });
         });
 
-        // Reset password functionality
-        document.getElementById("resetPassword").addEventListener("click", async () => {
-            const resetEmailInput = document.getElementById("resetEmail");
-            const email = resetEmailInput.value.trim();
-            const messageDiv = document.getElementById("resetMessage");
-
-            if (!email) {
-                messageDiv.innerHTML = "<p style='color: red;'>Please enter your email address.</p>";
-                return;
-            }
-
-            resetEmailInput.disabled = true;
-            messageDiv.innerHTML = "<p>Processing request...</p>";
-
-            try {
-                await window.electronAPI.requestNewPassword(email);
-                messageDiv.innerHTML = "<p style='color: green;'>Password reset instructions have been sent to your email.</p>";
-            } catch (error) {
-                console.error("Error requesting password reset:", error);
-                messageDiv.innerHTML = "<p style='color: red;'>Error requesting password reset. Please try again later.</p>";
-            } finally {
-                resetEmailInput.disabled = false;
-            }
-        });
-
-        // Products functionality
-        document.getElementById("fetchProducts").addEventListener("click", async () => {
-            const emailInput = document.getElementById("customerEmail");
-            const passwordInput = document.getElementById("password");
-            const email = emailInput.value.trim();
-            const password = passwordInput.value.trim();
+        // Login and fetch products functionality
+        document.getElementById('fetchProducts').addEventListener('click', async () => {
+            const email = document.getElementById('customerEmail').value;
+            const password = document.getElementById('password').value;
+            const productsContainer = document.getElementById('productsContainer');
 
             if (!email || !password) {
-                alert("Please enter both email and password.");
+                alert('Please enter both email and password');
                 return;
             }
 
-            const container = document.getElementById("productsContainer");
-            container.innerHTML = "<p>Loading...</p>";
-
-            // Disable inputs while fetching
-            emailInput.disabled = true;
-            passwordInput.disabled = true;
-
             try {
-                const activeProducts = await window.electronAPI.getActiveProducts(email, password);
-                container.innerHTML = "";
-
-                if (activeProducts.length === 0) {
-                    container.innerHTML = "<p>No active products found for this email.</p>";
+                const products = await window.electronAPI.getActiveProducts(email, password);
+                
+                if (products && products.length > 0) {
+                    productsContainer.innerHTML = products.map(product => `
+                        <div class="product-item">
+                            <h3>${product.productTitle}</h3>
+                            <p><strong>Status:</strong> ${product.status}</p>
+                            <p><strong>Remaining Days:</strong> ${product.remainingDays}</p>
+                            ${product.status === 'active' ? 
+                                `<button onclick='openProduct(${JSON.stringify(product.productUrl)}, ${JSON.stringify(product.productCookie)})'>
+                                    Open Product
+                                </button>` : 
+                                '<button disabled>Expired</button>'
+                            }
+                        </div>
+                    `).join('');
+                } else {
+                    productsContainer.innerHTML = '<p>No active products found.</p>';
                 }
-
-                activeProducts.forEach((product) => {
-                    const productDiv = document.createElement("div");
-                    productDiv.classList.add("productCard");
-
-                    productDiv.innerHTML = `
-                        <h3>${product.productTitle}</h3>
-                        <p><strong>Remaining Days:</strong> ${product.remainingDays}</p>
-                        <p><strong>Status:</strong> ${product.status}</p>
-                        <button ${product.status !== 'active' ? 'disabled' : ''}>Open Site</button>
-                    `;
-
-                    const button = productDiv.querySelector("button");
-                    if (product.status === 'active') {
-                        button.addEventListener("click", () => {
-                            window.electronAPI.openUrlWithCookies(
-                                product.productUrl,
-                                product.productCookie
-                            );
-                        });
-                    }
-
-                    container.appendChild(productDiv);
-                });
             } catch (error) {
-                console.error("Error fetching products:", error);
-                container.innerHTML = "<p>Error fetching products. Please try again later.</p>";
-            } finally {
-                // Re-enable inputs after fetch completes
-                emailInput.disabled = false;
-                passwordInput.disabled = false;
+                console.error('Error:', error);
+                productsContainer.innerHTML = '<p>Error fetching products. Please try again.</p>';
             }
         });
+
+        // Function to open product URL with cookies
+        async function openProduct(url, cookies) {
+            try {
+                await window.electronAPI.openUrlWithCookies(url, cookies);
+            } catch (error) {
+                console.error('Error opening product:', error);
+                alert('Error opening product. Please try again.');
+            }
+        }
     </script>
 </body>
 
