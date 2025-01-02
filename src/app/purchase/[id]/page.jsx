@@ -30,7 +30,7 @@ async function getPackageData(id) {
 
 export default async function PurchasePage({ params }) {
   const packageData = await getPackageData(params.id);
-
+  console.log(packageData);
   if (!packageData) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -100,7 +100,7 @@ export default async function PurchasePage({ params }) {
             <h2 className="text-2xl font-bold text-[#5C3D14] mb-6">
               Complete Your Purchase
             </h2>
-            <PurchaseForm packageData={packageData} />
+            <PurchaseForm packageId={packageData.id} />
           </div>
         </div>
       </main>

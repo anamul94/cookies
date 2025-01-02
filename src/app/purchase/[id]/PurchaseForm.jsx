@@ -26,6 +26,7 @@ export default function PurchaseForm({ packageId }) {
     setError(null);
 
     try {
+      console.log(formData);
       const response = await fetch(`${API_BASE_URL}/order/create`, {
         method: "POST",
         headers: {

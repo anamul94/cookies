@@ -21,6 +21,7 @@ export default function HomePage() {
         body: JSON.stringify({
           page: 1,
           limit: 10,
+          packageType: "regular",
         }),
       });
 
