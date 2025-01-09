@@ -1,9 +1,8 @@
 "use client";
 import { useState, useEffect } from 'react';
-import Navbar from '../components/Navbar';
 import { useRouter } from 'next/navigation';
 import { isAuthenticated } from '@/utils/auth';
-import { API_BASE_URL } from '../../app/constants/api';
+import { API_BASE_URL } from '@/app/constants/api';
 
 const OrderStatus = {
     ACTIVE: 'active',
@@ -34,7 +33,7 @@ export default function OrdersDashboard() {
 
     useEffect(() => {
         if (!isAuthenticated()) {
-            router.push('/auth/login');
+            router.push('/login');
             return;
         }
         fetchOrders();
@@ -47,7 +46,7 @@ export default function OrdersDashboard() {
         try {
             const token = localStorage.getItem('token');
             if (!token) {
-                router.push('/auth/login');
+                router.push('/login');
                 return;
             }
 
@@ -67,7 +66,7 @@ export default function OrdersDashboard() {
 
             if (!response.ok) {
                 if (response.status === 401) {
-                    router.push('/auth/login');
+                    router.push('/login');
                     return;
                 }
                 throw new Error('Failed to fetch orders');
@@ -110,7 +109,7 @@ export default function OrdersDashboard() {
         try {
             const token = localStorage.getItem('token');
             if (!token) {
-                router.push('/auth/login');
+                router.push('/login');
                 return;
             }
 
@@ -125,7 +124,7 @@ export default function OrdersDashboard() {
 
             if (!response.ok) {
                 if (response.status === 401) {
-                    router.push('/auth/login');
+                    router.push('/login');
                     return;
                 }
                 throw new Error('Failed to update status');
@@ -167,8 +166,7 @@ export default function OrdersDashboard() {
     const totalPages = Math.ceil(totalOrders / limit);
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <Navbar />
+        <div className="min-h-screen bg-gray-50 text-gray-900">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="bg-white rounded-lg shadow p-6">
                     <h1 className="text-2xl font-bold mb-6">Orders Dashboard</h1>

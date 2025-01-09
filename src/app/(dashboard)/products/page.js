@@ -1,10 +1,9 @@
 "use client";
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Navbar from '../components/Navbar';
-import ProductEditModal from '../components/ProductEditModal';
-import { fetchWithAuth } from '@/utils/api';
-import { API_BASE_URL } from '../../app/constants/api';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { fetchWithAuth } from "@/utils/api";
+import { API_BASE_URL } from "@/app/constants/api";
+import ProductEditModal from "@/app/components/ProductEditModal";
 
 export default function Products() {
   const router = useRouter();
@@ -14,37 +13,37 @@ export default function Products() {
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [total, setTotal] = useState(0);
-  const [title, setTitle] = useState('');
-  const [status, setStatus] = useState('');
+  const [title, setTitle] = useState("");
+  const [status, setStatus] = useState("");
 
   const fetchProducts = async () => {
     try {
       const response = await fetchWithAuth(`${API_BASE_URL}/products/search`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({
           title,
           status,
           page,
-          limit
-        })
+          limit,
+        }),
       });
-      
+
       if (!response) return;
 
       if (!response.ok) {
-        throw new Error('Failed to fetch products');
+        throw new Error("Failed to fetch products");
       }
 
       const data = await response.json();
-      console.log('API response:', data);
+      console.log("API response:", data);
       setProducts(data.products || []);
       setTotal(data.total || 0);
       setPage(data.page || 1);
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error("Error fetching products:", error);
     } finally {
       setLoading(false);
     }
@@ -67,8 +66,7 @@ export default function Products() {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
+      <div className="max-w-7xl mx-auto p-6 sm:px-6 lg:px-8">
         <div className="sm:flex sm:items-center sm:justify-between mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Products</h1>
           <div className="mt-4 sm:mt-0 sm:flex sm:space-x-4">
@@ -84,12 +82,14 @@ export default function Products() {
               onChange={(e) => setStatus(e.target.value)}
               className="mt-2 sm:mt-0 shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:w-48 sm:text-sm border-gray-300 rounded-md bg-white text-gray-900 px-4 py-2"
             >
-              <option value="" className="text-gray-500">All Status</option>
+              <option value="" className="text-gray-500">
+                All Status
+              </option>
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
             </select>
             <button
-              onClick={() => router.push('/products/create')}
+              onClick={() => router.push("/products/create")}
               className="mt-2 sm:mt-0 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
             >
               Add Product
@@ -174,8 +174,8 @@ export default function Products() {
                     disabled={page === 1}
                     className={`px-4 py-2 border rounded-md ${
                       page === 1
-                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                        : 'bg-white text-gray-700 hover:bg-gray-50'
+                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        : "bg-white text-gray-700 hover:bg-gray-50"
                     }`}
                   >
                     Previous
@@ -185,8 +185,8 @@ export default function Products() {
                     disabled={page >= totalPages}
                     className={`px-4 py-2 border rounded-md ${
                       page >= totalPages
-                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                        : 'bg-white text-gray-700 hover:bg-gray-50'
+                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        : "bg-white text-gray-700 hover:bg-gray-50"
                     }`}
                   >
                     Next

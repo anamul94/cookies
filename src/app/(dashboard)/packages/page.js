@@ -2,13 +2,11 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import Navbar from '../components/Navbar';
-import Package from '../components/package';
-import ErrorModal from '../components/ErrorModal';
-import Link from 'next/link';
-import PackageOrderType from '../constant/PackageOrderType.enum';
-import { API_BASE_URL } from '../../app/constants/api';
 import { isAuthenticated } from '@/utils/auth';
+import { API_BASE_URL } from '@/app/constants/api';
+import ErrorModal from '@/app/components/ErrorModal';
+import Package from '@/app/components/package';
+import PackageOrderType from '@/app/constant/PackageOrderType.enum';
 
 export default function Packages() {
     const router = useRouter();
@@ -23,7 +21,7 @@ export default function Packages() {
 
     useEffect(() => {
         if (!isAuthenticated()) {
-            router.push('/auth/login');
+            router.push('/login');
             return;
         }
         const fetchPackages = async () => {
@@ -69,7 +67,6 @@ export default function Packages() {
     if (loading) {
         return (
             <div className="min-h-screen bg-gray-50">
-                <Navbar />
                 <main className="pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
                     <div className="flex justify-center items-center h-64">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -82,8 +79,7 @@ export default function Packages() {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <Navbar />
-            <main className="pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <main className="p-6 sm:px-6 lg:px-8 max-w-7xl mx-auto">
                 <div className="sm:flex sm:items-center sm:justify-between mb-8">
                     <h1 className="text-3xl font-bold text-gray-900">Packages</h1>
                     <div className="mt-4 sm:mt-0 flex items-center space-x-4">
@@ -93,7 +89,7 @@ export default function Packages() {
                                 setSelectedPackageType(e.target.value);
                                 setPage(1); // Reset to first page when filter changes
                             }}
-                            className="block w-40 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                            className="mt-2 sm:mt-0 shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:w-48 sm:text-sm border-gray-300 rounded-md bg-white text-gray-900 px-4 py-2"
                         >
                             <option value="all">All Types</option>
                             <option value={PackageOrderType.REGULAR}>Regular</option>

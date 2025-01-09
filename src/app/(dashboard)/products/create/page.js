@@ -1,11 +1,10 @@
 "use client";
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Navbar from '../../components/Navbar';
 import { Status } from '@/app/constants/status';
 import { isAuthenticated } from '@/utils/auth';
 import { fetchWithAuth } from '@/utils/api';
-import { API_BASE_URL } from '../../../app/constants/api';
+import { API_BASE_URL } from '@/app/constants/api';
 
 // Create a client component for the form
 function ProductForm() {
@@ -23,7 +22,7 @@ function ProductForm() {
 
   useEffect(() => {
     if (!isAuthenticated()) {
-      router.push('/auth/login');
+      router.push('/login');
       return;
     }
 
@@ -116,7 +115,7 @@ function ProductForm() {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
+      <div className="max-w-7xl mx-auto p-6 sm:px-6 lg:px-8">
         <div className="md:flex md:items-center md:justify-between mb-8">
           <h1 className="text-3xl font-bold text-gray-900">
             {isEditing ? "Edit Product" : "Create New Product"}
@@ -252,7 +251,6 @@ function ProductForm() {
 export default function CreateProduct() {
   return (
     <>
-      <Navbar />
       <Suspense fallback={<div>Loading...</div>}>
         <ProductForm />
       </Suspense>

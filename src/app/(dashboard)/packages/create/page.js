@@ -1,13 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Navbar from "../../components/Navbar";
 import { Status } from "@/app/constants/status";
 import { isAuthenticated } from "@/utils/auth";
 import { fetchWithAuth } from "@/utils/api";
 import DurationTypes from "@/app/constants/duration";
 import PackageOrderType from '@/app/constant/PackageOrderType.enum';
-import { API_BASE_URL } from '../../../app/constants/api';
+import { API_BASE_URL } from "@/app/constants/api";
 
 
 export default function CreatePackage() {
@@ -29,7 +28,7 @@ export default function CreatePackage() {
 
   useEffect(() => {
     if (!isAuthenticated()) {
-      router.push("/auth/login");
+      router.push("/login");
       return;
     }
     fetchProducts();
@@ -110,11 +109,10 @@ export default function CreatePackage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50">
-      <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
+    <main className="min-h-screen bg-gray-50 text-gray-900">
+      <div className="max-w-7xl mx-auto p-6 sm:px-6 lg:px-8">
         <div className="md:flex md:items-center md:justify-between mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold">
             Create New Package
           </h1>
         </div>

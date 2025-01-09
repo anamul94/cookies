@@ -1,10 +1,9 @@
 "use client";
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, use } from 'react';
-import Navbar from '../../components/Navbar';
 import { fetchWithAuth } from '@/utils/api';
 import { isAuthenticated } from '@/utils/auth';
-import { API_BASE_URL } from '../../../app/constants/api';
+import { API_BASE_URL } from '@/app/constants/api';
 
 export default function PackageDetails({ params }) {
   const router = useRouter();
@@ -14,7 +13,7 @@ export default function PackageDetails({ params }) {
 
   useEffect(() => {
     if (!isAuthenticated()) {
-      router.push('/auth/login');
+      router.push('/login');
       return;
     }
 
@@ -42,7 +41,6 @@ export default function PackageDetails({ params }) {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Navbar />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -56,8 +54,7 @@ export default function PackageDetails({ params }) {
   if (!packageData) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto p-6 sm:px-6 lg:px-8 py-8">
           <div className="bg-white rounded-lg shadow p-6">
             <p className="text-red-600">Package not found</p>
             <button
@@ -74,8 +71,7 @@ export default function PackageDetails({ params }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto p-6 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
           <button
             onClick={() => router.back()}
