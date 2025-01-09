@@ -1,8 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Navbar from "../../components/Navbar";
-import { API_BASE_URL } from '../../../app/constants/api';
+import { API_BASE_URL } from "@/app/constants/api";
 
 
 export default function EditProduct({ params }) {
@@ -73,7 +72,6 @@ export default function EditProduct({ params }) {
   if (loading) {
     return (
       <main className="min-h-screen bg-gray-50">
-        <Navbar />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -86,7 +84,6 @@ export default function EditProduct({ params }) {
   if (error) {
     return (
       <main className="min-h-screen bg-gray-50">
-        <Navbar />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
           <div className="bg-red-50 border-l-4 border-red-400 p-4 mt-4">
             <div className="flex">
@@ -114,8 +111,7 @@ export default function EditProduct({ params }) {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
-      <Navbar />
+    <main className="min-h-screen bg-gray-50 text-gray-900">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
         <h1 className="text-3xl font-bold mb-6">Edit Product</h1>
 

@@ -30,7 +30,7 @@ export const fetchWithAuth = async (url, options = {}) => {
     const response = await fetch(url, config);
 
     if (response.status === 401) {
-      window.location.href = '/auth/login';
+      window.location.href = '/login';
       return null;
     }
 

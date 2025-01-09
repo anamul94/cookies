@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Status } from '@/app/constants/status';
+import React from "react";
+import PropTypes from "prop-types";
+import { Status } from "@/app/constants/status";
 
 export default function Package({
   id,
@@ -12,25 +12,22 @@ export default function Package({
   durationType,
   status,
   imageUrl,
-  onEdit
+  onEdit,
 }) {
   return (
     <div className="bg-white shadow-lg rounded-lg overflow-hidden">
       {imageUrl && (
-        <img
-          src={imageUrl}
-          alt={title}
-          className="w-full h-48 object-cover"
-        />
+        <img src={imageUrl} alt={title} className="w-full h-48 object-cover" />
       )}
       <div className="p-6">
         <div className="flex justify-between items-start">
           <h3 className="text-xl font-semibold text-gray-900 mb-2">{title}</h3>
           <span
-            className={`px-2 py-1 text-xs font-medium rounded-full ${status === Status.ACTIVE
-                ? 'bg-green-100 text-green-800'
-                : 'bg-gray-100 text-gray-800'
-              }`}
+            className={`px-2 py-1 text-xs font-medium rounded-full ${
+              status === Status.ACTIVE
+                ? "bg-green-100 text-green-800"
+                : "bg-gray-100 text-gray-800"
+            }`}
           >
             {status}
           </span>
@@ -38,7 +35,9 @@ export default function Package({
         <p className="text-gray-600 mb-4">{description}</p>
         <div className="flex justify-between items-center mb-4">
           <div>
-            <div className="text-2xl font-bold text-gray-900">${priceInUsd}</div>
+            <div className="text-2xl font-bold text-gray-900">
+              ${priceInUsd}
+            </div>
             <div className="text-sm text-gray-500">৳{priceInBdt}</div>
           </div>
           <div className="text-sm text-gray-600">

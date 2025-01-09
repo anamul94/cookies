@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
-import Navbar from "../../../components/Navbar";
 import { fetchWithAuth } from "@/utils/api";
 import { isAuthenticated } from "@/utils/auth";
 import { Status } from "@/app/constants/status";
@@ -30,7 +29,7 @@ export default function EditPackage({ params }) {
 
   useEffect(() => {
     if (!isAuthenticated()) {
-      router.push("/auth/login");
+      router.push("/login");
       return;
     }
 
@@ -121,8 +120,7 @@ export default function EditPackage({ params }) {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto p-6 sm:px-6 lg:px-8 py-8">
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
             <p className="ml-4">Loading package details...</p>
@@ -133,9 +131,8 @@ export default function EditPackage({ params }) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-gray-50 text-gray-900">
+      <div className="max-w-7xl mx-auto p-6 sm:px-6 lg:px-8 py-8">
         <div className="mb-6">
           <button
             onClick={() => router.back()}
