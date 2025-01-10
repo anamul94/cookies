@@ -4,7 +4,7 @@
   "description": "Accstool Desktop Application",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "electron . --no-sandbox",
     "build": "electron-builder -wl",
     "build:win": "electron-builder --win --x64",
     "build:linux": "electron-builder --linux"
@@ -36,7 +36,9 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "build/icons/AccsTool.ico",
@@ -67,11 +69,15 @@
       "target": [
         {
           "target": "AppImage",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "deb",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "build/icons/AccsTool.png",
@@ -79,7 +85,12 @@
       "maintainer": "Accstool Manager Team"
     }
   },
-  "keywords": ["cookie", "manager", "desktop", "electron"],
+  "keywords": [
+    "cookie",
+    "manager",
+    "desktop",
+    "electron"
+  ],
   "author": {
     "name": "Accstool Manager Team",
     "email": "support@accstool.com",
@@ -88,6 +99,7 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^1.7.9",
+    "electron-store": "^10.0.0",
     "os": "^0.1.2",
     "ws": "^8.18.0"
   },

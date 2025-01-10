@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, session } = require("electron");
+const { app, BrowserWindow, ipcMain, session, shell } = require("electron");
 const axios = require("axios");
 const path = require("path");
 const os = require("os");
@@ -11,6 +11,7 @@ const API_BASE_URL = 'https://api.accstool.com';
 let mainWindow;
 let macAddress = null;
 let ws = null;
+let store = null;
 
 // Load URL blocking configuration
 let blockedDomainPaths = {};
@@ -28,33 +29,37 @@ const isBlocked = (url) => {
     try {
         const urlObj = new URL(url);
         const domain = urlObj.hostname;
-        const pathname = urlObj.pathname.toLowerCase();
+        console.log('Domain:', domain);
 
-        // Check if domain exists in blocked list
+        // Block the entire domain if it's in the blocked list
         if (blockedDomainPaths[domain]) {
-            // Check if any blocked path matches
-            return blockedDomainPaths[domain].some(blockedPath => 
-                pathname.startsWith('/' + blockedPath)
-            );
+            return true;
         }
 
         return false;
     } catch (error) {
-        console.error('Error checking URL:', error);
         return false;
     }
 };
 
 // Function to intercept requests and block specific URLs
 const setupUrlBlocking = () => {
-    // Block navigation to blocked URLs
-    session.defaultSession.webRequest.onBeforeRequest((details, callback) => {
+    // Block all types of requests for blocked URLs
+    const filter = {
+        urls: ['*://*/*']
+    };
+
+    session.defaultSession.webRequest.onBeforeRequest(filter, (details, callback) => {
         if (isBlocked(details.url)) {
-            console.log(`Blocked URL: ${details.url}`);
             callback({ cancel: true });
         } else {
             callback({ cancel: false });
         }
+    });
+
+    // Block navigation events
+    session.defaultSession.webRequest.onBeforeRedirect(filter, (details) => {
+        isBlocked(details.redirectURL);
     });
 };
 
@@ -134,26 +139,58 @@ const loadExtensions = async (extensionsDir) => {
     }
 };
 
-app.whenReady().then(() => {
+// Function to save credentials
+const saveCredentials = async (email, password) => {
+    if (!store) return;
+    store.set('credentials', { email, password });
+};
+
+// Function to get saved credentials
+const getSavedCredentials = () => {
+    if (!store) return { email: '', password: '' };
+    return store.get('credentials') || { email: '', password: '' };
+};
+
+app.whenReady().then(async () => {
+    // Initialize electron-store
+    const Store = await import('electron-store');
+    store = new Store.default();
+
     // Setup URL blocking
     setupUrlBlocking();
-    
+
     macAddress = getMacAddress();
 
     if (!macAddress || macAddress === "00:00:00:00:00:00") {
-        console.error("Invalid MAC address detected. Please check your network configuration.");
-    } else {
-        console.log("Valid MAC address:", macAddress);
+        console.error("Invalid MAC address");
+        app.quit();
+        return;
     }
 
     mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
         webPreferences: {
-            preload: path.join(__dirname, "preload.js"),
-            contextIsolation: true,
             nodeIntegration: false,
-        },
+            contextIsolation: true,
+            preload: path.join(__dirname, "preload.js"),
+            devTools: false
+        }
+    });
+
+    // Disable DevTools globally
+    mainWindow.webContents.on('before-input-event', (event, input) => {
+        // Prevent DevTools shortcuts
+        if ((input.control || input.meta) && input.key.toLowerCase() === 'i' ||  // Ctrl/Cmd + I
+            (input.control || input.meta) && input.shift && input.key.toLowerCase() === 'i' ||  // Ctrl/Cmd + Shift + I
+            input.key === 'F12') {  // F12
+            event.preventDefault();
+        }
+    });
+
+    // Disable context menu to prevent right-click inspect
+    mainWindow.webContents.on('context-menu', (e) => {
+        e.preventDefault();
     });
 
     mainWindow.loadFile("index.html");
@@ -206,6 +243,43 @@ app.whenReady().then(() => {
             // Set cookies before loading URL
             await setDynamicCookies(cookies, url);
 
+            // Add navigation controls
+            newWindow.webContents.on('did-finish-load', () => {
+                newWindow.webContents.executeJavaScript(`
+                    if (!document.getElementById('nav-controls')) {
+                        const controls = document.createElement('div');
+                        controls.id = 'nav-controls';
+                        controls.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; background: #f5f5f5; padding: 8px; z-index: 9999; border-bottom: 1px solid #ddd; display: flex; gap: 8px;';
+                        
+                        const backBtn = document.createElement('button');
+                        backBtn.innerText = '←';
+                        backBtn.title = 'Back';
+                        backBtn.style.cssText = 'padding: 4px 12px; cursor: pointer; border: 1px solid #ddd; background: white; border-radius: 4px;';
+                        backBtn.onclick = () => history.back();
+                        
+                        const forwardBtn = document.createElement('button');
+                        forwardBtn.innerText = '→';
+                        forwardBtn.title = 'Forward';
+                        forwardBtn.style.cssText = 'padding: 4px 12px; cursor: pointer; border: 1px solid #ddd; background: white; border-radius: 4px;';
+                        forwardBtn.onclick = () => history.forward();
+                        
+                        const reloadBtn = document.createElement('button');
+                        reloadBtn.innerText = '↻';
+                        reloadBtn.title = 'Reload';
+                        reloadBtn.style.cssText = 'padding: 4px 12px; cursor: pointer; border: 1px solid #ddd; background: white; border-radius: 4px;';
+                        reloadBtn.onclick = () => location.reload();
+                        
+                        controls.appendChild(backBtn);
+                        controls.appendChild(forwardBtn);
+                        controls.appendChild(reloadBtn);
+                        document.body.insertBefore(controls, document.body.firstChild);
+                        
+                        // Add padding to body to prevent content from hiding under controls
+                        document.body.style.marginTop = '40px';
+                    }
+                `);
+            });
+
             // Add navigation handler to check URLs before loading
             newWindow.webContents.on('will-navigate', (event, navUrl) => {
                 if (isBlocked(navUrl)) {
@@ -252,7 +326,26 @@ app.whenReady().then(() => {
         }
     });
 
+    ipcMain.handle('save-credentials', async (event, { email, password }) => {
+        saveCredentials(email, password);
+    });
+
+    ipcMain.handle('get-credentials', async () => {
+        return getSavedCredentials();
+    });
+
     ipcMain.handle("get-mac-address", () => macAddress); // Expose MAC address to renderer
+
+    // Handle opening external URLs
+    ipcMain.handle('open-external-url', async (event, url) => {
+        try {
+            await shell.openExternal(url);
+            return true;
+        } catch (error) {
+            console.error('Failed to open external URL:', error);
+            return false;
+        }
+    });
 });
 
 app.on("window-all-closed", () => {

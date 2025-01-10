@@ -36,6 +36,14 @@
       },
       {
          "js": [
+            "files/placeit.js"
+         ],
+         "matches": [
+            "*://*.placeit.net/*"
+         ]
+      },
+      {
+         "js": [
             "files/semrush.js"
          ],
          "matches": [

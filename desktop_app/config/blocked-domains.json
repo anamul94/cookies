@@ -20,5 +20,17 @@
         "courses/ufb-cybersecurity/forensics",
         "organization/manage/",
         "admin/"
+    ],
+    "account.grammarly.com": [
+        "profile",
+        "account",
+        "settings",
+        "billing",
+        "subscription",
+        "plans",
+        "/profile",
+        "/account",
+        "/settings",
+        "/billing"
     ]
 }

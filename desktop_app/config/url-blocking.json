@@ -12,7 +12,19 @@
             "blockedPaths": [
                 "profile",
                 "dashboard",
-                "billing"
+                "billing",
+                "account",
+                "settings"
+            ],
+            "allowedPaths": []
+        },
+        "account.grammarly.com": { 
+            "blockedPaths": [
+                "profile",
+                "dashboard",
+                "billing",
+                "account",
+                "settings"
             ],
             "allowedPaths": []
         }
